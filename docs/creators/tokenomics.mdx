@@ -1,0 +1,45 @@
+---
+title: "Supply and tokenomics"
+description: "Allocate the launch supply and explain the economic model."
+---
+
+Creators choose the percentage of the launch supply assigned to public participation, future liquidity, and the team. The allocation plan should account for the entire intended supply.
+
+## Current curve buckets
+
+| Bucket | Purpose | Contract rule |
+| --- | --- | --- |
+| Curve | Inventory available for direct purchases | Must be greater than zero |
+| Pool | Asset reserve intended for future liquidity | Must be greater than zero |
+| Team | Assets released under team vesting | May be zero |
+
+The three percentages must sum to **100%**, represented as 10,000 basis points.
+
+For a 1,000,000-asset launch with 40% sale, 30% pool, and 30% team:
+
+| Allocation | Basis points | Asset amount |
+| --- | --- | --- |
+| Curve sale | 4,000 | 400,000 |
+| Pool reserve | 3,000 | 300,000 |
+| Team vesting | 3,000 | 300,000 |
+| Total | 10,000 | 1,000,000 |
+
+Curve and team amounts round down to whole base units. The pool bucket receives the remainder, preserving the deposited total. A nonzero percentage that rounds to zero can invalidate the launch.
+
+## Deposited supply versus issued supply
+
+The factory deposits the owner's **entire balance of this asset**. Its recorded `total_supply` is that deposit. It cannot query the total amount issued across Stellar accounts and cannot enforce that future issuance is disabled.
+
+If the public supply claim is 1,000,000 assets, the issuance and distribution records need to support it. Moving only 700,000 into the vault does not prove the remaining 300,000 does not exist.
+
+## Price and valuation
+
+Explain whether the published initial price is a curve marginal price, auction reference price, or fixed presale price. Multiplying a supply figure by that price is a valuation illustration. It does not describe available exit liquidity or guarantee the same price for the full supply.
+
+For the current curve, virtual base reserves must exceed the sale bucket. The graduation target must be reachable by selling the available curve inventory under the configured formula.
+
+## Additional allocations
+
+Treasury, ecosystem, advisor, marketing, or community allocations can be described in a project plan. The current curve has only three enforced buckets and one team recipient. Do not label additional profile categories as independently locked unless the corresponding custody and vesting mechanism actually exists.
+
+Auction and presale supply accounting, including unsold assets and participant vesting, remains part of their planned implementations.

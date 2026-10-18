@@ -1,0 +1,43 @@
+---
+title: "Custom criteria and labels"
+description: "Compose reusable access rules from the three reputation scores."
+---
+
+A criterion compares scores to thresholds. A label gives a reusable, immutable set of criteria an ID within a reputation registry.
+
+## Available criteria
+
+| Field | Passing condition |
+| --- | --- |
+| `github_above` | GitHub score is strictly greater than the value |
+| `social_above` | Social score is strictly greater than the value |
+| `onchain_above` | Onchain score is strictly greater than the value |
+| `total_above` | Sum of all three scores is strictly greater than the value |
+
+Unset fields are ignored. Every supplied condition must pass. The current model supports **AND**, not alternative OR branches, arbitrary expressions, follower-level conditions, or weighted formulas.
+
+For example, a rule with `github_above: 100` and `social_above: 50` requires both scores to exceed those thresholds. Scores of 100 and 80 fail because the GitHub comparison is strict.
+
+## Create a label
+
+Anyone can call `create_label(creator, name, criteria)` with the creator's authorization. A valid name has 1 to 64 UTF-8 bytes and cannot consist entirely of ASCII whitespace. At least one criterion is required.
+
+The registry returns a `u64` ID starting at **1**. Labels cannot be edited or deleted. Duplicate names are allowed, so identify a policy by **network, registry address, and label ID**, then inspect the creator and criteria.
+
+Creating a replacement label does not update launches using the old one.
+
+## Query a policy
+
+Use `get_label(id)` to inspect the rules. Use `check_label(address, id)` to evaluate an address. Applications can also call `check(address, criteria)` without creating a label.
+
+An unknown label, missing score record, or empty criterion set returns `false`. An unavailable or archived registry can produce an invocation error; callers should not treat that as eligibility.
+
+## Attach a label to a curve
+
+Set the launch's `reputation_label` to an existing ID in the factory's fixed registry. Set it to `0` to disable the launch's reputation gate. The factory and vault validate nonzero labels at creation.
+
+Registry `check_label(address, 0)` is not an open-access shortcut. The launch contract implements that sentinel before calling the registry.
+
+## Limits of a label
+
+A label describes access thresholds. It does not certify legal identity, bind provider accounts, select a score snapshot, or rank an oversubscribed sale. Those features need their own defined representation and implementation.

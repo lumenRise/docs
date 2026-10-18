@@ -1,0 +1,46 @@
+---
+title: "Launchpad documentation"
+description: "Asset launches and reusable reputation on Stellar."
+slug: /
+sidebar_label: "Introduction"
+---
+
+import SupplyFlow from '@site/src/components/SupplyFlow';
+
+Launchpad brings asset launches and reputation to Stellar. Projects choose how to raise, how to distribute their asset, and who can participate. Participants build a reputation they can use across launches and other applications.
+
+## How Launchpad works
+
+A creator defines the asset, supply allocation, XLM or USDC quote asset, opening date, pricing, and vesting terms. The launch holds the allocated supply in a dedicated Soroban vault. Participation follows the selected format; team assets unlock through a separate vesting schedule.
+
+<SupplyFlow />
+
+The product uses **Stellar assets**, identified by their code and issuer. The Stellar Asset Contract gives the vault access to the same asset on Soroban. It does not create a separate wrapped asset.
+
+## Three ways to launch
+
+| Format | How the price works | Participation |
+| --- | --- | --- |
+| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as assets are bought and sold. | Trading opens at the start date and continues until graduation. |
+| [Auction](/launches/auctions) | Participants submit bids; higher-priced bids receive allocation priority. | Bid during the auction window, then settle the result and claim. |
+| [Presale](/launches/presales) | The creator sets a fixed sale price. | Commit quote assets, receive a final allocation, and claim under the published vesting terms. |
+
+## Reputation that travels
+
+Connect a Stellar account, X, and GitHub to establish three separate signals: **onchain**, **social**, and **GitHub** reputation. Projects can use these signals to define access criteria or prioritize allocations. Other applications can reuse the same reputation through onchain checks, with API and SDK access planned.
+
+[Understand reputation](/reputation/overview) or [define custom criteria](/reputation/criteria).
+
+## Find your starting point
+
+| I want to… | Start here |
+| --- | --- |
+| Launch an asset | [Create a launch](/creators/create-launch) |
+| Buy, bid, or join a presale | [Participant guide](/participants/getting-started) |
+| Build my reputation | [Connect accounts](/reputation/connect-accounts) |
+| Integrate reputation or launch creation | [Developer overview](/developers/overview) |
+| Check contract addresses | [Deployments](/deployments/overview) |
+
+:::info Product and implementation
+These docs describe the full product. Bonding curves, team vesting, and the reputation registry exist in the contract source. Auctions, presales, production scoring, API, SDK, and the launch CLI are planned. See [implementation status](/getting-started/status) before using an integration.
+:::

@@ -1,0 +1,45 @@
+---
+title: "Architecture"
+description: "How the factory, vault, asset interfaces, and reputation registry connect."
+---
+
+The contract architecture keeps launch custody separate from the shared reputation registry. The factory deploys a dedicated vault for each curve launch.
+
+## Components
+
+| Component | Responsibility |
+| --- | --- |
+| Interface | Public discovery, authentication, and prototype project and identity flows |
+| Asset issuer and distribution account | Issue the Stellar asset and hold the supply before deposit |
+| Stellar Asset Contracts | Provide Soroban access to the project and quote assets |
+| Launch factory | Validate parameters, deploy a vault, transfer the owner's balance, and register the launch |
+| Bonding-curve vault | Hold allocated assets, price trades, track positions, enforce purchase criteria, and process team and fee claims |
+| Reputation registry | Store administered scores and public immutable labels; evaluate criteria |
+| Planned backend | Identity linking, evidence collection, score calculation, and project-profile services |
+| Planned API, SDK, and CLI | Application integrations and launch orchestration |
+
+## Creation boundary
+
+The owner authorizes `create_bonding_curve(params)`. The factory verifies both SACs, reads the owner's asset balance, validates the allocation and curve, checks a nonzero reputation label, and deploys a vault with its stored WASM hash.
+
+The newly created vault receives the owner's entire asset balance. The factory checks both the zero owner balance and the exact vault balance increase. A failed invocation rolls back the deployment and transfer effects.
+
+Existing unsolicited balances at a predictable vault address do not increase the recorded launch supply. They have no implemented recovery path.
+
+## Trading boundary
+
+Buyers pay the quote SAC and receive the project asset SAC through the vault. The vault records net reserve, creator fees, and address-specific sell-back positions. Its checks and transfers occur in one transaction.
+
+A quote reads curve state but does not prove eligibility. A gated buy calls the registry selected by the factory. A sell does not call the registry.
+
+## Reputation trust boundary
+
+A factory pins one reputation registry address. Launch creators cannot replace it per launch. Registry administrators can change scores and rotate the admin. Public label creators define immutable thresholds.
+
+The registry's authorization protects score writes. It does not establish that the offchain evidence or scoring model is correct.
+
+## Upgrades and storage
+
+The factory stores a vault WASM hash at construction. Rebuilding local code does not change that hash, and the current contracts have no upgrade method. A new factory or vault version requires a separate deployment and record.
+
+Relevant operations extend storage lifetimes. Long inactivity can still require restoration of archived data. Integrations must distinguish an invocation failure from an absent score or zero position.

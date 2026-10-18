@@ -1,0 +1,52 @@
+---
+title: "Events and errors"
+description: "Decode contract failures and consume reputation update events."
+---
+
+Decode an error using the selected contract's specification. Numeric codes are local to a contract's error enum and can overlap across contracts.
+
+## Launch errors
+
+| Code | Variant | Meaning |
+| --- | --- | --- |
+| 1 | `InvalidConfig` | Invalid metadata, allocations, timing, fees, or curve settings |
+| 2 | `InvalidSupply` | Invalid deposit or asset-accounting invariant |
+| 3 | `Overflow` | Arithmetic or counter limit exceeded |
+| 4 | `NotOpen` | Trading unavailable for the current state, or a guarded action is busy |
+| 5 | `InvalidTrade` | Invalid amount, position, or trade input |
+| 6 | `SoldOut` | Requested buy exceeds curve inventory |
+| 7 | `Slippage` | Payment cap or receipt floor is violated |
+| 8 | `NoReserve` | Sell has zero gross value or insufficient recorded reserve |
+| 9 | `NoClaim` | No positive amount is available to claim |
+| 10 | `WrongAsset` | Asset is not an accepted SAC or its metadata/decimals mismatch |
+| 11 | `UnknownLabel` | Nonzero label does not exist at launch creation |
+| 12 | `ReputationRequired` | Buyer does not pass the launch label |
+
+Asset transfers, missing authorization, archived data, and failed cross-contract calls can also cause host or nested-contract errors. Not every failure maps to this enum.
+
+## Reputation errors
+
+| Code | Variant | Meaning |
+| --- | --- | --- |
+| 1 | `InvalidLabel` | Invalid name or empty criteria |
+| 2 | `Overflow` | Next label ID cannot be represented |
+
+Unknown labels and missing scores return `false` from checks rather than one of these label-creation errors.
+
+## Reputation events
+
+| Event | Indexed field | Payload |
+| --- | --- | --- |
+| `scores_updated` | `address` | Replacement `Scores` |
+| `label_created` | `label_id` | Full `Label` |
+| `admin_changed` | None | `old_admin` and `new_admin` |
+
+The source defines these with `#[contractevent]`. Use the deployed specification to decode exact topics and data. A score update replaces the complete three-field record.
+
+## Launch indexing
+
+The current factory and curve do not declare custom application-level creation or trade events. Do not invent event names such as `launch_created` or `presale_allocated` in an indexer.
+
+Use factory enumeration, confirmed invocation results, vault reads, and SAC transfer events as appropriate. SAC transfers alone do not prove that a transfer was a registered purchase: unsolicited direct transfers are possible.
+
+For event-query mechanics, see the [Stellar RPC reference](https://developers.stellar.org/docs/data/apis/rpc/api-reference). Store network, contract identity, transaction and ledger references, and an ingestion cursor when building an indexer.

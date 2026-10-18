@@ -1,0 +1,36 @@
+---
+title: "Connect your accounts"
+description: "Link a Stellar identity with public social and developer profiles."
+---
+
+Your Stellar account is the address used by the reputation registry. X and GitHub provide public activity signals that can be associated with that address through the intended verification flow.
+
+## Stellar account
+
+Connect or create the account through the interface's authentication flow. Proving control of a wallet means authorizing the relevant challenge or transaction. Knowing a public address alone does not establish control.
+
+The onchain score is intended to reflect the connected account's activity. It is not a score for a specific issued asset held in that account.
+
+## X
+
+The product intends to verify control of your X account and assess public activity and ecosystem relationships. Relevant relationships include who follows you, whom you follow, and their connection to Stellar or web3.
+
+Connecting X does not by itself guarantee a particular score. Follower count alone is not a published scoring formula.
+
+## GitHub
+
+The product intends to verify control of your GitHub account and assess development work and participation. Relevant evidence includes contributions to projects, collaboration, and participation in the Stellar ecosystem.
+
+The interface also contains an optional GitLab connection. The current registry still has one developer field named `github`, not a separate GitLab score.
+
+## Optional connections
+
+The prototype lets users skip optional identity connections and manage them later in Settings. A launch may still require thresholds that a participant without the relevant evidence cannot meet.
+
+Disconnecting an identity in the interface does not automatically erase a score already written to the onchain registry. That requires a scoring and update policy; current scores have no expiry timestamp or automatic revocation field.
+
+## Current implementation
+
+Blux authentication is integrated into the interface. Some optional provider connections are locally simulated and generate illustrative scores. No production account-linking backend or evidence-verification pipeline is present in the supplied repositories.
+
+Only published registry values can support an onchain check. A locally displayed prototype score is not a signed attestation or an onchain score update.

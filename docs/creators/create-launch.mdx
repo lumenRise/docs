@@ -1,0 +1,50 @@
+---
+title: "Create a launch"
+description: "Configure the project, asset, allocations, pricing, vesting, and access rules."
+---
+
+The intended creation flow turns a complete project configuration into a scheduled Stellar asset launch. Prepare the economic terms before authorizing any asset issuance or transfer.
+
+## Prepare your project
+
+Choose the project name, asset code, supply, description, logo, website, team members, and relevant links. Explain the product, the use of raised funds, and the purpose of the asset. See [project profiles](/creators/project-profile).
+
+Use a distinct distribution account to hold the supply intended for the vault. The current factory's `owner` is the distribution account and the recipient for team claims.
+
+## Select the format
+
+Choose a [bonding curve](/launches/bonding-curves), [auction](/launches/auctions), or [presale](/launches/presales). Format-specific pricing and settlement fields should only appear for the selected format.
+
+Auctions and presales are planned. The current factory exposes only `create_bonding_curve`.
+
+## Set supply percentages
+
+Define what percentage belongs to the sale, future liquidity, and team. The current curve requires all three percentages to add up to 100%, with nonzero pool and sale allocations. The team share can be zero.
+
+Other tokenomics categories can be explained in the project profile, but the current vault does not create extra treasury, campaign, or advisor buckets.
+
+## Choose XLM or USDC
+
+Pick the quote asset and verify its network-specific identity. Every price, contribution, target, and quote-denominated fee for this launch uses that asset.
+
+## Set prices and dates
+
+For a curve, choose the initial price, reserve shape, graduation target, creator fee, and intended creator payout share. The initial price and target must correspond to a valid reserve configuration; they are not unconstrained independent numbers.
+
+For an auction, the planned configuration includes the bidding window and price constraints. For a presale, it includes the fixed price, funding goal, commitment window, and allocation policy.
+
+Use UTC timestamps when reviewing final terms. Current curve trading opens at `starts_at` and has no end date.
+
+## Configure vesting and eligibility
+
+Choose the team's cliff, duration, and release interval. Review the actual first release and final release dates. With both durations set to zero, the team allocation is immediately claimable.
+
+Choose open participation or an existing [reputation label](/reputation/criteria). A nonzero label must exist in the factory's registry. Planned presales also need participant vesting and an oversubscription policy.
+
+## Review and launch
+
+The review should identify the asset code and issuer, selected network, full supply plan, vault deposit, allocation percentages, quote asset, prices, fees, dates, vesting, and access rules. It should also distinguish onchain terms from profile information.
+
+The intended **Launch** action coordinates asset creation and vault deployment. The current implementation requires an already-issued asset and a direct factory invocation; the interface does not yet provide the complete transaction flow.
+
+After creation, verify the returned vault, its recorded configuration, and its deposit. The current contracts do not expose a launch-parameter editor or cancellation method. Do not assume a mistaken start date, price, or vesting schedule can be changed later.

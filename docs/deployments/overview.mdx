@@ -1,0 +1,43 @@
+---
+title: "Deployment directory"
+description: "Network-specific release records for Launchpad contracts and services."
+---
+
+Use this directory to select a network and verify a contract version. An address is meaningful only together with its network and deployed code.
+
+## Networks
+
+| Network | Current record | Details |
+| --- | --- | --- |
+| Testnet | Historical 8 October 2026 fixtures; no verified deployment of the current source version | [Testnet deployments](/deployments/testnet) |
+| Mainnet | No verified deployment supplied | [Mainnet deployments](/deployments/mainnet) |
+
+The historical Testnet report predates reputation gates and the current no-deadline curve lifecycle. It cannot be used as evidence that those features are live.
+
+## Components to record
+
+| Component | Current release record |
+| --- | --- |
+| Reputation registry and admin | No verified current network record |
+| Launch factory and platform settings | Historical Testnet factory only |
+| Bonding-curve code hash | Historical Testnet hash only |
+| Individual launch vaults | Historical Testnet examples only |
+| Auction and presale contracts | Not implemented |
+| Production API, SDK, and launch CLI | Not published in the supplied repositories |
+
+## Network passphrases
+
+```text
+Testnet: Test SDF Network ; September 2015
+Mainnet: Public Global Stellar Network ; September 2015
+```
+
+Mainnet is also called Stellar's public network. Testnet assets and funds have no Mainnet equivalence. Testnet resets can remove old contracts and data.
+
+## Verify a future release
+
+A deployment record should include the network, deployment time, source revision or release artifact, WASM hash, transaction hash, registry and admin, factory settings, asset identities, and relevant smoke-test evidence.
+
+Read the factory's stored registry and vault hash. Do not assume a known factory has been updated just because the local source changed. Existing vaults are not upgraded by a new factory deployment.
+
+A published address alone does not establish that settlement, liquidity, or claim behavior is complete. Review [implementation status](/getting-started/status) alongside the release record.

@@ -1,0 +1,46 @@
+---
+title: "Auctions"
+description: "Bid-based price discovery and allocation for a Stellar asset launch."
+---
+
+import DocStatus from '@site/src/components/DocStatus';
+
+<DocStatus />
+
+An auction lets participants state the price they are willing to pay for the launch asset. Higher-priced bids receive priority when demand exceeds the available allocation.
+
+## What the creator defines
+
+The launch publishes the auction allocation, quote asset, opening and closing times, minimum price if used, eligibility criteria, and the asset distribution schedule. It must also publish the bid payment rule and the treatment of partial fills, tied bids, cancellations, and unallocated funds.
+
+An auction starting price is a bid constraint or reference price. It is not the bonding curve's virtual-reserve ratio.
+
+## Participant flow
+
+1. Review the project, auction terms, eligibility, and claim schedule.
+2. During the auction window, submit a price and requested quantity with the required quote-asset commitment.
+3. After close, the settlement process ranks eligible bids by price and calculates final allocations.
+4. Winners pay according to the published payment rule and receive a claim or vesting entitlement.
+5. Unaccepted quote assets are returned or made claimable under the published refund rules.
+
+Bidding does not guarantee a fill. The final accepted quantity can be smaller than the requested quantity.
+
+## Example: priority by bid price
+
+Suppose 100,000 assets are available:
+
+| Participant | Bid price in USDC | Requested assets | Illustrative allocation |
+| --- | --- | --- | --- |
+| Alice | 0.15 | 60,000 | 60,000 |
+| Ben | 0.12 | 60,000 | 40,000 |
+| Cora | 0.10 | 20,000 | 0 |
+
+This example illustrates price priority and a partial fill at the cutoff. It does not select a settlement price. Whether winners pay their own bid or a shared clearing price is a separate product decision.
+
+## Decisions still to be finalized
+
+The supplied repositories do not specify whether bids are public or sealed, whether payment is pay-as-bid or uniform-price, how equal bids are handled, or whether participants can replace or withdraw bids. These details must be settled and documented before an auction can launch.
+
+The interface contains illustrative auction listings, including a Dutch-auction label. That mock label does not define an implemented auction mechanism. This documentation follows the requested higher-bid-priority design.
+
+Reputation can define access criteria. Any additional effect on auction ranking must be explicitly published; it should not be assumed from the presale policy.

@@ -1,0 +1,43 @@
+---
+title: "How scores work"
+description: "Understand the intended signals and the current score trust model."
+---
+
+The product intends to evaluate activity, contribution, and ecosystem relationships. The current registry stores the resulting numbers; the production calculation service and exact scoring model are not implemented in these repositories.
+
+## Social reputation
+
+The intended social analysis considers public activity and the relationship graph around an X profile. This includes who follows the account, whom the account follows, and the relevance of those relationships to Stellar and the broader web3 ecosystem.
+
+A useful evaluation needs context and evidence quality. The product brief does not define numerical weights, a trusted-account list, time windows, normalization, or an anti-manipulation formula. These should not be inferred from example profile values.
+
+## GitHub reputation
+
+The intended developer analysis considers work performed, project participation, and contributions relevant to Stellar. It can distinguish contribution history from a simple activity count.
+
+The repositories do not define a scoring formula for commits, pull requests, reviews, issues, repositories, or ecosystem relevance. Listing these as potential evidence does not mean an implemented service currently scores each of them.
+
+## Onchain reputation
+
+The intended onchain analysis uses activity associated with the connected Stellar account. No production indexer, transaction classifier, anti-sybil model, or published scoring weights are present here.
+
+An account balance or asset holding alone is not a published reputation rule.
+
+## Stored values
+
+| Field | Stored type | Allowed range |
+| --- | --- | --- |
+| `social` | `u32` | 0 to 4,294,967,295 |
+| `github` | `u32` | 0 to 4,294,967,295 |
+| `onchain` | `u32` | 0 to 4,294,967,295 |
+| Total | Sum in `u64` | 0 to 12,884,901,885 |
+
+These are storage limits, not a product scale such as 0 to 100 or 0 to 1,000. The total is an unweighted sum. A missing record is distinct from a registered record containing zeros.
+
+## Who controls updates
+
+Only the registry admin can replace scores. An update replaces all three fields together and immediately affects future checks. The contract verifies the writer's authority; it does not verify the underlying social or contribution evidence.
+
+Current score records do not contain a model version, evidence hash, verification flag, calculation time, or expiry time. A consuming application that needs freshness or evidence must obtain it through a separately defined system.
+
+The scoring service will need published policies for refreshes, identity changes, disputed evidence, provider failures, and manipulation. Those policies are open product work, not current guarantees.

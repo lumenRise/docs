@@ -1,0 +1,48 @@
+# Launchpad
+
+> Documentation for Stellar asset launches and reusable social, GitHub, and onchain reputation.
+
+Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. No deployment of the current source version is verified. Historical Testnet fixtures must not be used as current addresses.
+
+## Documentation
+
+- [Launchpad documentation](/)
+- [Fees and proceeds](/concepts/fees)
+- [Launch lifecycle](/concepts/lifecycle)
+- [XLM and USDC](/concepts/quote-assets)
+- [Stellar assets and locked supply](/concepts/stellar-assets)
+- [Cliffs, vesting, and claims](/concepts/vesting)
+- [Create a launch](/creators/create-launch)
+- [Set participation rules](/creators/eligibility)
+- [Manage a launch](/creators/manage-launch)
+- [Project profile and team](/creators/project-profile)
+- [Supply and tokenomics](/creators/tokenomics)
+- [Mainnet deployments](/deployments/mainnet)
+- [Deployment directory](/deployments/overview)
+- [Testnet deployments](/deployments/testnet)
+- [HTTP API](/developers/api)
+- [Architecture](/developers/architecture)
+- [CLI and agents](/developers/cli)
+- [Events and errors](/developers/events-and-errors)
+- [Launch contract reference](/developers/launch-contracts)
+- [Developer overview](/developers/overview)
+- [Reputation contract reference](/developers/reputation-contract)
+- [SDK](/developers/sdk)
+- [Start here](/getting-started/quickstart)
+- [Implementation status](/getting-started/status)
+- [Auctions](/launches/auctions)
+- [Bonding curves](/launches/bonding-curves)
+- [Choose a launch format](/launches/overview)
+- [Presales](/launches/presales)
+- [Allocations and claims](/participants/allocations-and-claims)
+- [Join a launch](/participants/getting-started)
+- [Trading, bids, and commitments](/participants/trading-and-bidding)
+- [Frequently asked questions](/reference/faq)
+- [Glossary](/reference/glossary)
+- [Sources and documentation scope](/reference/sources)
+- [Connect your accounts](/reputation/connect-accounts)
+- [Custom criteria and labels](/reputation/criteria)
+- [Reputation on Stellar](/reputation/overview)
+- [How scores work](/reputation/scoring)
+
+- [Plain-text documentation](/llms-full.txt)

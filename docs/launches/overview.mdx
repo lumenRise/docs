@@ -1,0 +1,34 @@
+---
+title: "Choose a launch format"
+description: "Compare bonding curves, auctions, and presales."
+---
+
+All three formats start with the same project information, Stellar asset identity, supply plan, quote asset, and participation rules. The format determines how a participant gets a price and an allocation.
+
+| | Bonding curve | Auction | Presale |
+| --- | --- | --- | --- |
+| Pricing | Changes with the curve's sold supply | Determined through bids | Fixed by the creator |
+| Participant action | Buy or sell against the curve | Submit a price and quantity | Commit XLM or USDC |
+| Allocation | Executed purchases | Higher-priced bids have priority | Fixed-price allocation, with reputation priority when oversubscribed |
+| Opening | At the configured start time | At the auction start | At the presale start |
+| Ending | Graduation target reached | Auction close and settlement | Sale close or its published completion rule |
+| Participant receipt | Asset transferred during purchase | After settlement, under sale terms | After allocation, under participant vesting terms |
+| Source support | Contract prototype | Planned | Planned |
+
+## Bonding curve
+
+Choose a [bonding curve](/launches/bonding-curves) when you want the price to respond to purchases and sell-backs from the opening date. The current curve is formula-driven and has no expiry deadline.
+
+## Auction
+
+Choose an [auction](/launches/auctions) when buyers should express the price they are willing to pay. Higher-priced bids receive priority for a finite asset allocation. The payment rule, closing time, and settlement process must be defined before bidding opens.
+
+## Presale
+
+Choose a [presale](/launches/presales) when you want a known price, a funding goal, and a scheduled distribution. When demand exceeds the available raise, reputation is intended to prioritize final allocations. Unaccepted commitments must remain refundable under the published settlement rules.
+
+## Shared configuration
+
+Creators choose allocation percentages, XLM or USDC, start time, pricing parameters, team vesting, project description, team information, tokenomics, and reputation rules. Format-specific terms belong on the launch page before anyone participates.
+
+A bonding curve is not an auction, and the current prototype does not implement the auction or presale paths. See [implementation status](/getting-started/status).

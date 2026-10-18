@@ -1,0 +1,40 @@
+---
+title: "Stellar assets and locked supply"
+description: "How issued assets, the Stellar Asset Contract, and launch custody fit together."
+---
+
+Launchpad uses Stellar assets. An issued asset is identified by an **asset code and issuer account**, such as a project code paired with its issuer's `G...` address. A code by itself does not identify an asset.
+
+XLM is Stellar's native asset and has no issuer. The [Stellar Asset Contract](https://developers.stellar.org/docs/tokens/stellar-asset-contract) lets Soroban contracts hold and transfer both native and issued Stellar assets. Its `C...` address is a contract interface to the same underlying asset.
+
+## Intended issuance flow
+
+The complete launch flow is designed to:
+
+1. Create the issuer and distribution arrangement for the project asset.
+2. Issue the configured supply to the distribution account.
+3. Establish and publish the asset's issuance and administrative controls.
+4. Deploy or locate its SAC on the selected network.
+5. Transfer the launch supply from the distribution account into the dedicated vault.
+
+The current factory begins at the last step. It does not create an issuer, issue an asset, or disable future issuance.
+
+## What the vault receives
+
+The factory reads the launch owner's full asset balance, creates a new vault, transfers that balance, and verifies that the owner's balance became zero. The vault records the amount deposited as its launch supply.
+
+The SAC interface has no total-supply getter. This transfer cannot prove that other accounts hold no assets or that the issuer cannot issue more. A fixed-supply claim needs separate evidence about issuance, distribution, and remaining administrative authority.
+
+## What is locked
+
+The vault accounts for the pool reserve, sale inventory, and team allocation. These buckets have different permitted uses. Team assets follow vesting; curve inventory is distributed through trades; pool assets are reserved for future settlement.
+
+A contract lock does not neutralize asset-level issuer powers. Authorization and clawback settings can affect balances held in a vault. Review issuer controls as well as contract code.
+
+## Trustlines and precision
+
+Classic accounts need the required trustlines for issued assets they receive. XLM does not need a trustline. These launch contracts do not create trustlines for users.
+
+The current factory accepts only host-verified Stellar Asset Contracts with seven decimals for both the project asset and quote asset. A custom contract implementing a similar token interface is rejected.
+
+[Configure supply allocations](/creators/tokenomics) or [choose the quote asset](/concepts/quote-assets).

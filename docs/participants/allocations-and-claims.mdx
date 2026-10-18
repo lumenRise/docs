@@ -1,0 +1,36 @@
+---
+title: "Allocations and claims"
+description: "Separate purchased assets, provisional allocations, vesting, and refunds."
+---
+
+An allocation describes how much of an asset you receive. A claimable balance describes how much you can transfer now. These are different from funds merely committed to a sale.
+
+## By launch format
+
+| Format | What you hold after participation | Delivery |
+| --- | --- | --- |
+| Current bonding curve | Purchased asset balance and a recorded sell-back position | Asset transfers during the buy |
+| Planned auction | Bid, then accepted allocation after settlement | Claim or vesting under auction terms |
+| Planned presale | Commitment, then accepted allocation after settlement | Participant vesting under sale terms |
+
+The current curve does not create participant claim schedules. Its `claim_team` method is for the launch owner, not buyers.
+
+## Presale oversubscription
+
+The intended presale policy favors higher-reputation participants when eligible commitments exceed the accepted raise. Before settlement, any displayed allocation should be treated as provisional.
+
+An unaccepted amount must be distinguished from accepted project proceeds. The planned sale needs an explicit refund path, and participants need to know when and how the unaccepted quote asset becomes available.
+
+There is no current contract implementing this allocation or refund process. No exact ranking formula, tie-breaking rule, or score snapshot is published in the supplied code.
+
+## Vesting claims
+
+A vested allocation may include an opening release, a cliff, or repeated unlocks under the selected sale terms. An unlocked amount becomes available to claim; it is not necessarily sent automatically.
+
+Review the beneficiary address, schedule origin, first release, interval, final release, and previously claimed amount. The team schedule documented in [vesting](/concepts/vesting) must not be assumed to apply to every future participant schedule.
+
+## Asset availability and liquidity
+
+Receiving an asset does not guarantee there is a market to sell it. For the current curve, transfers do not transfer sell-back rights, and graduation stops the vault's trading without creating a secondary market.
+
+Use an existing, verified method to claim or sell. Sending assets directly to a contract does not create an allocation, a refund, or a recorded curve position.

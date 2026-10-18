@@ -1,0 +1,41 @@
+---
+title: "Implementation status"
+description: "What exists in source, what is planned, and what has been deployed."
+---
+
+This documentation covers the intended Launchpad product and the implementation available in the sibling repositories. The review below is dated **18 October 2026**. Source support is separate from a verified network deployment.
+
+## Feature availability
+
+| Capability | Current evidence |
+| --- | --- |
+| Bonding-curve launch factory and dedicated vaults | Implemented in contract source. |
+| Buy and sell quotes, price movement, and slippage limits | Implemented in contract source. |
+| Scheduled opening without a trading deadline | Implemented in contract source. |
+| Full distribution-account balance deposited into a vault | Implemented in contract source. This does not independently prove total asset supply. |
+| Pool, curve, and team allocation accounting | Implemented in contract source. |
+| Team cliff and stepped vesting | Implemented in contract source. |
+| Creator trading-fee claims | Implemented in contract source. |
+| Graduation threshold and preview | Implemented. Graduation stops curve trading. |
+| Graduation payouts, pool creation, and liquidity migration | Not implemented. Reserves and pool assets remain in the vault. |
+| Reputation scores, custom labels, and purchase gating | Implemented in contract source. Scores are written by the registry admin. |
+| Automatic X, GitHub, and Stellar activity scoring | Planned. No production scoring service is present. |
+| Account linking and reputation display | Prototype interface. Optional connections and scores can be simulated locally. |
+| Public browsing and Blux authentication | Present in the interface prototype. |
+| Integrated asset issuance and launch submission | Planned. The factory accepts existing SAC-backed assets. |
+| Auctions and presales | Planned. No corresponding contracts are present. |
+| Participant vesting and reputation-prioritized presale allocation | Planned. Current vesting is for the curve's team allocation. |
+| Public HTTP API and packaged SDK | Planned. The shared Rust reputation client exists. |
+| Installable launch CLI and natural-language creation | Planned. No package or executable is published by these repositories. |
+
+## Deployment evidence
+
+The contract repository records an **8 October 2026 Testnet smoke test** of an older contract version. It predates reputation gating and the removal of trading deadlines. Its addresses are historical fixtures, not the current deployment directory.
+
+No current Testnet deployment or Mainnet deployment is verified by the supplied records. The [deployment pages](/deployments/overview) keep these distinctions explicit.
+
+## Current release limit
+
+The bonding-curve prototype stops buying and selling at graduation but does not settle the reserve or create a liquidity pool. The contract repository explicitly marks it unsuitable for a real-money launch. There is no independent security audit supplied with this version.
+
+Local tests and an older Testnet report do not establish production availability. The docs build does not execute contract tests or submit network transactions.

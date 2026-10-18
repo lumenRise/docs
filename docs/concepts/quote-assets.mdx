@@ -1,0 +1,36 @@
+---
+title: "XLM and USDC"
+description: "Choose the asset used to price a launch and receive contributions."
+---
+
+The quote asset is what participants pay and what the launch collects. The product's quote choices are **XLM** and **USDC on Stellar**. The project asset is the separate asset being sold.
+
+| | XLM | USDC |
+| --- | --- | --- |
+| Asset type | Stellar native asset | Issued Stellar asset |
+| Price expression | XLM per project asset | USDC per project asset |
+| Participant setup | XLM balance | USDC balance and a valid trustline |
+| Transaction fees | Paid in XLM | Still paid in XLM |
+| Identity check | Network and native SAC | Network, issuer, and USDC SAC |
+
+## What the choice changes
+
+Prices, commitments, trading fees, the curve's graduation target, and eventual proceeds are denominated in the selected quote asset. A target of 50,000 XLM is not a target of 50,000 USDC.
+
+A launch uses one quote asset. The current contracts do not perform currency conversion or accept arbitrary payment assets for a single launch.
+
+## Network-specific identity
+
+Use the deployed SAC for the selected network. Testnet balances and contract addresses are separate from Mainnet. An arbitrary asset named `USDC` is not sufficient proof of the issuer.
+
+The [Circle contract directory](https://developers.circle.com/stablecoins/usdc-contract-addresses) is an external source for USDC identity. Confirm the network and issuer before configuration; the supplied project records do not publish an approved current USDC address list.
+
+## Contract behavior
+
+The current factory accepts a `pair` SAC address and validates its executable and decimals. It does **not** enforce an XLM/USDC allowlist. The two-choice product interface therefore needs its own reviewed network configuration.
+
+Use seven-decimal integer amounts in contract calls. One whole unit is `10_000_000` base units. Use decimal-string parsing or integer arithmetic rather than JavaScript floating-point multiplication.
+
+## Price is format-specific
+
+On a curve, the initial price comes from the virtual-reserve ratio and changes with trades. In an auction, bids determine the result under the settlement rules. In a presale, the creator's fixed price determines how accepted quote funds convert into allocation.

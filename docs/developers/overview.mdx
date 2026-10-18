@@ -1,0 +1,40 @@
+---
+title: "Developer overview"
+description: "Integrate launch contracts and reusable reputation."
+---
+
+Launchpad has two integration surfaces: launching and interacting with Stellar assets, and consuming reputation for your own application.
+
+## Available today in source
+
+The Rust workspace contains a launch factory, bonding-curve vault, reputation registry, and shared type packages. The interface is a separate React application with prototype launch and reputation data.
+
+| Task | Reference |
+| --- | --- |
+| Understand custody and dependencies | [Architecture](/developers/architecture) |
+| Create or trade a curve launch | [Launch contracts](/developers/launch-contracts) |
+| Read scores or enforce a label | [Reputation contract](/developers/reputation-contract) |
+| Interpret failures and registry events | [Events and errors](/developers/events-and-errors) |
+| Choose a network and address | [Deployments](/deployments/overview) |
+
+The shared Rust `ReputationClient` is implemented. It is not a published JavaScript SDK or an HTTP service.
+
+## Planned integrations
+
+The [HTTP API](/developers/api) and [SDK](/developers/sdk) are intended to expose reputation, eligibility, launch information, and transaction preparation. Their endpoints, package names, and authentication contracts are not published.
+
+The [CLI and agent guide](/developers/cli) describes configuration-driven and natural-language launch creation. It explicitly separates proposed commands from the existing Stellar CLI.
+
+## Integration principles
+
+Use network-specific asset and contract identities. Read configuration from the selected factory and vault rather than assuming every deployment uses the latest source.
+
+Keep amounts as integers in seven-decimal base units. Serialize `u64` values without losing precision. Generate or validate bindings against the actual contract specification.
+
+Simulate Soroban invocations before signing and submitting. Verify final transaction results before reporting a launch, allocation, or claim as completed.
+
+## Reuse reputation independently
+
+A consuming contract can call the registry directly and apply custom criteria. It need not create a Launchpad launch. Decide which registry and admin you trust, what rule means for your product, and how you handle invocation failures or stale evidence.
+
+No current deployment is verified for this source version. Use the [deployment directory](/deployments/overview) and [status page](/getting-started/status) before selecting an environment.

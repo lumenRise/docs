@@ -1,0 +1,36 @@
+---
+title: "Reputation on Stellar"
+description: "A reusable profile built from social, developer, and onchain activity."
+---
+
+Reputation gives a participant a record of contribution and activity that can be used beyond a single launch. Launchpad separates that record into **social**, **GitHub**, and **onchain** scores.
+
+## Three signals
+
+| Score | Intended evidence |
+| --- | --- |
+| Social | Public X activity and relationships within Stellar and the wider web3 ecosystem |
+| GitHub | Development work, open-source participation, and contributions relevant to Stellar |
+| Onchain | Activity associated with a connected Stellar account |
+
+The scores are separate numbers. A project can focus on the category it values or require several categories together. The current contract also supports a simple sum of the three scores for a total threshold.
+
+## Connect, calculate, publish, check
+
+The intended flow connects the user's account identities, evaluates public activity, and publishes scores for the Stellar address. A launch or another application then evaluates those scores against its own criteria.
+
+The onchain registry already stores scores and supports reusable checks. It does not fetch X, inspect GitHub, analyze ledgers, or compute the scores itself. Only its admin can write the three score values.
+
+## How projects use reputation
+
+A creator can require social or developer thresholds, combine onchain activity with another category, or choose open participation. Planned presales will also use reputation to prioritize allocations when demand exceeds the accepted raise.
+
+Access criteria and allocation ranking are different uses. Passing an access rule does not guarantee an allocation or determine its size.
+
+## Reuse outside Launchpad
+
+Other Soroban contracts can read the registry and check custom criteria or existing labels. Planned HTTP and SDK integrations will make the same signals accessible to applications and agents.
+
+A third party chooses how to use the result. The registry is not an investment rating, an asset endorsement, or proof of legal identity.
+
+Continue with [account connections](/reputation/connect-accounts), [score calculation](/reputation/scoring), or [custom criteria](/reputation/criteria).

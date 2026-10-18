@@ -1,0 +1,50 @@
+---
+title: "Cliffs, vesting, and claims"
+description: "Understand team locks, release intervals, and participant distribution."
+---
+
+Vesting makes an allocation claimable over time. A **cliff** delays the start of release. A **claim** transfers assets that have already unlocked; time passing does not automatically send them to an account.
+
+## Team vesting in the current curve
+
+The team allocation remains inside the launch vault. The owner configures:
+
+| Field | Meaning |
+| --- | --- |
+| `cliff_seconds` | Delay from `starts_at` before vesting begins |
+| `duration_seconds` | Length of vesting after the cliff |
+| `schedule` | `Daily`, `Weekly`, or `Monthly` release steps |
+
+Daily means 86,400 seconds, weekly means 604,800 seconds, and monthly means a fixed 2,592,000 seconds, or 30 days. Monthly does not mean calendar-month boundaries.
+
+With a nonzero duration, nothing is claimable at or before the cliff boundary. After it, elapsed time is rounded down to complete release intervals. At the exact vesting end, the full remaining allocation unlocks, including rounding dust.
+
+## Worked example
+
+A launch allocates 300,000 assets to the team, with a 30-day cliff and 300-day duration using 30-day steps.
+
+| Time from launch start | Total vested |
+| --- | --- |
+| Day 30, at the cliff | 0 |
+| Day 59 | 0 |
+| Day 60, first complete step | 30,000 |
+| Day 180 | 150,000 |
+| Day 330, vesting complete | 300,000 |
+
+The cliff is followed by the vesting duration. This example takes 330 days from launch start to full release.
+
+## Claiming
+
+`claimable_team()` returns unlocked assets minus assets already claimed. `claim_team()` requires the launch owner's authorization and transfers the claim to that owner. The current contract has one team bucket and one owner recipient; it does not split vesting among multiple team members.
+
+A failed asset transfer rolls the transaction back. A missing, frozen, or full recipient trustline must be resolved before an issued-asset claim can succeed.
+
+## Immediate release
+
+Setting both cliff and duration to zero makes the whole team allocation immediately claimable, including before the trading start. This is not a team lock. A nonzero cliff with a zero duration is invalid.
+
+## Participant vesting
+
+Current curve buyers receive their purchased asset during the buy. They do not receive a participant vesting entitlement.
+
+Auctions and presales are intended to support their own published participant schedules. Those schedules must be kept separate from the current team-vesting implementation and are not implemented in the supplied contracts.

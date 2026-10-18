@@ -1,0 +1,43 @@
+---
+title: "Sources and documentation scope"
+description: "Implementation sources, product decisions, and external reference material."
+---
+
+The product description follows the creator's brief. Contract behavior follows the sibling source repositories reviewed on **18 October 2026**. Comparable launchpad documentation informed the organization, not claims about Launchpad's implementation.
+
+## Implementation sources
+
+| Source in the project workspace | Used for |
+| --- | --- |
+| `launchpad-contract/packages/launchpad-types/src/lib.rs` | Parameters, validation, allocations, integer math, and launch errors |
+| `launchpad-contract/contracts/factory/src/lib.rs` | Factory settings, registry selection, vault deployment, and deposit behavior |
+| `launchpad-contract/contracts/bonding-curve/src/lib.rs` | States, quotes, trades, positions, graduation, and claims |
+| `launchpad-contract/packages/reputation-types/src/lib.rs` | Scores, criteria, labels, and the shared client |
+| `launchpad-contract/contracts/reputation/src/lib.rs` | Administration, score replacement, label creation, and events |
+| `launchpad-contract/README.md` | Implementation boundaries and verification context |
+| `launchpad-contract/TESTNET.md` and `target/testnet-smoke.json` | Historical deployment evidence |
+| `interface/PRODUCT.md`, `DESIGN.md`, and `src/App.tsx` | User flows, existing visual identity, authentication, and prototype limitations |
+
+These are workspace-relative source references, not public service URLs. Local implementation and network deployment are described separately throughout the docs.
+
+## Comparable launchpad documentation
+
+- [Legion Help Center](https://help.legion.cc/en/) separates account setup, reputation, sales, and user support.
+- [Legion's score guide](https://help.legion.cc/en/articles/13566228-how-to-boost-your-legion-score-the-only-guide-you-need) explains its own reputation model and how contribution affects access. Launchpad's scores and policies are independently specified here.
+- [Fjord's sale-format guide](https://help.fjordfoundry.com/fjord-foundry-docs/for-sale-creators/token-sale-types) distinguishes sale mechanisms before creator setup.
+- [Fjord's fixed-price creation guide](https://help.fjordfoundry.com/fjord-foundry-docs/for-sale-creators/how-to-create-a-sale/how-to-create-a-fixed-price-sale) is a reference for a task-based creator journey.
+- [PinkSale's presale vesting guide](https://docs.pinksale.finance/launchpads/vesting-contributor) treats contributor vesting and claims as explicit topics.
+
+Launchpad does not inherit those platforms' chains, pricing mechanisms, score scales, verification policies, or settlement behavior.
+
+## Stellar and integration references
+
+- [Stellar Asset Contract](https://developers.stellar.org/docs/tokens/stellar-asset-contract): how the same Stellar asset is used by accounts and contracts.
+- [Stellar RPC API reference](https://developers.stellar.org/docs/data/apis/rpc/api-reference): simulation, transaction results, and event-query methods.
+- [Circle's USDC directory](https://developers.circle.com/stablecoins/usdc-contract-addresses): an external source for network-specific USDC identity.
+
+## Editorial conventions
+
+“Implemented in source” means a matching path exists in the reviewed code. It does not mean the current version is deployed. “Planned” means a requested product capability without a matching implementation or published service.
+
+Examples are illustrative unless explicitly identified as historical transaction evidence. Proposed API and CLI interfaces are not advertised as callable endpoints or installed tools. Open auction and presale decisions are stated rather than filled in with invented mechanics.

@@ -1,0 +1,96 @@
+---
+title: "Launch contract reference"
+description: "Factory parameters, curve math, trade methods, and claim behavior."
+---
+
+The current workspace exposes `LaunchpadFactory` and `BondingCurve`. This reference describes the source ABI, not the older Testnet fixtures.
+
+## Factory configuration
+
+`__constructor(settings: FactorySettings)` stores:
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `platform` | `Address` | Platform recipient used by graduation preview |
+| `platform_fee_bps` | `u32` | At most 1,000 bps |
+| `curve_wasm_hash` | `BytesN<32>` | Uploaded vault code to deploy |
+| `reputation` | `Address` | Fixed registry; its interface is checked at construction |
+
+## Launch parameters
+
+`create_bonding_curve(params: LaunchParams) -> Result<Address, Error>` requires the owner's authorization and returns the new vault address.
+
+| Field | Type | Constraints or purpose |
+| --- | --- | --- |
+| `owner` | `Address` | Supplies the deposited asset and receives team claims |
+| `asset` | `Address` | Project asset SAC |
+| `pair` | `Address` | Quote asset SAC; must differ from `asset` |
+| `metadata` | `Metadata` | `name`, `description`, `logo`, `symbol` |
+| `allocations` | `Allocations` | `pool_bps`, `curve_bps`, `team_bps`; sum to 10,000 |
+| `vesting` | `Vesting` | `cliff_seconds`, `duration_seconds`, `schedule` |
+| `curve` | `CurveSettings` | Reserve, target, and fee fields below |
+| `starts_at` | `u64` | Unix seconds; no end timestamp |
+| `reputation_label` | `u64` | `0` for no gate; otherwise an existing label ID |
+
+Both assets must be host-verified seven-decimal SACs. The deposited balance must be positive and no greater than `i64::MAX` base units. Pool and curve buckets must be nonzero; a nonzero team share must produce a nonzero amount.
+
+| `CurveSettings` field | Constraint |
+| --- | --- |
+| `virtual_base_reserve: i128` | Positive, at most `i64::MAX`, and greater than the curve bucket |
+| `virtual_quote_reserve: i128` | Positive and at most `i64::MAX` |
+| `graduation_target: i128` | Positive and no greater than cumulative gross cost at full sale |
+| `creator_fee_bps: u32` | At most 1,000 |
+| `creator_payout_bps: u32` | Sum with platform fee cannot exceed 10,000 |
+
+Use the contract's validation and quotes. Derived reserve settings must remain valid after integer rounding and at the maximum sold amount.
+
+## Curve formula
+
+Let `Vb` be virtual base reserves, `Vq` virtual quote reserves, and `s` the sold asset amount, all in base units. Define:
+
+```text
+F(s) = ceil(Vq × s / (Vb - s))
+
+buy gross(a)  = F(s + a) - F(s)
+sell gross(a) = F(s) - F(s - a)
+
+current_price = ceil(Vq × Vb × 10^7 / (Vb - s)^2)
+```
+
+`current_price` is quote base units per whole project asset. Buy payment adds `ceil(gross × creator_fee_bps / 10,000)`; sell receipt subtracts it. Zero-gross trades are rejected. Round the cumulative function as implemented rather than rounding each increment independently.
+
+## Factory reads
+
+| Method | Returns |
+| --- | --- |
+| `settings()` | `FactorySettings` |
+| `launch_count()` | `u32` |
+| `launch_at(index: u32)` | `Option<Address>`; stored indexes start at 1 |
+
+## Vault reads
+
+| Method | Result |
+| --- | --- |
+| `get_config()` | Factory, platform, registry, launch parameters, deposited supply, buckets |
+| `get_state()` | Sold amount, quote reserve, creator fees, team claimed, buyer count, graduated flag, busy flag |
+| `status()` | `Scheduled`, `Open`, or `Graduated` |
+| `current_price()` | Marginal price, including before open and after graduation |
+| `quote_buy(amount)` / `quote_sell(amount)` | `Quote { gross, creator_fee, user_amount }`; trading state required |
+| `buyer_count()` | Number of distinct direct buyers |
+| `sellable_balance(buyer)` | Recorded remaining direct-buy position |
+| `is_eligible(address)` | Reputation result only |
+| `claimable_team()` | Unlocked team amount minus previous claims |
+| `graduation_preview()` | Intended creator, platform, pool quote, pool asset, and unsold curve amounts |
+
+## Vault writes
+
+| Method | Authorization and effect |
+| --- | --- |
+| `buy(buyer, amount, max_payment)` | Buyer authorizes; exact asset amount; total payment cap; current reputation check |
+| `sell(seller, amount, min_receipt)` | Seller authorizes; position-limited sell-back; net receipt floor |
+| `claim_creator_fees(recipient)` | Owner authorizes; withdraws accrued fees to chosen recipient |
+| `claim_team()` | Owner authorizes; transfers claimable team assets to owner |
+
+Methods returning monetary results use `Result<..., Error>`. Monetary amounts are `i128` base units. Timestamps and durations use `u64` seconds. The busy flag protects state during external transfers; it is not a user-controlled pause function.
+
+There is no auction, presale, graduation settlement, pool creation, parameter update, cancellation, or upgrade method in the current ABI.

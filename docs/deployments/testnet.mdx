@@ -1,0 +1,46 @@
+---
+title: "Testnet deployments"
+description: "Historical Testnet evidence and the requirements for a current release."
+---
+
+**Current-source deployment: not verified.** The supplied repository records a successful smoke test on **8 October 2026 at 08:49 UTC**, using an earlier version with a deadline/failure lifecycle and without reputation gating.
+
+The recorded run used fresh in-memory keys, Friendbot funds, and 18 confirmed transactions across ledgers 5,085,124 to 5,085,161. These are disposable fixtures. Their current availability has not been rechecked, and Testnet resets can remove them.
+
+## Historical contract addresses
+
+| Component | Recorded Testnet address |
+| --- | --- |
+| Factory | [`CDG76JM6I67SGIV5ZN4WK6DW54ZUWPL6BMXD234ULWIERXRRYJ5QVDZC`](https://stellar.expert/explorer/testnet/contract/CDG76JM6I67SGIV5ZN4WK6DW54ZUWPL6BMXD234ULWIERXRRYJ5QVDZC) |
+| Earlier failed-launch fixture | [`CBSVA5KKJKA5TB46W2PCVNXL4PKONVTGKOPOBORGVHJXHXX2YMVGBBVW`](https://stellar.expert/explorer/testnet/contract/CBSVA5KKJKA5TB46W2PCVNXL4PKONVTGKOPOBORGVHJXHXX2YMVGBBVW) |
+| Graduated-launch fixture | [`CAR447PXSTWJUK55L3DZFIHFLC2K5YFHXPYMWBLVSZXINEPJXFHMO5EV`](https://stellar.expert/explorer/testnet/contract/CAR447PXSTWJUK55L3DZFIHFLC2K5YFHXPYMWBLVSZXINEPJXFHMO5EV) |
+
+There is no reputation-registry address in that older report. “Failed” identifies a historical fixture, not a state in the current curve ABI.
+
+## Historical artifact hashes
+
+```text
+Bonding curve SHA-256:
+8c101cee5ef05021859d5acc74505f8a94f3b860ec9d2dcc528adbfb49bc51d1
+
+Factory SHA-256:
+4ecd23fe781124c97baaf2880079fb0ea4299e223887c01039fa29a37f00772d
+```
+
+These hashes belong to the recorded artifacts, not the current source build.
+
+## Recorded transaction evidence
+
+- [Factory deployment](https://stellar.expert/explorer/testnet/tx/c08c7cb62f99ae0c3179180c955949c49188de9a3b7445086d1e2e6444c15867).
+- [Buy reaching graduation](https://stellar.expert/explorer/testnet/tx/3dc0cc6b8ff41ef2cb046ab38818ddf017ee63b2b33afb5805cff7e89b7464fc).
+- [Earlier fixture buyer exit](https://stellar.expert/explorer/testnet/tx/5d07d9f8dcf3f9bd67db7a9fc9724aabba2e36f344d3fde10b9d48b0fd7ead39).
+
+The report verified XLM trades, slippage rejection, fee claims, team claims, and graduation. It also exercised the older deadline-based exit behavior. It does not verify the current reputation integration or perpetual open lifecycle.
+
+## Current-version verification
+
+The contract repository's `scripts/test.sh` builds the three WASMs and runs its local checks. Its opt-in `scripts/testnet-smoke.mjs` now includes reputation and no-deadline checks, but the supplied recorded result is still the older run.
+
+A current release needs a fresh registry, a factory pinned to that registry and the rebuilt vault hash, confirmed smoke-test transactions, and a published record of the new addresses and artifacts. Do not reuse the old addresses as current configuration.
+
+This documentation task did not deploy contracts or execute the network smoke test. The original record is `launchpad-contract/TESTNET.md` and `target/testnet-smoke.json` in the sibling contract repository.

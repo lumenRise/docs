@@ -1,0 +1,83 @@
+---
+title: "Reputation contract reference"
+description: "Read scores, check labels, and integrate the shared Rust client."
+---
+
+The registry stores `Scores`, immutable `Label` records, and an admin address. Shared definitions and the generated Rust client live in `packages/reputation-types`.
+
+## Types
+
+```rust
+pub struct Scores {
+    pub github: u32,
+    pub social: u32,
+    pub onchain: u32,
+}
+
+pub struct Criteria {
+    pub github_above: Option<u32>,
+    pub social_above: Option<u32>,
+    pub onchain_above: Option<u32>,
+    pub total_above: Option<u64>,
+}
+```
+
+A `Label` contains `creator: Address`, `name: String`, and `criteria: Criteria`. The total score is the three-field sum in `u64`. Every supplied threshold is strict and all supplied conditions must pass.
+
+## Read and check methods
+
+| Method | Returns |
+| --- | --- |
+| `admin()` | Current admin address |
+| `get_scores(address)` | `Option<Scores>` |
+| `check(address, criteria)` | Boolean; missing records or empty criteria fail |
+| `get_label(label_id)` | `Option<Label>` |
+| `label_exists(label_id)` | Boolean |
+| `label_count()` | `u64` |
+| `check_label(address, label_id)` | Boolean; missing address or label fails |
+
+## Authorized writes
+
+| Method | Required authorization |
+| --- | --- |
+| `set_scores(address, scores)` | Current admin; replaces all three fields |
+| `set_admin(new_admin)` | Current admin |
+| `create_label(creator, name, criteria)` | Named creator; returns `Result<u64, ReputationError>` |
+
+Label IDs start at 1. Names are 1 to 64 UTF-8 bytes and cannot be entirely ASCII whitespace. Empty criteria fail. Names can repeat; labels cannot be updated or deleted.
+
+## Use from another contract
+
+Add the local shared package as a dependency. This example assumes the consuming crate is a direct sibling of `launchpad-contract`; adjust the path for another layout.
+
+```toml
+[dependencies]
+reputation-types = { path = "../launchpad-contract/packages/reputation-types" }
+soroban-sdk = "26"
+```
+
+The following helper can be used inside a consuming Soroban contract. The caller's own contract entrypoint and error handling determine how a failed check affects its action.
+
+```rust
+use reputation_types::{Criteria, ReputationClient};
+use soroban_sdk::{Address, Env};
+
+pub fn eligible(env: &Env, registry: &Address, user: &Address) -> bool {
+    let client = ReputationClient::new(env, registry);
+    client.check(user, &Criteria {
+        github_above: Some(100),
+        onchain_above: Some(50),
+        ..Criteria::default()
+    })
+}
+```
+
+For an existing rule, use `client.check_label(user, &label_id)`. Inspect and pin the registry and label before relying on them. When protecting a user action, also require the user's authorization; a read method alone does not authenticate the caller.
+
+## Missing data, freshness, and availability
+
+`None` means no stored score record. A registered zero-score record is a different state. Current records do not expose scoring time or expiry. Only the registry admin is authorized to replace them.
+
+Registry reads and writes renew accessed storage. Long idle periods can still require restoration. Invocation failure is different from a returned `false`; neither should grant privileged access.
+
+See [events and errors](/developers/events-and-errors) for the emitted events and label error codes.

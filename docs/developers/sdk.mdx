@@ -1,0 +1,36 @@
+---
+title: "SDK"
+description: "Planned application tooling and the available Rust reputation client."
+---
+
+import DocStatus from '@site/src/components/DocStatus';
+
+<DocStatus />
+
+The product SDK is intended to make reputation and launch integration straightforward for application developers and agents. No installable Launchpad JavaScript or TypeScript SDK package is published in the supplied repositories.
+
+## Intended SDK surface
+
+The planned SDK should support network configuration, score reads, criteria checks, label inspection, launch-state queries, and unsigned transaction preparation. Launch-creation helpers should convert human-readable percentages and amounts into validated contract values.
+
+The SDK should expose each reputation category separately and distinguish access eligibility from ranked presale allocation. It should not hide missing scores or silently substitute another registry.
+
+## Transaction boundary
+
+A helper that builds or simulates an invocation has not executed it. Application integrations still need wallet authorization, signing, submission, and final-result verification.
+
+Use exact decimal parsing for seven-decimal amounts. Preserve `u64` identifiers and timestamps without lossy conversion. Decode errors against the selected contract specification.
+
+## Available Rust client
+
+`packages/reputation-types` defines `Scores`, `Criteria`, `Label`, and `ReputationClient`. It is a local unpublished Rust package for Soroban contracts.
+
+The [reputation contract reference](/developers/reputation-contract) includes its dependency configuration, methods, and a cross-contract example. This is the current supported source-level reuse path.
+
+## Application integration today
+
+The Stellar SDK can prepare direct invocations against the actual deployed contract specification. The launch factory expects nested `LaunchParams`; it does not accept a free-form project object, an asset-creation request, or a presale configuration.
+
+Regenerate bindings when the ABI changes. The current version has `reputation_label: u64`, no `ends_at`, and no `Failed` curve state. Historical deployed fixtures may expose a different specification.
+
+Installation commands and method examples for the product SDK should be added only after its package name, version, export surface, and network configuration are published.

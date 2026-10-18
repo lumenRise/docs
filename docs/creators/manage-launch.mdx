@@ -1,0 +1,42 @@
+---
+title: "Manage a launch"
+description: "Inspect the vault, claim fees, and follow vesting after deployment."
+---
+
+After creation, the vault's recorded configuration is the source for onchain terms. The current contracts expose read methods and claims, rather than a general launch-management editor.
+
+## Verify the launch
+
+Record the factory, vault address, network, creation transaction, asset identity, and quote asset. Read `get_config()` to check allocation buckets, start time, fee settings, virtual reserves, target, team vesting, and reputation label.
+
+Use `get_state()` for sold inventory, recorded quote reserves, accrued creator fees, claimed team assets, buyer count, and graduation state. `status()` provides the scheduled/open/graduated interpretation.
+
+The factory enumerates registered launches with `launch_count()` and `launch_at(index)`. Current registered indexes begin at **1**.
+
+## Withdraw trading fees
+
+Read `get_state().creator_fees`. The owner can call `claim_creator_fees(recipient)` for a receiving address with the required quote-asset trustline. A failed transfer preserves the fee balance through transaction rollback.
+
+Trading-fee claims do not change the recorded curve reserve and do not collect future graduation proceeds.
+
+## Claim team assets
+
+Read `claimable_team()` before calling `claim_team()`. The owner authorizes the claim and receives the unlocked asset. Review [vesting](/concepts/vesting) for the exact release schedule and zero-duration behavior.
+
+## Follow graduation
+
+Check the net reserve against the target. Creator fees and direct donations do not count. Once graduated, the current prototype permanently stops buys and sells while pool assets, unsold curve inventory, and the graduation reserve remain in the vault.
+
+`graduation_preview()` shows intended accounting. There is no implemented settlement action to execute from the interface or CLI.
+
+## Configuration changes
+
+There is no current method to update launch parameters, change its attached label, cancel the launch, or upgrade an existing vault. Creating a new factory with a rebuilt vault hash does not change existing vaults.
+
+A future project-profile editor would change profile content, not automatically change signed contract terms.
+
+## Long periods of inactivity
+
+Soroban data has a time-to-live. Relevant writes renew active launch storage and positions, but long-idle entries may need restoration. An unavailable entry should not be interpreted as an empty balance or a completed claim.
+
+No recovery method exists for unsolicited assets sent directly to a predicted vault address. Direct transfers do not create purchases or claim entitlements.

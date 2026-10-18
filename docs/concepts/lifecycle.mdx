@@ -1,0 +1,38 @@
+---
+title: "Launch lifecycle"
+description: "From draft configuration to participation, distribution, and vesting."
+---
+
+A launch has a project profile, a configured asset and supply, a participation phase, and distribution rules. Those product stages do not all map to the same onchain state machine.
+
+## Shared product flow
+
+**Configure → issue and deposit → schedule → participate → distribute or settle → claim.**
+
+The creator prepares the profile, allocation, quote asset, prices, dates, and eligibility before signing. The intended issuance flow creates the asset and deposits the supply. Once the format opens, participants trade, bid, or commit. The format's settlement and vesting terms determine what happens next.
+
+## Current bonding-curve states
+
+| State | Condition | Trading |
+| --- | --- | --- |
+| `Scheduled` | Ledger timestamp is before `starts_at` | No buys or sells |
+| `Open` | Ledger timestamp is at or after `starts_at`, before graduation | Eligible buys and recorded-position sell-backs |
+| `Graduated` | A successful buy reaches or exceeds the net reserve target | Buys and sells permanently stop |
+
+There is no `ends_at` field and no `Failed` state in the current curve. A launch that has not graduated remains open, even if its target takes years to reach. A start time in the past opens the curve immediately on creation.
+
+## Graduation is a boundary
+
+Graduation is triggered inside the buy that reaches the target. No keeper or separate finalization call is needed to change that state. The whole purchase is accepted, subject to the buyer's payment limit, so the reserve can exceed the target.
+
+In the prototype, graduation stops trading without releasing the quote reserve or creating a pool. `graduation_preview` is accounting only. Future settlement must also reconcile the final curve price with pool funding and allocation.
+
+## Vesting runs on its own clock
+
+Team vesting uses the configured launch start as its reference. It does not wait for graduation. Team claims and fee claims remain available under their own rules after trading stops.
+
+## Auction and presale phases
+
+Auctions need bidding, close, settlement, and claim phases. Presales need commitments, allocation, proceeds/refund settlement, and participant claims. These are planned product stages, not existing contract enum values.
+
+See [auctions](/launches/auctions), [presales](/launches/presales), and [vesting](/concepts/vesting) for their different timing rules.

@@ -1,0 +1,50 @@
+---
+title: "Bonding curves"
+description: "Understand curve pricing, direct trading, sell-back rights, and graduation."
+---
+
+A bonding curve quotes the launch asset against a chosen quote asset. Buying increases the amount sold and raises the marginal price. Selling a recorded position back reduces the amount sold and lowers it.
+
+## From opening to graduation
+
+The vault is `Scheduled` before `starts_at`. At that timestamp it becomes `Open`, and eligible participants can buy or sell. There is no end date. Trading continues until a successful buy takes the recorded net quote reserve to or above the graduation target.
+
+At graduation, both curve buys and sells stop permanently. Creator fee claims and team vesting claims remain separate operations.
+
+:::info Graduation in the prototype
+Pool creation and graduation payouts are not implemented. Reaching the target locks trading; it does not move the reserve into a market. See [lifecycle](/concepts/lifecycle).
+:::
+
+## Initial price and curve shape
+
+The creator sets synthetic asset and quote reserves. Their ratio establishes the initial marginal price. Their size relative to the sale allocation determines how sharply the price moves.
+
+These reserves are pricing parameters. They do not represent quote assets deposited by the creator.
+
+For example, with **600 assets** in the sale allocation and virtual reserves of **1,800 assets and 1,800 quote units**:
+
+| Point | Marginal price | Cumulative quote reserve, before fees |
+| --- | --- | --- |
+| Before purchases | 1 quote unit per asset | 0 |
+| After 300 assets sold | 1.44 quote units per asset | 360 quote units |
+| After 600 assets sold | 2.25 quote units per asset | 900 quote units |
+
+These are illustrative parameters. Marginal price is the price of the next small increment, not the average price for a large purchase. Use the contract quote for the full amount.
+
+## Buying
+
+A buy specifies an exact asset amount and `max_payment`, the maximum quote payment including the creator fee. The transaction transfers the quote payment into the vault and the purchased asset directly to the buyer.
+
+Every gated buy checks the buyer's current reputation. A quote does not reserve a price, inventory, or eligibility.
+
+## Selling back
+
+The vault records how much each address purchased directly. That address can sell back up to its recorded position while trading remains open, provided it still holds the assets.
+
+Transferring assets does **not** transfer the sell-back position. Team assets and assets received from another holder do not create a curve sell-back right. A sell-back uses the current curve price and normal fees; it does not refund the original payment.
+
+## Graduation accounting
+
+The target counts the vault's recorded net quote reserve. Creator trading fees and direct donations do not count. A purchase fills in full and can overshoot the target. A creator's future payout share and platform fee are shown by `graduation_preview`, but that method performs no transfers.
+
+For the formula, methods, and parameter limits, see [launch contracts](/developers/launch-contracts).

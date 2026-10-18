@@ -1,0 +1,44 @@
+---
+title: "Trading, bids, and commitments"
+description: "Know what each action authorizes and when it becomes final."
+---
+
+The launch format determines whether your action buys an asset immediately or creates a bid or commitment for later settlement.
+
+## Buy from a curve
+
+A curve buy requests an exact asset amount. The current contract returns:
+
+| Quote field | Meaning |
+| --- | --- |
+| `gross` | Curve cost before the creator fee |
+| `creator_fee` | Additional fee on the buy |
+| `user_amount` | Total quote amount you pay |
+
+Set `max_payment` to the maximum total quote amount you authorize. If the current cost exceeds it, the transaction fails instead of accepting a worse price. A successful buy transfers the asset directly to your account.
+
+A quote is a snapshot. Another trade can change the price before yours executes. Review and simulate close to signing.
+
+## Sell a curve position
+
+You need both the asset balance and a recorded sell-back position for the same address. Request `quote_sell(amount)` and set `min_receipt` to the smallest net quote receipt you accept.
+
+A successful sell reduces your position and returns the current curve proceeds after fees. It can return more or less than your original payment. Sell-back is unavailable before opening or after graduation.
+
+## Place an auction bid
+
+The planned auction flow uses a bid price and quantity. Higher-priced bids have allocation priority. A bid is not an immediate fill, and its payment and cancellation rules must be stated in the auction terms.
+
+Price priority, clearing price, and reputation eligibility are separate concepts. See [auctions](/launches/auctions) for the unresolved settlement choices.
+
+## Commit to a presale
+
+The planned presale flow accepts quote-asset commitments at a fixed price. If demand exceeds the available allocation, reputation is intended to prioritize accepted participation. Final allocation can be smaller than a provisional estimate.
+
+Read the published closing, score-snapshot, refund, and participant-vesting rules before committing.
+
+## Check the transaction result
+
+A wallet signature or submission response is not final execution. Confirm the transaction result and resulting balances or entitlements on the correct network.
+
+If submission status is uncertain, inspect the existing transaction hash before constructing another payment. Repeatedly submitting new transactions can create repeated purchases.

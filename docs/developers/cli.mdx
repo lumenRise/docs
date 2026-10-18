@@ -1,0 +1,47 @@
+---
+title: "CLI and agents"
+description: "The planned command-line workflow for configuration and natural-language launch creation."
+---
+
+import DocStatus from '@site/src/components/DocStatus';
+
+<DocStatus />
+
+The launch CLI is intended to let a creator or agent describe a launch, review the resulting configuration, and authorize the transactions. No Launchpad CLI package, installer, or executable is present in the supplied repositories.
+
+## One-command creation
+
+The planned interface includes both a natural-language prompt and a structured configuration file. The following commands are **design examples, not runnable commands**:
+
+```bash
+# Proposed: describe the launch and inspect a plan.
+launchpad create \
+  --prompt "Create a bonding curve for ORBIT with 1 million assets, 40% sale, 30% liquidity, 30% team, USDC quotes, initial price 0.10 USDC, a 30-day team cliff and 300-day vesting" \
+  --network testnet \
+  --dry-run
+
+# Proposed: create from an explicitly reviewed file.
+launchpad create --config ./launch.json --network testnet
+```
+
+There is no installation command yet. Do not install an unrelated package merely because it uses the name `launchpad`.
+
+## From a prompt to an executable plan
+
+The intended CLI translates the request into a structured configuration and validates it before signing. It must surface missing decisions rather than invent a supply, issuer, fee, vesting rule, or payout address.
+
+A dry run should identify the project and asset, issuance controls, distribution account, allocations, quote asset identity, format parameters, dates, vesting, reputation label, and the intended sequence of transactions.
+
+For a curve, a requested initial price must be reconciled with reserve shape, inventory, and the target. For auctions and presales, creation depends on contracts and settlement rules that are still planned.
+
+## Agent-friendly behavior
+
+The intended automation interface needs explicit network and signer selection, machine-readable plans and results, a validation-only path, and final transaction receipts. Retrying after an uncertain submission must first reconcile the previous transaction; a repeated command must not accidentally issue the asset or purchase twice.
+
+Natural language is an input method. It does not bypass review of asset issuance, transfers, fees, or wallet authorization. The exact flags, config schema, package name, and output format remain open.
+
+## Available tooling today
+
+The contract repository includes `scripts/deploy.example.sh` for deploying the registry and factory with the Stellar CLI, plus `scripts/testnet-smoke.mjs` for an opt-in Testnet check. These deploy or test infrastructure; they are not the planned creator CLI.
+
+The documentation itself exposes [llms.txt](/llms.txt) and [plain-text documentation](/llms-full.txt) so agents can read the current product and implementation boundaries.

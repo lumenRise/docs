@@ -1,0 +1,44 @@
+---
+title: "Set participation rules"
+description: "Choose open access or enforce reusable reputation criteria."
+---
+
+A launch can accept any eligible buyer who signs and pays, or require the buyer to pass a reputation label from the factory's registry.
+
+## Open participation
+
+Set `reputation_label` to `0`. This disables the curve's reputation check. Time, balance, trustline, inventory, and slippage rules still apply.
+
+Label `0` is a reserved sentinel. Real labels begin at `1`.
+
+## Gate by reputation
+
+Choose an existing label or create one with the desired thresholds. Inspect its registry, ID, creator, and criteria before attaching it to a launch. Names can repeat; the ID is the actual reference.
+
+For example:
+
+| Goal | Current representation |
+| --- | --- |
+| Require a stronger social profile | `social_above: 200` |
+| Require developer and Stellar activity | `github_above: 100` and `onchain_above: 50` |
+| Require a combined score | `total_above: 600` |
+
+Every configured threshold uses strict **greater than** comparison. A social score of 200 fails a `social_above: 200` requirement. All supplied conditions must pass.
+
+## What “verified only” means
+
+The product intends to let creators select verified participants. The current registry has scores and thresholds, but no dedicated identity-verification or KYC flag. A positive-score threshold proves only that a registered score passes the rule.
+
+An actual verified-only policy needs a defined verification process and an enforceable representation. Do not equate an X or GitHub connection, a score, or a public wallet address with legal identity verification.
+
+## When checks happen
+
+A gated curve evaluates current scores on **every buy**. The label is immutable, but score updates can change whether the buyer passes. The creator does not need to pass the label to create the launch.
+
+Quotes do not enforce eligibility. Use `is_eligible(address)` for a preliminary check, then simulate the signed purchase. That preliminary result is not a reservation.
+
+## Exit rights
+
+Reputation gates purchases. It does not gate an existing buyer's sell-back before graduation, creator fee claims, or team claims. It also does not restrict ordinary later transfers of the asset.
+
+Presale ranking is a separate planned use of reputation. A threshold label answers a boolean access question; it does not sort participants or allocate oversubscribed commitments.

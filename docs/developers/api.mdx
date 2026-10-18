@@ -1,0 +1,40 @@
+---
+title: "HTTP API"
+description: "Planned programmatic access to reputation and launch information."
+---
+
+import DocStatus from '@site/src/components/DocStatus';
+
+<DocStatus />
+
+The HTTP API is intended to let applications use Launchpad reputation without implementing direct Soroban reads for every interaction. No production API base URL, OpenAPI specification, endpoint contract, or authentication scheme is supplied in the current repositories.
+
+## Intended capabilities
+
+| Area | Intended use |
+| --- | --- |
+| Reputation | Retrieve the separate social, GitHub, and onchain scores for a Stellar account |
+| Criteria | Inspect labels and evaluate access rules |
+| Launches | Read project information, format, asset identity, terms, and deployment references |
+| Preparation | Validate configuration and prepare unsigned actions for user authorization |
+| Allocation | Expose settled auction or presale outcomes when those formats exist |
+
+These are product capabilities to implement, not callable routes. An API consumer should not assume paths such as `/scores` or `/launches` exist.
+
+## Identity and numeric representation
+
+A future API needs to distinguish network, registry, participant address, label ID, and asset identity. An asset code without an issuer or a label ID without its registry is ambiguous.
+
+Monetary base units and large identifiers should be represented without JavaScript number precision loss. Final serialization, pagination, and error formats remain unpublished.
+
+## Trust and consistency
+
+If an API serves cached registry data, consumers need to know its observation point and freshness. A cached eligibility result is not proof that a transaction will pass the current onchain check.
+
+A score response should distinguish missing data, provider failure, stale evidence, and an actual numerical score. A service error must not be reported as a verified zero or as automatic eligibility.
+
+## Direct integration today
+
+Use the [reputation contract](/developers/reputation-contract) through a Soroban client or the local Rust package. For launch state and trading, use the [launch ABI](/developers/launch-contracts).
+
+A published API reference should replace this page only when the service has a real base URL, versioned schema, authentication model, limits, and examples verified against its implementation.
