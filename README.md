@@ -13,6 +13,14 @@ npm start
 
 The documentation opens at `http://localhost:3000`. Built-in local search uses the production index, so verify search with the production preview below.
 
+## Docker
+
+```bash
+docker compose up -d --build
+```
+
+Node serves the built docs at `http://127.0.0.1:3006`. The container restarts after crashes unless manually stopped. Set `SITE_URL` before building when using a public documentation domain.
+
 ## Verify and preview
 
 ```bash

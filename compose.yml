@@ -5,7 +5,7 @@ services:
       args:
         SITE_URL: ${SITE_URL:-http://127.0.0.1:3006}
     ports:
-      - "127.0.0.1:3006:80"
+      - "127.0.0.1:3006:3006"
     restart: unless-stopped
     logging:
       driver: json-file

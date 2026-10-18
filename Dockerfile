@@ -1,4 +1,4 @@
-FROM node:24-alpine AS build
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -11,12 +11,8 @@ ARG SITE_URL=http://127.0.0.1:3006
 ENV SITE_URL=${SITE_URL}
 RUN npm run build
 
-FROM nginx:stable-alpine AS runtime
+ENV NODE_ENV=production
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 3006
 
-EXPOSE 80
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -q --spider http://127.0.0.1/ || exit 1
+CMD ["node", "node_modules/@docusaurus/core/bin/docusaurus.mjs", "serve", "--host", "0.0.0.0", "--port", "3006", "--no-open"]
