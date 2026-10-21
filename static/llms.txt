@@ -1,4 +1,4 @@
-# Launchpad
+# Lumen Rise
 
 > Documentation for Stellar asset launches and reusable social, GitHub, and onchain reputation.
 
@@ -6,7 +6,7 @@ Bonding curves, team vesting, and the administered reputation registry exist in 
 
 ## Documentation
 
-- [Launchpad documentation](/)
+- [Introduction](/)
 - [Fees and proceeds](/concepts/fees)
 - [Launch lifecycle](/concepts/lifecycle)
 - [XLM and USDC](/concepts/quote-assets)

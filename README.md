@@ -1,4 +1,4 @@
-# Launchpad documentation
+# Lumen Rise documentation
 
 Docusaurus documentation for Stellar asset launches and reusable reputation. Covers bonding curves, auctions, presales, creator and participant flows, vesting, developer integrations, and network deployment records.
 
@@ -13,6 +13,8 @@ npm start
 
 The documentation opens at `http://localhost:3000`. Built-in local search uses the production index, so verify search with the production preview below.
 
+The site uses Webpack with hot reload. `docusaurus.config.ts` explicitly disables the Rspack bundler and its disk cache, which `future.v4` otherwise enables. Rspack's module graph crashes on this Windows setup even with its persistent cache disabled.
+
 ## Docker
 
 ```bash
@@ -26,6 +28,7 @@ Node serves the built docs at `http://127.0.0.1:3006`. The container restarts af
 ```bash
 npm run typecheck
 npm run build
+npm test
 npm run serve
 ```
 
@@ -52,7 +55,37 @@ This example value must be replaced. Without `SITE_URL`, the site uses localhost
 - `docs/deployments`: network directory, historical Testnet evidence, and Mainnet status.
 - `docs/reference`: FAQ, glossary, and research sources.
 
-`sidebars.ts` defines the reading order. The root route opens the introduction directly. The site inherits the white, cobalt, Newsreader, and Manrope identity from `../interface`; fonts and their licenses are self-hosted in `static/fonts`.
+`sidebars.ts` defines the reading order. The root route opens the introduction directly. A single categorized sidebar contains the existing local search and theme control. Mobile uses a native modal navigation drawer. There is no global navbar, footer, or right-hand table of contents.
+
+## Documentation design system
+
+Shared tokens and Markdown styles live in `src/css/custom.css`. Rich components use `src/components/Docs/styles.module.css`. Inter and JetBrains Mono are self-hosted variable fonts with SIL Open Font Licenses in `static/fonts`; the existing LumenRise logo artwork is unchanged.
+
+The MDX mapping in `src/theme/MDXComponents/index.tsx` registers these components globally, without per-page imports:
+
+- `Steps` / `Step`: ordered tutorial steps with titles, optional heading IDs, and nested Markdown.
+- `Accordion`: native details/summary disclosure.
+- `CardGroup` / `DocCard`: related-guide navigation.
+- `Badge`: explicit `experimental`, `deprecated`, `available`, or `planned` status.
+- `Parameters` / `Parameter`: name, type, required flag, description, and optional default.
+- `FileTree`: nested `{name, children?}` entries.
+- `Terminal`: a Bash code block with an optional title and built-in copying.
+- `CaptionedImage`: responsive image with alt text, dimensions, and optional caption.
+- `Tabs` / `TabItem` and `Admonition`: the native Docusaurus components.
+
+Native Markdown tables receive semantic column headers and a focusable scroll region only when overflowing. CodeBlock adds a filename/language header while preserving Docusaurus syntax highlighting, copying, line numbers, and highlighted ranges.
+
+Use bracketed admonition titles with Docusaurus 3.10's directive parser:
+
+```md
+:::info[Implementation boundary]
+Describe current source support separately from deployment availability.
+:::
+```
+
+Examples in existing pages: quickstart (steps), architecture (file tree and accordion), deployments overview (network tabs), launch contracts (parameters), and introduction (badges and related-guide cards).
+
+`npm test` checks the six admonition types, reusable component semantics, all 38 generated page routes, and portable plain-text exports. Run it after `npm run build`. There is no lint script configured.
 
 ## Keep the docs accurate
 

@@ -9,12 +9,12 @@ The current workspace exposes `LaunchpadFactory` and `BondingCurve`. This refere
 
 `__constructor(settings: FactorySettings)` stores:
 
-| Field | Type | Meaning |
-| --- | --- | --- |
-| `platform` | `Address` | Platform recipient used by graduation preview |
-| `platform_fee_bps` | `u32` | At most 1,000 bps |
-| `curve_wasm_hash` | `BytesN<32>` | Uploaded vault code to deploy |
-| `reputation` | `Address` | Fixed registry; its interface is checked at construction |
+<Parameters>
+  <Parameter name="platform" type="Address" required>Platform recipient used by graduation preview.</Parameter>
+  <Parameter name="platform_fee_bps" type="u32" required>Platform fee, at most 1,000 basis points.</Parameter>
+  <Parameter name="curve_wasm_hash" type="BytesN<32>" required>Uploaded vault code to deploy.</Parameter>
+  <Parameter name="reputation" type="Address" required>Fixed registry; its interface is checked at construction.</Parameter>
+</Parameters>
 
 ## Launch parameters
 
