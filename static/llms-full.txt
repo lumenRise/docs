@@ -1,12 +1,16 @@
-# Launchpad documentation
+# Lumen Rise documentation
 
 Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. Mainnet reputation registry and launch factory addresses are listed in the deployment directory. Historical Testnet fixtures must not be used as current addresses.
 
-# Launchpad documentation
+# Introduction
 
 Route: /
 
-Launchpad brings asset launches and reputation to Stellar. Projects choose how to raise, how to distribute their asset, and who can participate. Participants build a reputation they can use across launches and other applications.
+Lumen Rise brings asset launches and reusable reputation to Stellar. Projects choose how to raise, how to distribute their asset, and who can participate. Participants build a reputation they can use across launches and other applications.
+
+:::info[Product and implementation]
+Bonding curves, team vesting, and the administered reputation registry exist in contract source. Auctions, presales, production scoring, API, SDK, and the launch CLI are planned. No deployment of the current source version is verified. [Check implementation status](/getting-started/status) before integrating.
+:::
 
 ## How Launchpad works
 
@@ -18,11 +22,11 @@ The product uses **Stellar assets**, identified by their code and issuer. The St
 
 ## Three ways to launch
 
-| Format | How the price works | Participation |
+| Format | Pricing and participation | Status |
 | --- | --- | --- |
-| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as assets are bought and sold. | Trading opens at the start date and continues until graduation. |
-| [Auction](/launches/auctions) | Participants submit bids; higher-priced bids receive allocation priority. | Bid during the auction window, then settle the result and claim. |
-| [Presale](/launches/presales) | The creator sets a fixed sale price. | Commit quote assets, receive a final allocation, and claim under the published vesting terms. |
+| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as assets are bought and sold. Trading opens at the start date and continues until graduation. | Contract prototype |
+| [Auction](/launches/auctions) | Participants submit bids; higher-priced bids receive allocation priority. Bid during the auction window, then settle the result and claim. | Planned |
+| [Presale](/launches/presales) | The creator sets a fixed sale price. Commit quote assets, receive a final allocation, and claim under the published vesting terms. | Planned |
 
 ## Reputation that travels
 
@@ -40,9 +44,13 @@ Connect a Stellar account, X, and GitHub to establish three separate signals: **
 | Integrate reputation or launch creation | [Developer overview](/developers/overview) |
 | Check contract addresses | [Deployments](/deployments/overview) |
 
-:::info Product and implementation
-These docs describe the full product. Bonding curves, team vesting, and the reputation registry exist in the contract source. Auctions, presales, production scoring, API, SDK, and the launch CLI are planned. See [implementation status](/getting-started/status) before using an integration.
-:::
+## Build with Lumen Rise
+
+Use the contract references to inspect source-level launch and reputation behavior. The shared Rust reputation client exists; a public HTTP API, packaged application SDK, and launch CLI remain planned.
+
+
+  - [Developer overview](/developers/overview): Find the contracts, integration boundaries, and available tooling.
+  - [Deployment directory](/deployments/overview): Distinguish historical Testnet fixtures from verified releases.
 
 # Fees and proceeds
 
@@ -166,13 +174,27 @@ XLM is Stellar's native asset and has no issuer. The [Stellar Asset Contract](ht
 
 The complete launch flow is designed to:
 
+
 1. Create the issuer and distribution arrangement for the project asset.
+
+
 2. Issue the configured supply to the distribution account.
+
+
 3. Establish and publish the asset's issuance and administrative controls.
+
+
 4. Deploy or locate its SAC on the selected network.
+
+
 5. Transfer the launch supply from the distribution account into the dedicated vault.
 
-The current factory begins at the last step. It does not create an issuer, issue an asset, or disable future issuance.
+:::note[Current factory]
+The current factory begins at this step. It does not create an issuer, issue an asset, or disable future issuance.
+:::
+
+
+
 
 ## What the vault receives
 
@@ -529,10 +551,26 @@ The historical Testnet report predates reputation gates and the current no-deadl
 
 ## Network passphrases
 
-```text
-Testnet: Test SDF Network ; September 2015
-Mainnet: Public Global Stellar Network ; September 2015
+
+
+### Testnet
+
+
+```text title="Testnet network passphrase"
+Test SDF Network ; September 2015
 ```
+
+
+
+### Mainnet
+
+
+```text title="Mainnet network passphrase"
+Public Global Stellar Network ; September 2015
+```
+
+
+
 
 Mainnet is also called Stellar's public network. Testnet assets and funds have no Mainnet equivalence. Testnet resets can remove old contracts and data.
 
@@ -636,6 +674,10 @@ The contract architecture keeps launch custody separate from the shared reputati
 
 ## Components
 
+The contract workspace separates deployed contracts from shared types:
+
+Contract workspace: contracts/factory, contracts/bonding-curve, contracts/reputation, packages/launchpad-types, and packages/reputation-types.
+
 | Component | Responsibility |
 | --- | --- |
 | Interface | Public discovery, authentication, and prototype project and identity flows |
@@ -671,6 +713,9 @@ The registry's authorization protects score writes. It does not establish that t
 
 The factory stores a vault WASM hash at construction. Rebuilding local code does not change that hash, and the current contracts have no upgrade method. A new factory or vault version requires a separate deployment and record.
 
+**Storage lifetimes and archived data**
+
+
 Relevant operations extend storage lifetimes. Long inactivity can still require restoration of archived data. Integrations must distinguish an invocation failure from an absent score or zero position.
 
 # CLI and agents
@@ -685,7 +730,7 @@ The launch CLI is intended to let a creator or agent describe a launch, review t
 
 The planned interface includes both a natural-language prompt and a structured configuration file. The following commands are **design examples, not runnable commands**:
 
-```bash
+```bash title="Proposed commands · not runnable"
 # Proposed: describe the launch and inspect a plan.
 launchpad create \
   --prompt "Create a bonding curve for ORBIT with 1 million assets, 40% sale, 30% liquidity, 30% team, USDC quotes, initial price 0.10 USDC, a 30-day team cliff and 300-day vesting" \
@@ -780,12 +825,16 @@ The current workspace exposes `LaunchpadFactory` and `BondingCurve`. This refere
 
 `__constructor(settings: FactorySettings)` stores:
 
-| Field | Type | Meaning |
-| --- | --- | --- |
-| `platform` | `Address` | Platform recipient used by graduation preview |
-| `platform_fee_bps` | `u32` | At most 1,000 bps |
-| `curve_wasm_hash` | `BytesN<32>` | Uploaded vault code to deploy |
-| `reputation` | `Address` | Fixed registry; its interface is checked at construction |
+
+
+- `platform` (`Address`, required): Platform recipient used by graduation preview.
+
+- `platform_fee_bps` (`u32`, required): Platform fee, at most 1,000 basis points.
+
+- `curve_wasm_hash` (`BytesN<32>`, required): Uploaded vault code to deploy.
+
+- `reputation` (`Address`, required): Fixed registry; its interface is checked at construction.
+
 
 ## Launch parameters
 
@@ -914,7 +963,7 @@ The registry stores `Scores`, immutable `Label` records, and an admin address. S
 
 ## Types
 
-```rust
+```rust title="reputation-types · shared types" showLineNumbers
 pub struct Scores {
     pub github: u32,
     pub social: u32,
@@ -957,7 +1006,7 @@ Label IDs start at 1. Names are 1 to 64 UTF-8 bytes and cannot be entirely ASCII
 
 Add the local shared package as a dependency. This example assumes the consuming crate is a direct sibling of `launchpad-contract`; adjust the path for another layout.
 
-```toml
+```toml title="Cargo.toml"
 [dependencies]
 reputation-types = { path = "../launchpad-contract/packages/reputation-types" }
 soroban-sdk = "26"
@@ -965,7 +1014,7 @@ soroban-sdk = "26"
 
 The following helper can be used inside a consuming Soroban contract. The caller's own contract entrypoint and error handling determine how a failed check affects its action.
 
-```rust
+```rust title="Cross-contract eligibility check" showLineNumbers {5-10}
 use reputation_types::{Criteria, ReputationClient};
 use soroban_sdk::{Address, Env};
 
@@ -1031,22 +1080,63 @@ Start with the role that matches what you want to do. You can read project and l
 
 ## Launch an asset
 
-1. [Compare the three formats](/launches/overview). Decide whether you need continuous price discovery, competitive bids, or a fixed-price raise.
-2. Prepare your [project profile](/creators/project-profile), asset details, and [supply allocation](/creators/tokenomics).
-3. Choose XLM or USDC, the opening date, pricing, and team cliff and vesting schedule.
-4. Decide whether participation is open or subject to [reputation criteria](/creators/eligibility).
-5. Review the complete configuration and authorize launch creation. The intended flow issues the asset and moves the launch supply into its vault.
+
+### 1. Choose a launch format
+
+
+[Compare the three formats](/launches/overview). Decide whether you need continuous price discovery, competitive bids, or a fixed-price raise.
+
+
+### 2. Prepare the asset and project
+
+
+Prepare your [project profile](/creators/project-profile), asset details, and [supply allocation](/creators/tokenomics).
+
+
+### 3. Define the economic terms
+
+
+Choose XLM or USDC, the opening date, pricing, and team cliff and vesting schedule.
+
+
+### 4. Set participation rules
+
+
+Decide whether participation is open or subject to [reputation criteria](/creators/eligibility).
+
+
+### 5. Review and authorize
+
+
+Review the complete configuration and authorize launch creation. The intended flow issues the asset and moves the launch supply into its vault.
+
+
+
 
 The current factory starts with an **existing Stellar asset**. Integrated asset issuance and the complete launch-creation interface are still planned.
 
 ## Participate in a launch
 
+
 1. Inspect the project, asset issuer, format, price rules, allocation policy, and claim schedule.
+
+
 2. Check the [network and deployment record](/deployments/overview).
+
+
 3. Connect your Stellar account through the interface. Add optional identity connections if the launch requires reputation.
+
+
 4. Fund the quote asset and prepare the required trustlines.
+
+
 5. When the launch opens, buy from the curve, place a bid, or commit to the presale, depending on the available format.
+
+
 6. Follow the [allocation and claim guide](/participants/allocations-and-claims).
+
+
+
 
 A start date opens participation. It does not mean every asset is immediately transferable or that secondary-market liquidity exists.
 
@@ -1113,11 +1203,23 @@ An auction starting price is a bid constraint or reference price. It is not the 
 
 ## Participant flow
 
+
 1. Review the project, auction terms, eligibility, and claim schedule.
+
+
 2. During the auction window, submit a price and requested quantity with the required quote-asset commitment.
+
+
 3. After close, the settlement process ranks eligible bids by price and calculates final allocations.
+
+
 4. Winners pay according to the published payment rule and receive a claim or vesting entitlement.
+
+
 5. Unaccepted quote assets are returned or made claimable under the published refund rules.
+
+
+
 
 Bidding does not guarantee a fill. The final accepted quantity can be smaller than the requested quantity.
 
@@ -1153,7 +1255,7 @@ The vault is `Scheduled` before `starts_at`. At that timestamp it becomes `Open`
 
 At graduation, both curve buys and sells stop permanently. Creator fee claims and team vesting claims remain separate operations.
 
-:::info Graduation in the prototype
+:::info[Graduation in the prototype]
 Pool creation and graduation payouts are not implemented. Reaching the target locks trading; it does not move the reserve into a market. See [lifecycle](/concepts/lifecycle).
 :::
 
@@ -1241,11 +1343,23 @@ A funding goal and an accepted-capital cap are different terms. Reaching a goal 
 
 ## How a presale works
 
+
 1. A participant checks the terms and eligibility.
+
+
 2. During the commitment window, they commit the quote asset to the sale.
+
+
 3. At settlement, the sale determines accepted commitments and allocations.
+
+
 4. Accepted funds become project proceeds under the sale's release rules.
+
+
 5. Allocated assets become claimable according to the participant schedule. Any unaccepted funds follow the refund process.
+
+
+
 
 Before settlement, a displayed allocation may be provisional. A commitment is not an immediately transferable asset balance.
 

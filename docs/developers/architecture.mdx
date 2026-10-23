@@ -7,6 +7,15 @@ The contract architecture keeps launch custody separate from the shared reputati
 
 ## Components
 
+The contract workspace separates deployed contracts from shared types:
+
+<FileTree label="Contract workspace" entries={[
+  {name: 'launchpad-contract/', children: [
+    {name: 'contracts/', children: [{name: 'factory/'}, {name: 'bonding-curve/'}, {name: 'reputation/'}]},
+    {name: 'packages/', children: [{name: 'launchpad-types/'}, {name: 'reputation-types/'}]},
+  ]},
+]} />
+
 | Component | Responsibility |
 | --- | --- |
 | Interface | Public discovery, authentication, and prototype project and identity flows |
@@ -42,4 +51,8 @@ The registry's authorization protects score writes. It does not establish that t
 
 The factory stores a vault WASM hash at construction. Rebuilding local code does not change that hash, and the current contracts have no upgrade method. A new factory or vault version requires a separate deployment and record.
 
+<Accordion title="Storage lifetimes and archived data">
+
 Relevant operations extend storage lifetimes. Long inactivity can still require restoration of archived data. Integrations must distinguish an invocation failure from an absent score or zero position.
+
+</Accordion>

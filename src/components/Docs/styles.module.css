@@ -1,0 +1,76 @@
+/* Steps: numbered markers joined by a connector; the list stays a semantic <ol>. */
+.steps.steps {list-style: none; counter-reset: tutorial; padding: 0; margin: 20px 0 24px;}
+.steps .step {position: relative; counter-increment: tutorial; padding: 0 0 22px 40px; margin: 0;}
+.steps .step:last-child {padding-bottom: 0;}
+.step::before {content: counter(tutorial); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid var(--lr-border); border-radius: 50%; color: var(--lr-foreground); font: 600 11.5px/1 var(--ifm-font-family-base); font-variant-numeric: tabular-nums; background: var(--lr-background); box-shadow: 0 0 0 4px var(--lr-background); z-index: 1;}
+.step:not(:last-child)::after {content: ''; position: absolute; left: 11.5px; top: 24px; bottom: 0; width: 1px; background: var(--lr-border);}
+.stepContent {min-width: 0;}
+.step .stepContent h3 {font-size: 15px; font-weight: 600; letter-spacing: -.008em; margin: 0 0 4px; line-height: 24px;}
+.stepContent p {margin-bottom: 8px;}
+.untitled .stepContent > p:first-child {line-height: 1.65; padding-top: 1px; color: var(--lr-foreground);}
+.stepContent > :last-child {margin-bottom: 0;}
+.stepContent :global(.docs-code), .stepContent :global(.theme-admonition) {margin: 10px 0 4px;}
+
+/* Accordion. */
+.accordion.accordion {padding: 0; overflow: hidden; transition: border-color var(--lr-duration);}
+.accordion summary {display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 14px; list-style: none; font-size: 14px; font-weight: 600; letter-spacing: -.008em; transition: background-color var(--lr-duration);}
+.accordion summary::-webkit-details-marker {display: none;}
+.accordion summary:hover {background: var(--lr-raised);}
+.chevron {flex: 0 0 auto; color: var(--lr-subtle-foreground); transition: transform 220ms var(--lr-ease);}
+.accordion[open] .chevron {transform: rotate(90deg);}
+.accordion[open] summary {border-bottom: 1px solid var(--lr-divider);}
+.accordionBody {padding: 12px 14px 14px; font-size: 14px; color: var(--lr-muted-foreground);}
+.accordionBody > :last-child {margin-bottom: 0;}
+
+/* Cards. */
+.cardGroup {display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0 24px;}
+.cols3 {grid-template-columns: repeat(3, minmax(0, 1fr));}
+.card {position: relative; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--lr-border); border-radius: var(--lr-radius); padding: 16px 16px 18px; color: var(--lr-foreground); background: var(--lr-background); transition: border-color var(--lr-duration), box-shadow var(--lr-duration), transform var(--lr-duration) var(--lr-ease);}
+.card:hover {color: var(--lr-foreground); border-color: var(--lr-accent-line); box-shadow: var(--lr-shadow-md); transform: translateY(-1px); text-decoration: none;}
+.cardIcon {display: grid; place-items: center; width: 32px; height: 32px; margin-bottom: 8px; border-radius: 8px; color: var(--lr-accent-ink); background: var(--lr-accent-soft); border: 1px solid var(--lr-accent-line);}
+.cardTitle {display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 14.5px; font-weight: 600; letter-spacing: -.012em;}
+.cardArrow {flex-shrink: 0; color: var(--lr-subtle-foreground); transition: transform var(--lr-duration) var(--lr-ease), color var(--lr-duration);}
+.card:hover .cardArrow {color: var(--lr-link); transform: translateX(3px);}
+.cardDescription {font-size: 13.5px; line-height: 1.6; color: var(--lr-muted-foreground);}
+
+/* Status badges. */
+.badge {--badge: var(--lr-muted-foreground); --badge-bg: var(--lr-muted); --badge-line: var(--lr-border); display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; padding: 1px 9px 1px 8px; font: 550 11.5px/1.7 var(--ifm-font-family-base); color: var(--badge); background: var(--badge-bg); border: 1px solid var(--badge-line); border-radius: 999px; white-space: nowrap;}
+.badgeDot {width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: 0 0 auto;}
+.available {--badge: var(--lr-ok); --badge-bg: var(--lr-ok-soft); --badge-line: var(--lr-ok-line);}
+.experimental {--badge: var(--lr-info); --badge-bg: var(--lr-info-soft); --badge-line: var(--lr-info-line);}
+.planned {--badge: var(--lr-warn); --badge-bg: var(--lr-warn-soft); --badge-line: var(--lr-warn-line);}
+.deprecated {--badge: var(--lr-bad); --badge-bg: var(--lr-bad-soft); --badge-line: var(--lr-bad-line);}
+
+/* Parameter fields. */
+.parameters {margin: 20px 0 24px; border: 1px solid var(--lr-border); border-radius: var(--lr-radius); overflow: hidden;}
+.parameter {padding: 12px 16px 13px;}
+.parameter + .parameter {border-top: 1px solid var(--lr-divider);}
+.parameters .parameter dt {display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin: 0;}
+.parameters .parameter dt code {font-size: 13px; font-weight: 600; color: var(--lr-link); background: transparent; border: 0; padding: 0;}
+.parameterType {font-family: var(--ifm-font-family-monospace); font-size: 11.5px; font-weight: 450; color: var(--lr-muted-foreground); background: var(--lr-muted); border: 1px solid var(--lr-divider); border-radius: 6px; padding: 0 7px; line-height: 20px;}
+.requirement {font: 550 11px/20px var(--ifm-font-family-base); color: var(--lr-subtle-foreground);}
+.required {color: var(--lr-bad); background: var(--lr-bad-soft); border: 1px solid var(--lr-bad-line); border-radius: 999px; padding: 0 8px;}
+.parameters .parameter dd {margin: 5px 0 0; font-size: 14px; line-height: 1.65; color: var(--lr-muted-foreground);}
+.parameter dd p {margin-bottom: 0;}
+.parameter .defaultValue {font-size: 12.5px; margin-top: 8px;}
+
+/* File tree. */
+.fileTree {font-family: var(--ifm-font-family-monospace); font-size: 12.5px; line-height: 1.75; background: var(--lr-raised); border: 1px solid var(--lr-border); border-radius: var(--lr-radius); padding: 14px 16px; margin: 20px 0 24px; overflow-x: auto;}
+.fileTree.fileTree ul {list-style: none; margin: 0; padding: 0;}
+.fileTree.fileTree ul ul {padding-left: 18px; margin: 4px 0 4px 6px; border-left: 1px solid var(--lr-border);}
+.fileTree.fileTree li {margin: 3px 0; padding: 0;}
+.fileTree span {display: flex; align-items: center; gap: 9px; white-space: nowrap; color: var(--lr-muted-foreground);}
+.fileTree .folder {color: var(--lr-foreground); font-weight: 550;}
+.fileTree svg {color: var(--lr-subtle-foreground); flex: 0 0 auto;}
+.fileTree .folder svg {color: var(--lr-link);}
+
+@media (max-width: 760px) {
+  .cols3 {grid-template-columns: 1fr;}
+}
+@media (max-width: 540px) {
+  .cardGroup {grid-template-columns: 1fr;}
+  .steps .step {padding-left: 36px;}
+  .parameter {padding: 12px 14px;}
+  .accordion summary {padding: 10px 12px;}
+  .accordionBody {padding: 12px;}
+}

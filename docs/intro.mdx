@@ -1,5 +1,5 @@
 ---
-title: "Launchpad documentation"
+title: "Introduction"
 description: "Asset launches and reusable reputation on Stellar."
 slug: /
 sidebar_label: "Introduction"
@@ -7,7 +7,11 @@ sidebar_label: "Introduction"
 
 import SupplyFlow from '@site/src/components/SupplyFlow';
 
-Launchpad brings asset launches and reputation to Stellar. Projects choose how to raise, how to distribute their asset, and who can participate. Participants build a reputation they can use across launches and other applications.
+Lumen Rise brings asset launches and reusable reputation to Stellar. Projects choose how to raise, how to distribute their asset, and who can participate. Participants build a reputation they can use across launches and other applications.
+
+:::info[Product and implementation]
+Bonding curves, team vesting, and the administered reputation registry exist in contract source. Auctions, presales, production scoring, API, SDK, and the launch CLI are planned. No deployment of the current source version is verified. [Check implementation status](/getting-started/status) before integrating.
+:::
 
 ## How Launchpad works
 
@@ -19,11 +23,11 @@ The product uses **Stellar assets**, identified by their code and issuer. The St
 
 ## Three ways to launch
 
-| Format | How the price works | Participation |
+| Format | Pricing and participation | Status |
 | --- | --- | --- |
-| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as assets are bought and sold. | Trading opens at the start date and continues until graduation. |
-| [Auction](/launches/auctions) | Participants submit bids; higher-priced bids receive allocation priority. | Bid during the auction window, then settle the result and claim. |
-| [Presale](/launches/presales) | The creator sets a fixed sale price. | Commit quote assets, receive a final allocation, and claim under the published vesting terms. |
+| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as assets are bought and sold. Trading opens at the start date and continues until graduation. | <Badge status="experimental">Contract prototype</Badge> |
+| [Auction](/launches/auctions) | Participants submit bids; higher-priced bids receive allocation priority. Bid during the auction window, then settle the result and claim. | <Badge status="planned">Planned</Badge> |
+| [Presale](/launches/presales) | The creator sets a fixed sale price. Commit quote assets, receive a final allocation, and claim under the published vesting terms. | <Badge status="planned">Planned</Badge> |
 
 ## Reputation that travels
 
@@ -41,6 +45,11 @@ Connect a Stellar account, X, and GitHub to establish three separate signals: **
 | Integrate reputation or launch creation | [Developer overview](/developers/overview) |
 | Check contract addresses | [Deployments](/deployments/overview) |
 
-:::info Product and implementation
-These docs describe the full product. Bonding curves, team vesting, and the reputation registry exist in the contract source. Auctions, presales, production scoring, API, SDK, and the launch CLI are planned. See [implementation status](/getting-started/status) before using an integration.
-:::
+## Build with Lumen Rise
+
+Use the contract references to inspect source-level launch and reputation behavior. The shared Rust reputation client exists; a public HTTP API, packaged application SDK, and launch CLI remain planned.
+
+<CardGroup>
+  <DocCard title="Developer overview" to="/developers/overview" icon="code">Find the contracts, integration boundaries, and available tooling.</DocCard>
+  <DocCard title="Deployment directory" to="/deployments/overview" icon="server">Distinguish historical Testnet fixtures from verified releases.</DocCard>
+</CardGroup>

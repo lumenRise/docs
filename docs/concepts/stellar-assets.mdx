@@ -11,13 +11,37 @@ XLM is Stellar's native asset and has no issuer. The [Stellar Asset Contract](ht
 
 The complete launch flow is designed to:
 
-1. Create the issuer and distribution arrangement for the project asset.
-2. Issue the configured supply to the distribution account.
-3. Establish and publish the asset's issuance and administrative controls.
-4. Deploy or locate its SAC on the selected network.
-5. Transfer the launch supply from the distribution account into the dedicated vault.
+<Steps>
+<Step>
 
-The current factory begins at the last step. It does not create an issuer, issue an asset, or disable future issuance.
+Create the issuer and distribution arrangement for the project asset.
+
+</Step>
+<Step>
+
+Issue the configured supply to the distribution account.
+
+</Step>
+<Step>
+
+Establish and publish the asset's issuance and administrative controls.
+
+</Step>
+<Step>
+
+Deploy or locate its SAC on the selected network.
+
+</Step>
+<Step>
+
+Transfer the launch supply from the distribution account into the dedicated vault.
+
+:::note[Current factory]
+The current factory begins at this step. It does not create an issuer, issue an asset, or disable future issuance.
+:::
+
+</Step>
+</Steps>
 
 ## What the vault receives
 
