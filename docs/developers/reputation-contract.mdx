@@ -7,7 +7,7 @@ The registry stores `Scores`, immutable `Label` records, and an admin address. S
 
 ## Types
 
-```rust
+```rust title="reputation-types · shared types" showLineNumbers
 pub struct Scores {
     pub github: u32,
     pub social: u32,
@@ -50,7 +50,7 @@ Label IDs start at 1. Names are 1 to 64 UTF-8 bytes and cannot be entirely ASCII
 
 Add the local shared package as a dependency. This example assumes the consuming crate is a direct sibling of `launchpad-contract`; adjust the path for another layout.
 
-```toml
+```toml title="Cargo.toml"
 [dependencies]
 reputation-types = { path = "../launchpad-contract/packages/reputation-types" }
 soroban-sdk = "26"
@@ -58,7 +58,7 @@ soroban-sdk = "26"
 
 The following helper can be used inside a consuming Soroban contract. The caller's own contract entrypoint and error handling determine how a failed check affects its action.
 
-```rust
+```rust title="Cross-contract eligibility check" showLineNumbers {5-10}
 use reputation_types::{Criteria, ReputationClient};
 use soroban_sdk::{Address, Env};
 
