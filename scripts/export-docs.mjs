@@ -27,7 +27,7 @@ const pages = walk(docs).map((path) => {
   return {id, route, title, body};
 }).sort((a, b) => a.id === 'intro' ? -1 : b.id === 'intro' ? 1 : a.id.localeCompare(b.id));
 
-const context = 'Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. No deployment of the current source version is verified. Historical Testnet fixtures must not be used as current addresses.';
+const context = 'Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. Mainnet reputation registry and launch factory addresses are listed in the deployment directory. Historical Testnet fixtures must not be used as current addresses.';
 const index = `# Launchpad\n\n> Documentation for Stellar asset launches and reusable social, GitHub, and onchain reputation.\n\n${context}\n\n## Documentation\n\n${pages.map((page) => `- [${page.title}](${page.route})`).join('\n')}\n\n- [Plain-text documentation](/llms-full.txt)\n`;
 const full = `# Launchpad documentation\n\n${context}\n\n${pages.map((page) => `# ${page.title}\n\nRoute: ${page.route}\n\n${page.body}`).join('\n\n')}\n`;
 writeFileSync(join(root, 'static/llms.txt'), index);

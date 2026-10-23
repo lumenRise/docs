@@ -2,7 +2,7 @@
 
 > Documentation for Stellar asset launches and reusable social, GitHub, and onchain reputation.
 
-Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. No deployment of the current source version is verified. Historical Testnet fixtures must not be used as current addresses.
+Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. Mainnet reputation registry and launch factory addresses are listed in the deployment directory. Historical Testnet fixtures must not be used as current addresses.
 
 ## Documentation
 

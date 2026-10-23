@@ -1,6 +1,6 @@
 # Launchpad documentation
 
-Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. No deployment of the current source version is verified. Historical Testnet fixtures must not be used as current addresses.
+Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. Mainnet reputation registry and launch factory addresses are listed in the deployment directory. Historical Testnet fixtures must not be used as current addresses.
 
 # Launchpad documentation
 
@@ -474,14 +474,16 @@ Auction and presale supply accounting, including unsold assets and participant v
 
 Route: /deployments/mainnet
 
-**No verified Mainnet deployment is supplied.** There are no confirmed production factory, reputation-registry, or launch-vault addresses to publish for this version.
+The reputation registry and launch factory are deployed on Stellar Mainnet.
+
+Network passphrase: `Public Global Stellar Network ; September 2015`.
 
 ## Contract directory
 
 | Component | Mainnet address |
 | --- | --- |
-| Reputation registry | Not published |
-| Launch factory | Not published |
+| Reputation registry | `CCTQOJ4TQNRTKA7QDS7V5VLYXZKKEDZPGMEJB5PILYZQHOJXCPQZB4ZV` |
+| Launch factory | `CDGRLH3NCIKOTRFW3NJCWAGFYTQALAR7G6KCEZD7X23665WU2XAECLA6` |
 | Bonding-curve release hash | Not published |
 | Official launch vaults | Not published |
 | Auction contracts | Not implemented |
@@ -493,15 +495,11 @@ No production API origin, SDK release, or installable launch CLI is published in
 
 The curve can reach graduation and permanently stop trading, but it does not release graduation proceeds or create a liquidity pool. The repository explicitly states that the prototype is not ready for a real-money launch. An independent security audit is not supplied.
 
-A configurable Mainnet deployment script is not evidence of a Mainnet release. Neither are source tests, a local build, a preview interface, or historical Testnet fixtures.
+## Release records
 
-## What this page will publish
-
-When a release exists, this page should list the network passphrase, registry and admin, factory and platform configuration, vault code hash, deployment transactions, release revision, and version-specific behavior.
+The vault code hash, deployment transactions, release revision, and factory configuration are not yet listed here. Check the deployed configuration and contract specification before integrating.
 
 Issued-asset entries should include code, issuer, and SAC address. Links must point to the public network rather than Testnet. Historical deployments should remain clearly separated from the current supported release.
-
-Until that record is available, there is no official Mainnet address in this documentation to configure or fund.
 
 # Deployment directory
 
@@ -514,7 +512,7 @@ Use this directory to select a network and verify a contract version. An address
 | Network | Current record | Details |
 | --- | --- | --- |
 | Testnet | Historical 8 October 2026 fixtures; no verified deployment of the current source version | [Testnet deployments](/deployments/testnet) |
-| Mainnet | No verified deployment supplied | [Mainnet deployments](/deployments/mainnet) |
+| Mainnet | Reputation registry and launch factory addresses published | [Mainnet deployments](/deployments/mainnet) |
 
 The historical Testnet report predates reputation gates and the current no-deadline curve lifecycle. It cannot be used as evidence that those features are live.
 
@@ -522,8 +520,8 @@ The historical Testnet report predates reputation gates and the current no-deadl
 
 | Component | Current release record |
 | --- | --- |
-| Reputation registry and admin | No verified current network record |
-| Launch factory and platform settings | Historical Testnet factory only |
+| Reputation registry | [Mainnet address published](/deployments/mainnet) |
+| Launch factory and platform settings | [Mainnet factory address published](/deployments/mainnet); platform settings not listed |
 | Bonding-curve code hash | Historical Testnet hash only |
 | Individual launch vaults | Historical Testnet examples only |
 | Auction and presale contracts | Not implemented |
@@ -538,9 +536,9 @@ Mainnet: Public Global Stellar Network ; September 2015
 
 Mainnet is also called Stellar's public network. Testnet assets and funds have no Mainnet equivalence. Testnet resets can remove old contracts and data.
 
-## Verify a future release
+## Verify a deployment
 
-A deployment record should include the network, deployment time, source revision or release artifact, WASM hash, transaction hash, registry and admin, factory settings, asset identities, and relevant smoke-test evidence.
+A deployment record should include the network, deployment time, source revision or release artifact, WASM hash, transaction hash, registry, factory settings, asset identities, and relevant smoke-test evidence.
 
 Read the factory's stored registry and vault hash. Do not assume a known factory has been updated just because the local source changed. Existing vaults are not upgraded by a new factory deployment.
 
@@ -906,7 +904,7 @@ Simulate Soroban invocations before signing and submitting. Verify final transac
 
 A consuming contract can call the registry directly and apply custom criteria. It need not create a Launchpad launch. Decide which registry and admin you trust, what rule means for your product, and how you handle invocation failures or stale evidence.
 
-No current deployment is verified for this source version. Use the [deployment directory](/deployments/overview) and [status page](/getting-started/status) before selecting an environment.
+Mainnet reputation registry and launch factory addresses are listed in the [deployment directory](/deployments/overview). Check the deployed contract specification and [implementation status](/getting-started/status) before integrating.
 
 # Reputation contract reference
 
@@ -1091,7 +1089,7 @@ This documentation covers the intended Launchpad product and the implementation 
 
 The contract repository records an **8 October 2026 Testnet smoke test** of an older contract version. It predates reputation gating and the removal of trading deadlines. Its addresses are historical fixtures, not the current deployment directory.
 
-No current Testnet deployment or Mainnet deployment is verified by the supplied records. The [deployment pages](/deployments/overview) keep these distinctions explicit.
+Mainnet reputation registry and launch factory addresses are published on the [Mainnet deployment page](/deployments/mainnet). No current Testnet deployment is verified by the supplied records.
 
 ## Current release limit
 
@@ -1443,7 +1441,7 @@ They are planned. Their pages describe the intended behavior and open decisions.
 
 ## Where are the current contract addresses?
 
-See [deployments](/deployments/overview). The supplied evidence contains older Testnet fixtures and no verified deployment of the current source version or Mainnet release.
+See [deployments](/deployments/overview) for the Mainnet reputation registry and launch factory addresses. Testnet entries are historical fixtures.
 
 # Glossary
 
