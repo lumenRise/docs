@@ -10,7 +10,7 @@ const sidebars: SidebarsConfig = {
     {type: 'category', label: 'For participants', items: ['participants/getting-started', 'participants/trading-and-bidding', 'participants/allocations-and-claims']},
     {type: 'category', label: 'Reputation', items: ['reputation/overview', 'reputation/connect-accounts', 'reputation/scoring', 'reputation/criteria']},
     {type: 'category', label: 'Developers', items: ['developers/overview', 'developers/architecture', 'developers/launch-contracts', 'developers/reputation-contract', 'developers/api', 'developers/sdk', 'developers/cli', 'developers/events-and-errors']},
-    {type: 'category', label: 'Deployments', items: ['deployments/overview', 'deployments/testnet', 'deployments/mainnet']},
+    {type: 'category', label: 'Deployments', items: ['deployments/overview', 'deployments/base', 'deployments/mainnet', 'deployments/testnet']},
     {type: 'category', label: 'Reference', items: ['reference/faq', 'reference/glossary', 'reference/sources']},
   ],
 };

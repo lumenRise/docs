@@ -1,0 +1,59 @@
+---
+title: "Base factory"
+description: "Factory and related contract addresses on Base."
+---
+
+Base is the live LumenRise network. Put the deployed factory address in the table below. Use these values in the app, scripts, and any integration that talks to Base.
+
+Network: **Base**. Chain ID: **8453**. Explorer: [Basescan](https://basescan.org).
+
+## Contract directory
+
+| Component | Base address |
+| --- | --- |
+| Launch factory | Paste the deployed factory address here |
+| Quote asset (USDC) | [`0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`](https://basescan.org/token/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
+| Individual launch vaults | Created by the factory per launch |
+| Auction contracts | Published with the live Base app |
+| Presale contracts | Published with the live Base app |
+
+The factory deploys a dedicated vault for each bonding-curve launch. Auction and presale launches on Base use the launchpad's live sale contracts. Do not paste a Stellar `C...` address into a Base client.
+
+When the factory address is public, add it to the table and link it to Basescan:
+
+`https://basescan.org/address/<factory>`
+
+## Factory settings
+
+The Base factory is constructed with a platform recipient, a platform fee in basis points, and a quote token. On Base mainnet that quote token is native Circle USDC (`0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`). Every bonding-curve launch created through this factory uses that same pair.
+
+| Setting | Live value |
+| --- | --- |
+| Platform recipient | Paste the platform address here |
+| Platform fee (bps) | Paste the live fee here |
+| Pair token | USDC on Base |
+
+Fill the empty cells when you publish the deployment. The deploy script defaults the platform fee to 100 bps (1%) and caps it at 1,000 bps.
+
+## What to record with a new factory
+
+Keep the factory address together with:
+
+- Chain ID `8453`
+- Deployer and platform addresses
+- Platform fee in basis points
+- Pair token address (USDC)
+- Deployment transaction hash
+- Verified source on Basescan
+
+A new factory does not upgrade vaults created by an older factory. Existing launches stay on the factory that deployed them.
+
+## Base Sepolia
+
+Base Sepolia (chain ID `84532`) is for rehearsal. That path deploys a fresh TestUSDC rather than Circle USDC. Do not treat Sepolia addresses as the production factory.
+
+## Related records
+
+- [Deployment directory](/deployments/overview)
+- [Stellar Mainnet](/deployments/mainnet)
+- [Launch contract reference](/developers/launch-contracts) for the Stellar factory ABI

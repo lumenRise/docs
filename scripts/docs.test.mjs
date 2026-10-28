@@ -91,9 +91,9 @@ test('terminal, images, and tables preserve their content and HTML roles', () =>
 function walk(path) {
   return readdirSync(path, {withFileTypes: true}).flatMap(entry => entry.isDirectory() ? walk(join(path, entry.name)) : entry.name.endsWith('.mdx') ? [join(path, entry.name)] : []);
 }
-test('all 38 original routes exist in the production build and contain no raw admonitions', () => {
+test('all 39 original routes exist in the production build and contain no raw admonitions', () => {
   const pages = walk(join(root, 'docs'));
-  assert.equal(pages.length, 38);
+  assert.equal(pages.length, 39);
   for (const path of pages) {
     const id = path.slice(join(root, 'docs').length + 1).replaceAll('\\', '/').replace(/\.mdx$/, '');
     const output = join(root, 'build', ...(id === 'intro' ? [] : [id]), 'index.html');

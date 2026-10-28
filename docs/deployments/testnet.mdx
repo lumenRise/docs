@@ -1,9 +1,11 @@
 ---
-title: "Testnet deployments"
-description: "Historical Testnet evidence and the requirements for a current release."
+title: "Stellar Testnet"
+description: "Historical Stellar Testnet evidence and the requirements for a current release."
 ---
 
 **Current-source deployment: not verified.** The supplied repository records a successful smoke test on **8 October 2026 at 08:49 UTC**, using an earlier version with a deadline/failure lifecycle and without reputation gating.
+
+These addresses are Stellar Testnet fixtures. They are not the [Base factory](/deployments/base).
 
 The recorded run used fresh in-memory keys, Friendbot funds, and 18 confirmed transactions across ledgers 5,085,124 to 5,085,161. These are disposable fixtures. Their current availability has not been rechecked, and Testnet resets can remove them.
 
@@ -39,8 +41,8 @@ The report verified XLM trades, slippage rejection, fee claims, team claims, and
 
 ## Current-version verification
 
-The contract repository's `scripts/test.sh` builds the three WASMs and runs its local checks. Its opt-in `scripts/testnet-smoke.mjs` now includes reputation and no-deadline checks, but the supplied recorded result is still the older run.
+The Stellar contract repository's `scripts/test.sh` builds the three WASMs and runs its local checks. Its opt-in `scripts/testnet-smoke.mjs` now includes reputation and no-deadline checks, but the supplied recorded result is still the older run.
 
-A current release needs a fresh registry, a factory pinned to that registry and the rebuilt vault hash, confirmed smoke-test transactions, and a published record of the new addresses and artifacts. Do not reuse the old addresses as current configuration.
+A current Stellar release needs a fresh registry, a factory pinned to that registry and the rebuilt vault hash, confirmed smoke-test transactions, and a published record of the new addresses and artifacts. Do not reuse the old addresses as current configuration.
 
 This documentation task did not deploy contracts or execute the network smoke test. The original record is `launchpad-contract/TESTNET.md` and `target/testnet-smoke.json` in the sibling contract repository.

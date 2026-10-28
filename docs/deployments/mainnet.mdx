@@ -1,11 +1,13 @@
 ---
-title: "Mainnet deployments"
-description: "Mainnet contract and service availability."
+title: "Stellar Mainnet"
+description: "Stellar Mainnet factory and reputation registry addresses."
 ---
 
-The reputation registry and launch factory are deployed on Stellar Mainnet.
+The reputation registry and launch factory are deployed on Stellar Mainnet. This is the Stellar expansion record, not the live Base production factory.
 
 Network passphrase: `Public Global Stellar Network ; September 2015`.
+
+For the live launchpad, use [Base factory](/deployments/base).
 
 ## Contract directory
 
@@ -15,17 +17,15 @@ Network passphrase: `Public Global Stellar Network ; September 2015`.
 | Launch factory | `CDGRLH3NCIKOTRFW3NJCWAGFYTQALAR7G6KCEZD7X23665WU2XAECLA6` |
 | Bonding-curve release hash | Not published |
 | Official launch vaults | Not published |
-| Auction contracts | Not implemented |
-| Presale contracts | Not implemented |
+| Auction contracts | Part of the Stellar expansion |
+| Presale contracts | Part of the Stellar expansion |
 
 No production API origin, SDK release, or installable launch CLI is published in the supplied repositories.
 
-## Current release blocker
+## Current Stellar release notes
 
-The curve can reach graduation and permanently stop trading, but it does not release graduation proceeds or create a liquidity pool. The repository explicitly states that the prototype is not ready for a real-money launch. An independent security audit is not supplied.
+The Stellar curve can reach graduation and stop trading. Graduation proceeds and liquidity-pool creation on that network still need a published settlement path. Check the deployed configuration and contract specification before integrating.
 
-## Release records
-
-The vault code hash, deployment transactions, release revision, and factory configuration are not yet listed here. Check the deployed configuration and contract specification before integrating.
+The vault code hash, deployment transactions, release revision, and factory configuration are not yet listed here.
 
 Issued-asset entries should include code, issuer, and SAC address. Links must point to the public network rather than Testnet. Historical deployments should remain clearly separated from the current supported release.
