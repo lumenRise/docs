@@ -1,47 +1,55 @@
 ---
 title: "Frequently asked questions"
-description: "Direct answers about assets, reputation, launches, and current availability."
+description: "Direct answers about networks, tokens, reputation, launches, and factory addresses."
 ---
 
-## Does Launchpad create an asset or a custom contract token?
+## Is LumenRise live?
 
-The intended product creates an issued Stellar asset. A SAC gives Soroban access to that same asset. The current factory accepts an existing SAC-backed asset; integrated issuance is planned.
+Yes. The launchpad is live on Base. Bonding curves, presales, and auctions all run there. The Base app is audited and has done more than $10k in volume. Stellar is the expansion network.
+
+## Where is the Base factory address?
+
+On the [Base factory](/deployments/base) page. Drop the deployed address into the table there. Do not use a Stellar `C...` contract as a Base factory.
+
+## Does Launchpad create a token?
+
+The product launches an existing token into a vault. On Base that token is an ERC-20. On Stellar it is an issued Stellar asset, with a SAC giving Soroban access to the same asset. Integrated issuance is still a product flow, not something the current Stellar factory does by itself.
 
 ## Can I choose my supply allocation and quote asset?
 
-Yes, the product is designed around creator-selected allocations and XLM or USDC quotes. The current curve enforces pool, curve, and team shares totaling 100%. Its `pair` argument accepts a valid SAC rather than enforcing an XLM/USDC allowlist.
+Yes. Allocations are creator-selected. On Base the quote is USDC. On Stellar the product quotes are XLM or USDC. The current Stellar curve enforces pool, curve, and team shares totaling 100%. Its `pair` argument accepts a valid SAC rather than enforcing an XLM/USDC allowlist. The Base factory is constructed with Circle USDC as the pair.
 
 ## Does moving the balance into a vault prove a fixed supply?
 
-No. The factory moves the owner's full balance. It cannot query total issued supply across the network or prevent later issuance. Issuance controls need separate verification.
+No. The factory moves the owner's full balance. It cannot query total issued supply across the network or prevent later minting. Issuance controls need separate verification.
 
 ## Can people trade as soon as a launch starts?
 
-Current curve trading opens at `starts_at`. Auction opening enables bids; presale opening enables commitments under their future rules. A vesting schedule or unsettled allocation can delay when a participant actually receives assets.
+Current curve trading opens at `starts_at`. Auction opening enables bids; presale opening enables commitments. A vesting schedule or unsettled allocation can delay when a participant actually receives tokens.
 
 ## Do curve launches expire if they miss a goal?
 
-No. The current curve stays open until graduation and has no deadline or failed state. The older Testnet report describes an earlier version.
+No. The current curve stays open until graduation and has no deadline or failed state. The older Stellar Testnet report describes an earlier version.
 
 ## What happens at graduation?
 
-A qualifying buy marks the curve graduated and stops all further curve trades. The current prototype does not distribute the graduation reserve or create a pool. See [lifecycle](/concepts/lifecycle).
+A qualifying buy marks the curve graduated and stops all further curve trades. On Base, follow the live launch for settlement. On the current Stellar prototype the vault does not distribute the graduation reserve or create a pool. See [lifecycle](/concepts/lifecycle).
 
-## Can I sell assets I received from someone else back to the curve?
+## Can I sell tokens I received from someone else back to the curve?
 
-Only if your address also has enough recorded direct-buy position and still holds the assets. Ordinary transfers do not transfer sell-back rights.
+Only if your address also has enough recorded direct-buy position and still holds the tokens. Ordinary transfers do not transfer sell-back rights.
 
 ## Is reputation one number?
 
-The registry stores three numbers: social, GitHub, and onchain. It can also compare their unweighted sum to a threshold. The product's final scoring scale and calculation weights are not published.
+The Stellar registry stores three numbers: social, GitHub, and onchain. It can also compare their unweighted sum to a threshold. The product's final scoring scale and calculation weights are not published. Reputation is part of the Stellar expansion.
 
 ## Does connecting an account prove I am verified?
 
-It can establish control of the relevant account through a real verification flow. It does not by itself establish legal identity or a KYC status. Current optional interface connections and scores can be simulated.
+It can establish control of the relevant account through a real verification flow. It does not by itself establish legal identity or a KYC status.
 
 ## Can anyone create their own criteria?
 
-Anyone can create an immutable threshold label with their signature. Labels start at 1 and are local to their registry. A curve's label value of 0 means no reputation gate.
+On Stellar, anyone can create an immutable threshold label with their signature. Labels start at 1 and are local to their registry. A curve's label value of 0 means no reputation gate.
 
 ## Can another application use these scores?
 
@@ -49,12 +57,14 @@ Yes, a Soroban contract can use the shared `ReputationClient` or direct registry
 
 ## Do higher scores guarantee a presale allocation?
 
-No guarantee can be made from the current implementation. The product intends to prioritize higher-reputation participants when demand exceeds the accepted raise, but the ranking and settlement contracts are not built.
+No. The product can prioritize higher-reputation participants when demand exceeds the accepted raise. The ranking and settlement rules are those published on the live launch.
 
-## Are auctions, presales, and the CLI available?
+## Are auctions and presales available?
 
-They are planned. Their pages describe the intended behavior and open decisions. No published CLI installer, API endpoint, SDK package, auction contract, or presale contract is supplied.
+Yes, on Base. They are part of the Stellar expansion.
 
 ## Where are the current contract addresses?
 
-See [deployments](/deployments/overview) for the Mainnet reputation registry and launch factory addresses. Testnet entries are historical fixtures.
+- Base factory: [Base deployments](/deployments/base)
+- Stellar Mainnet factory and registry: [Stellar Mainnet](/deployments/mainnet)
+- Stellar Testnet: historical fixtures only, [Stellar Testnet](/deployments/testnet)

@@ -1,21 +1,23 @@
 ---
 title: "Create a launch"
-description: "Configure the project, asset, allocations, pricing, vesting, and access rules."
+description: "Configure the project, token, allocations, pricing, vesting, and access rules."
 ---
 
-The intended creation flow turns a complete project configuration into a scheduled Stellar asset launch. Prepare the economic terms before authorizing any asset issuance or transfer.
+The creation flow turns a complete project configuration into a scheduled launch. Prepare the economic terms before authorizing any token issuance or transfer.
+
+Base is the live network. Bonding curves, presales, and auctions all run there. Stellar is the expansion; its factory currently exposes bonding-curve creation.
 
 ## Prepare your project
 
-Choose the project name, asset code, supply, description, logo, website, team members, and relevant links. Explain the product, the use of raised funds, and the purpose of the asset. See [project profiles](/creators/project-profile).
+Choose the project name, token symbol, supply, description, logo, website, team members, and relevant links. Explain the product, the use of raised funds, and the purpose of the token. See [project profiles](/creators/project-profile).
 
-Use a distinct distribution account to hold the supply intended for the vault. The current factory's `owner` is the distribution account and the recipient for team claims.
+Use a distinct distribution wallet to hold the supply intended for the vault. The current factory's `owner` is the distribution account and the recipient for team claims.
 
 ## Select the format
 
 Choose a [bonding curve](/launches/bonding-curves), [auction](/launches/auctions), or [presale](/launches/presales). Format-specific pricing and settlement fields should only appear for the selected format.
 
-Auctions and presales are planned. The current factory exposes only `create_bonding_curve`.
+On Base, all three formats are live. On Stellar, the factory exposes `create_bonding_curve`.
 
 ## Set supply percentages
 
@@ -23,15 +25,15 @@ Define what percentage belongs to the sale, future liquidity, and team. The curr
 
 Other tokenomics categories can be explained in the project profile, but the current vault does not create extra treasury, campaign, or advisor buckets.
 
-## Choose XLM or USDC
+## Choose the quote asset
 
-Pick the quote asset and verify its network-specific identity. Every price, contribution, target, and quote-denominated fee for this launch uses that asset.
+On Base, the quote is USDC. On Stellar, pick XLM or USDC and verify its network-specific identity. Every price, contribution, target, and quote-denominated fee for this launch uses that asset.
 
 ## Set prices and dates
 
 For a curve, choose the initial price, reserve shape, graduation target, creator fee, and intended creator payout share. The initial price and target must correspond to a valid reserve configuration; they are not unconstrained independent numbers.
 
-For an auction, the planned configuration includes the bidding window and price constraints. For a presale, it includes the fixed price, funding goal, commitment window, and allocation policy.
+For an auction, the configuration includes the bidding window and price constraints. For a presale, it includes the fixed price, funding goal, commitment window, and allocation policy.
 
 Use UTC timestamps when reviewing final terms. Current curve trading opens at `starts_at` and has no end date.
 
@@ -39,12 +41,14 @@ Use UTC timestamps when reviewing final terms. Current curve trading opens at `s
 
 Choose the team's cliff, duration, and release interval. Review the actual first release and final release dates. With both durations set to zero, the team allocation is immediately claimable.
 
-Choose open participation or an existing [reputation label](/reputation/criteria). A nonzero label must exist in the factory's registry. Planned presales also need participant vesting and an oversubscription policy.
+Choose open participation or, on Stellar, an existing [reputation label](/reputation/criteria). A nonzero label must exist in the factory's registry. Presales also need participant vesting and an oversubscription policy.
 
 ## Review and launch
 
-The review should identify the asset code and issuer, selected network, full supply plan, vault deposit, allocation percentages, quote asset, prices, fees, dates, vesting, and access rules. It should also distinguish onchain terms from profile information.
+The review should identify the token, selected network, full supply plan, vault deposit, allocation percentages, quote asset, prices, fees, dates, vesting, and access rules. It should also distinguish onchain terms from profile information.
 
-The intended **Launch** action coordinates asset creation and vault deployment. The current implementation requires an already-issued asset and a direct factory invocation; the interface does not yet provide the complete transaction flow.
+The **Launch** action coordinates token setup and vault deployment. Confirm you are signing on Base for a production launch, and copy the factory from [Base factory](/deployments/base).
 
-After creation, verify the returned vault, its recorded configuration, and its deposit. The current contracts do not expose a launch-parameter editor or cancellation method. Do not assume a mistaken start date, price, or vesting schedule can be changed later.
+The Stellar path still requires an already-issued asset and a direct factory invocation.
+
+After creation, verify the returned vault, its recorded configuration, and its deposit. The current Stellar contracts do not expose a launch-parameter editor or cancellation method. Do not assume a mistaken start date, price, or vesting schedule can be changed later.

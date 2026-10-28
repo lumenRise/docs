@@ -1,6 +1,6 @@
 # Lumen Rise documentation
 
-Docusaurus documentation for Stellar asset launches and reusable reputation. Covers bonding curves, auctions, presales, creator and participant flows, vesting, developer integrations, and network deployment records.
+Docusaurus documentation for LumenRise. The launchpad is live on Base with bonding curves, auctions, and presales. Stellar is the expansion network. Covers creator and participant flows, vesting, developer integrations, and network deployment records.
 
 ## Run locally
 
@@ -48,11 +48,11 @@ This example value must be replaced. Without `SITE_URL`, the site uses localhost
 
 - `docs/getting-started`: orientation and implementation status.
 - `docs/launches`: format comparison, bonding curves, auctions, and presales.
-- `docs/concepts`: Stellar assets, quote assets, lifecycle, vesting, and fees.
+- `docs/concepts`: tokens, quote assets, lifecycle, vesting, and fees.
 - `docs/creators` and `docs/participants`: task guides.
 - `docs/reputation`: account connections, scoring, and custom criteria.
 - `docs/developers`: architecture, contract references, and planned API, SDK, and CLI.
-- `docs/deployments`: network directory, historical Testnet evidence, and Mainnet status.
+- `docs/deployments`: Base factory directory, Stellar Mainnet addresses, and historical Stellar Testnet evidence.
 - `docs/reference`: FAQ, glossary, and research sources.
 
 `sidebars.ts` defines the reading order. The root route opens the introduction directly. A single categorized sidebar contains the existing local search and theme control. Mobile uses a native modal navigation drawer. There is no global navbar, footer, or right-hand table of contents.
@@ -85,12 +85,12 @@ Describe current source support separately from deployment availability.
 
 Examples in existing pages: quickstart (steps), architecture (file tree and accordion), deployments overview (network tabs), launch contracts (parameters), and introduction (badges and related-guide cards).
 
-`npm test` checks the six admonition types, reusable component semantics, all 38 generated page routes, and portable plain-text exports. Run it after `npm run build`. There is no lint script configured.
+`npm test` checks the six admonition types, reusable component semantics, all 39 generated page routes, and portable plain-text exports. Run it after `npm run build`. There is no lint script configured.
 
 ## Keep the docs accurate
 
-Contract behavior comes from `../launchpad-contract`; interface behavior comes from `../interface`. Update `docs/getting-started/status.mdx` when capabilities change. Planned pages use `DocStatus` rather than presenting future behavior as live functionality.
+Base factory behavior comes from `../evm-contract`. Stellar contract behavior comes from `../stellar-contract`. Interface behavior comes from the sibling apps. Update `docs/getting-started/status.mdx` when capabilities change. Put the live Base factory address on `docs/deployments/base.mdx`. Planned API, SDK, and CLI pages use `DocStatus`.
 
-Do not add installation commands, API endpoints, package names, scoring formulas, or current deployment addresses before they exist. The 8 October 2026 Testnet addresses are historical fixtures and predate reputation and the no-deadline lifecycle.
+Do not add installation commands, API endpoints, package names, or scoring formulas before they exist. The 8 October 2026 Stellar Testnet addresses are historical fixtures.
 
 When publishing a new contract version, record its network, source revision, artifact hashes, settings, and confirmed transactions. A passing docs build does not verify contracts, network deployments, or production services.

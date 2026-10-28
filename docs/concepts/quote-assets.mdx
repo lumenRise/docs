@@ -1,35 +1,41 @@
 ---
-title: "XLM and USDC"
+title: "USDC, ETH gas, and XLM"
 description: "Choose the asset used to price a launch and receive contributions."
 ---
 
-The quote asset is what participants pay and what the launch collects. The product's quote choices are **XLM** and **USDC on Stellar**. The project asset is the separate asset being sold.
+The quote asset is what participants pay and what the launch collects. The project token is the separate token being sold.
 
-| | XLM | USDC |
-| --- | --- | --- |
-| Asset type | Stellar native asset | Issued Stellar asset |
-| Price expression | XLM per project asset | USDC per project asset |
-| Participant setup | XLM balance | USDC balance and a valid trustline |
-| Transaction fees | Paid in XLM | Still paid in XLM |
-| Identity check | Network and native SAC | Network, issuer, and USDC SAC |
+On **Base**, every launch quotes in **USDC**. Participants also need ETH for gas. On **Stellar**, the product quote choices are **XLM** and **USDC on Stellar**.
+
+| | Base USDC | Stellar XLM | Stellar USDC |
+| --- | --- | --- | --- |
+| Asset type | Native Circle USDC on Base | Stellar native asset | Issued Stellar asset |
+| Price expression | USDC per launch token | XLM per project asset | USDC per project asset |
+| Participant setup | USDC balance plus ETH for gas | XLM balance | USDC balance and a valid trustline |
+| Transaction fees | Paid in ETH | Paid in XLM | Still paid in XLM |
+| Identity check | Chain ID 8453 and USDC address | Network and native SAC | Network, issuer, and USDC SAC |
 
 ## What the choice changes
 
-Prices, commitments, trading fees, the curve's graduation target, and eventual proceeds are denominated in the selected quote asset. A target of 50,000 XLM is not a target of 50,000 USDC.
+Prices, commitments, trading fees, the curve's graduation target, and eventual proceeds are denominated in the selected quote asset. A target of 50,000 USDC on Base is not a target of 50,000 XLM on Stellar.
 
-A launch uses one quote asset. The current contracts do not perform currency conversion or accept arbitrary payment assets for a single launch.
+A launch uses one quote asset. The contracts do not perform currency conversion or accept arbitrary payment tokens for a single launch.
 
 ## Network-specific identity
 
-Use the deployed SAC for the selected network. Testnet balances and contract addresses are separate from Mainnet. An arbitrary asset named `USDC` is not sufficient proof of the issuer.
+Use the deployed token for the selected network.
 
-The [Circle contract directory](https://developers.circle.com/stablecoins/usdc-contract-addresses) is an external source for USDC identity. Confirm the network and issuer before configuration; the supplied project records do not publish an approved current USDC address list.
+On Base, native Circle USDC is [`0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`](https://basescan.org/token/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913). The Base factory is constructed with that pair and rejects a different quote.
+
+On Stellar, Testnet balances and contract addresses are separate from Mainnet. An arbitrary asset named `USDC` is not sufficient proof of the issuer. The [Circle contract directory](https://developers.circle.com/stablecoins/usdc-contract-addresses) is an external source for USDC identity.
 
 ## Contract behavior
 
-The current factory accepts a `pair` SAC address and validates its executable and decimals. It does **not** enforce an XLM/USDC allowlist. The two-choice product interface therefore needs its own reviewed network configuration.
+The Base factory stores one pair token at construction.
 
-Use seven-decimal integer amounts in contract calls. One whole unit is `10_000_000` base units. Use decimal-string parsing or integer arithmetic rather than JavaScript floating-point multiplication.
+The Stellar factory accepts a `pair` SAC address and validates its executable and decimals. It does **not** enforce an XLM/USDC allowlist. The two-choice product interface therefore needs its own reviewed network configuration.
+
+Keep amounts as integers in the token's base units. Base USDC uses 6 decimals. Stellar assets used by the current factory use 7 decimals. Use decimal-string parsing or integer arithmetic rather than JavaScript floating-point multiplication.
 
 ## Price is format-specific
 

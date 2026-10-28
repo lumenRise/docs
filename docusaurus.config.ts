@@ -35,7 +35,7 @@ const lumenriseDark: PrismTheme = {
 
 const config: Config = {
   title: 'LumenRise',
-  tagline: 'Identity, reputation, and launch infrastructure for Stellar.',
+  tagline: 'Token launches on Base, with Stellar next.',
   favicon: 'branding/lumenrise-symbol-for-light-background.svg',
   // Set SITE_URL to the public documentation origin before publishing.
   url: process.env.SITE_URL || 'http://localhost:3000',
@@ -84,7 +84,7 @@ const config: Config = {
     searchBarPosition: 'left',
   }]],
   themeConfig: {
-    metadata: [{name: 'description', content: 'Learn how LumenRise brings bonding curves, auctions, presales, and reusable reputation to Stellar.'}],
+    metadata: [{name: 'description', content: 'LumenRise is live on Base with bonding curves, presales, and auctions. Stellar support is next.'}],
     colorMode: {defaultMode: 'light', disableSwitch: false, respectPrefersColorScheme: true},
     navbar: {
       logo: {

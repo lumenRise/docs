@@ -3,7 +3,7 @@ title: "Cliffs, vesting, and claims"
 description: "Understand team locks, release intervals, and participant distribution."
 ---
 
-Vesting makes an allocation claimable over time. A **cliff** delays the start of release. A **claim** transfers assets that have already unlocked; time passing does not automatically send them to an account.
+Vesting makes an allocation claimable over time. A **cliff** delays the start of release. A **claim** transfers tokens that have already unlocked; time passing does not automatically send them to an account.
 
 ## Team vesting in the current curve
 
@@ -21,7 +21,7 @@ With a nonzero duration, nothing is claimable at or before the cliff boundary. A
 
 ## Worked example
 
-A launch allocates 300,000 assets to the team, with a 30-day cliff and 300-day duration using 30-day steps.
+A launch allocates 300,000 tokens to the team, with a 30-day cliff and 300-day duration using 30-day steps.
 
 | Time from launch start | Total vested |
 | --- | --- |
@@ -35,9 +35,9 @@ The cliff is followed by the vesting duration. This example takes 330 days from 
 
 ## Claiming
 
-`claimable_team()` returns unlocked assets minus assets already claimed. `claim_team()` requires the launch owner's authorization and transfers the claim to that owner. The current contract has one team bucket and one owner recipient; it does not split vesting among multiple team members.
+The vault reports unlocked team tokens minus tokens already claimed. The owner authorizes the claim and receives the unlocked amount. The current contract has one team bucket and one owner recipient; it does not split vesting among multiple team members.
 
-A failed asset transfer rolls the transaction back. A missing, frozen, or full recipient trustline must be resolved before an issued-asset claim can succeed.
+A failed token transfer rolls the transaction back. On Stellar, a missing, frozen, or full recipient trustline must be resolved before an issued-asset claim can succeed. On Base, the owner needs to be able to receive the ERC-20.
 
 ## Immediate release
 
@@ -45,6 +45,6 @@ Setting both cliff and duration to zero makes the whole team allocation immediat
 
 ## Participant vesting
 
-Current curve buyers receive their purchased asset during the buy. They do not receive a participant vesting entitlement.
+Current curve buyers receive their purchased token during the buy. They do not receive a participant vesting entitlement.
 
-Auctions and presales are intended to support their own published participant schedules. Those schedules must be kept separate from the current team-vesting implementation and are not implemented in the supplied contracts.
+Auctions and presales support their own published participant schedules on Base. Those schedules must be kept separate from the current team-vesting implementation. On Stellar they are part of the expansion.

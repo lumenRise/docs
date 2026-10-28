@@ -3,7 +3,7 @@ title: "Project profile and team"
 description: "Publish the information participants need to assess a launch."
 ---
 
-A project profile explains who is launching, what the asset is for, and how the raise will be used. The profile and the launch terms should tell the same story.
+A project profile explains who is launching, what the token is for, and how the raise will be used. The profile and the launch terms should tell the same story.
 
 ## Project information
 
@@ -13,25 +13,27 @@ Avoid presenting a future milestone as a completed result. Link to working produ
 
 ## Team
 
-Describe each public team member's name or handle, role, relevant experience, and official profile links. Explain who controls the issuer, distribution account, project proceeds, and team allocation.
+Describe each public team member's name or handle, role, relevant experience, and official profile links. Explain who controls the token admin, distribution wallet, project proceeds, and team allocation.
 
 The current curve sends team claims to a single owner address. A list of team members on a profile does not create separate onchain vesting recipients.
 
-## Asset and tokenomics
+## Token and tokenomics
 
-Show the asset code, issuer, SAC address, supply, allocation table, quote asset, and vesting terms. Explain any supply held outside the vault and any remaining issuer powers.
+Show the token identity, supply, allocation table, quote asset, and vesting terms. On Base that identity is the ERC-20 address. On Stellar it is the asset code, issuer, and SAC address.
+
+Explain any supply held outside the vault and any remaining admin powers.
 
 The [tokenomics guide](/creators/tokenomics) explains how to keep the supply allocation internally consistent. A tokenomics narrative does not create additional contract-enforced allocation buckets.
 
 ## Launch terms
 
-Publish the selected format, pricing mechanism, opening date, fees, reputation requirements, and claim schedule. Auctions and presales also need their close and settlement terms.
+Publish the selected format, pricing mechanism, opening date, fees, access rules, and claim schedule. Auctions and presales also need their close and settlement terms.
 
-Participants should be able to distinguish a submitted commitment, an accepted allocation, a claimable amount, and an asset already received.
+Participants should be able to distinguish a submitted commitment, an accepted allocation, a claimable amount, and a token already received.
 
 ## Stored metadata today
 
-The current contract stores only these display fields:
+The current Stellar contract stores only these display fields:
 
 | Field | Limit |
 | --- | --- |
@@ -42,4 +44,4 @@ The current contract stores only these display fields:
 
 Byte limits are not character counts for all languages. Stellar asset-code validity is also determined during asset issuance; the contract's string-length check does not issue an asset.
 
-Rich descriptions, team biographies, documents, and extended tokenomics belong to the planned project-profile data layer. No production storage API or profile-editing contract is supplied. The current `logo` field stores a string; it does not upload or pin media.
+Rich descriptions, team biographies, documents, and extended tokenomics belong to the project-profile data layer. The current `logo` field stores a string; it does not upload or pin media.

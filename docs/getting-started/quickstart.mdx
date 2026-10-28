@@ -3,66 +3,68 @@ title: "Start here"
 description: "Choose a path through Launchpad as a creator, participant, or developer."
 ---
 
-Start with the role that matches what you want to do. You can read project and launch information before connecting an account.
+Start with the role that matches what you want to do. You can read project and launch information before connecting a wallet.
 
-## Launch an asset
+Base is the live network. Stellar is the expansion.
+
+## Launch a token
 
 <Steps>
 <Step title="Choose a launch format" id="choose-a-launch-format">
 
-[Compare the three formats](/launches/overview). Decide whether you need continuous price discovery, competitive bids, or a fixed-price raise.
+[Compare the three formats](/launches/overview). Decide whether you need continuous price discovery, competitive bids, or a fixed-price raise. Bonding curves, presales, and auctions all run on Base.
 
 </Step>
-<Step title="Prepare the asset and project" id="prepare-the-asset-and-project">
+<Step title="Prepare the token and project" id="prepare-the-asset-and-project">
 
-Prepare your [project profile](/creators/project-profile), asset details, and [supply allocation](/creators/tokenomics).
+Prepare your [project profile](/creators/project-profile), token details, and [supply allocation](/creators/tokenomics). On Base that token is an ERC-20. On Stellar it is a Stellar asset.
 
 </Step>
 <Step title="Define the economic terms" id="define-the-economic-terms">
 
-Choose XLM or USDC, the opening date, pricing, and team cliff and vesting schedule.
+On Base, quote in USDC. On Stellar, choose XLM or USDC. Set the opening date, pricing, and team cliff and vesting schedule.
 
 </Step>
 <Step title="Set participation rules" id="set-participation-rules">
 
-Decide whether participation is open or subject to [reputation criteria](/creators/eligibility).
+Decide whether participation is open or subject to the launch's access rules. On Stellar you can attach [reputation criteria](/creators/eligibility).
 
 </Step>
 <Step title="Review and authorize" id="review-and-authorize">
 
-Review the complete configuration and authorize launch creation. The intended flow issues the asset and moves the launch supply into its vault.
+Review the complete configuration and authorize launch creation. The factory deploys the vault and moves the launch supply into it.
 
 </Step>
 </Steps>
 
-The current factory starts with an **existing Stellar asset**. Integrated asset issuance and the complete launch-creation interface are still planned.
+Confirm you are on Base before signing a production launch. Copy the factory address from [Base factory](/deployments/base).
 
 ## Participate in a launch
 
 <Steps>
 <Step>
 
-Inspect the project, asset issuer, format, price rules, allocation policy, and claim schedule.
+Inspect the project, token, format, price rules, allocation policy, and claim schedule.
 
 </Step>
 <Step>
 
-Check the [network and deployment record](/deployments/overview).
+Check the [network and factory record](/deployments/overview). Production volume is on Base.
 
 </Step>
 <Step>
 
-Connect your Stellar account through the interface. Add optional identity connections if the launch requires reputation.
+Connect the wallet for that network. Base uses an EVM wallet. Stellar uses a Stellar account through the interface.
 
 </Step>
 <Step>
 
-Fund the quote asset and prepare the required trustlines.
+Fund the quote asset. On Base that is USDC, plus ETH for gas. On Stellar, hold XLM or USDC and the required trustlines.
 
 </Step>
 <Step>
 
-When the launch opens, buy from the curve, place a bid, or commit to the presale, depending on the available format.
+When the launch opens, buy from the curve, place a bid, or commit to the presale.
 
 </Step>
 <Step>
@@ -72,10 +74,10 @@ Follow the [allocation and claim guide](/participants/allocations-and-claims).
 </Step>
 </Steps>
 
-A start date opens participation. It does not mean every asset is immediately transferable or that secondary-market liquidity exists.
+A start date opens participation. It does not mean every token is immediately transferable, or that a secondary market already exists.
 
 ## Build an integration
 
-Read the [architecture](/developers/architecture), then use the [contract references](/developers/launch-contracts) or [reputation client](/developers/reputation-contract). The API, SDK, and natural-language CLI pages describe planned interfaces and their current availability.
+Read the [architecture](/developers/architecture), then the [Base factory](/deployments/base) addresses or the [Stellar launch contracts](/developers/launch-contracts). The API, SDK, and CLI pages describe planned interfaces.
 
-Use [implementation status](/getting-started/status) to distinguish source support from a deployed service.
+Use [implementation status](/getting-started/status) to see what is live on Base versus what is documented for Stellar.

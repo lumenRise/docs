@@ -3,34 +3,40 @@ title: "Join a launch"
 description: "Prepare an account, inspect the terms, and participate in the right format."
 ---
 
-You can browse the interface without logging in. Participation requires an authenticated Stellar account and the authorization needed to move its assets.
+You can browse the interface without logging in. Participation requires a connected wallet and the authorization needed to move its tokens.
+
+Base is the live network. Connect an EVM wallet, hold USDC, and keep ETH for gas. Stellar participation uses a Stellar account and is part of the expansion.
 
 ## Read the launch terms
 
-Check the project, team, asset code and issuer, network, format, quote asset, pricing, allocation, fees, dates, and claim schedule. Look for the distinction between immediate delivery and a vesting entitlement.
+Check the project, team, token, network, format, quote asset, pricing, allocation, fees, dates, and claim schedule. Look for the distinction between immediate delivery and a vesting entitlement.
 
-Use [deployments](/deployments/overview) to check the deployment record. Prototype listings and illustrative balances are not proof of a live sale.
+Use [deployments](/deployments/overview) to check the factory record. Production volume is on Base.
 
 ## Connect your account
 
-The interface uses Blux for authentication and a Stellar account. The account can be created or connected through the supported login flow. Its `G...` address identifies the participant for positions and reputation.
+On Base, connect the EVM wallet that will sign buys, bids, or commitments. Its `0x` address identifies the participant for positions.
 
-Optional X and GitHub connections support the intended reputation flow. The current interface can simulate these connections and scores; those preview numbers are not onchain eligibility evidence.
+On Stellar, the interface uses Blux for authentication and a Stellar account. Its `G...` address identifies the participant for positions and reputation.
+
+Optional X and GitHub connections support the intended Stellar reputation flow. Locally simulated scores are not onchain eligibility evidence.
 
 ## Meet the entry criteria
 
-Open launches do not require a reputation label. Gated launches require the selected rule to pass for your address at the point of purchase.
+Open launches do not require a reputation label. Gated Stellar launches require the selected rule to pass for your address at the point of purchase.
 
 Read the criteria rather than judging eligibility by a profile badge. A high social score cannot satisfy a rule requiring both GitHub and onchain thresholds unless those also pass.
 
-## Prepare funds and trustlines
+## Prepare funds
 
-Have enough of the launch's quote asset to cover the amount and any creator trading fee, plus XLM for network costs. For issued assets, make sure the required receiving trustlines exist and have sufficient capacity.
+Have enough of the launch's quote asset to cover the amount and any creator trading fee, plus gas.
 
-The current contracts do not set up trustlines for you. Never send funds directly to a vault as a substitute for a purchase or contribution method.
+On Base that is USDC plus ETH. On Stellar, hold XLM or USDC and make sure the required receiving trustlines exist.
+
+The contracts do not set up trustlines or token approvals for you. Never send funds directly to a vault as a substitute for a purchase or contribution method.
 
 ## Participate when it opens
 
-For a bonding curve, request a fresh quote and authorize the buy with a payment limit. For a planned auction, submit a bid during its window. For a planned presale, commit under its terms and wait for final allocation.
+For a bonding curve, request a fresh quote and authorize the buy with a payment limit. For an auction, submit a bid during its window. For a presale, commit under its terms and wait for final allocation.
 
 See [trading and bidding](/participants/trading-and-bidding) and [allocations and claims](/participants/allocations-and-claims).

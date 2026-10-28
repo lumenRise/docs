@@ -3,11 +3,11 @@ title: "Presales"
 description: "Fixed-price fundraising with vesting and reputation-prioritized allocations."
 ---
 
-import DocStatus from '@site/src/components/DocStatus';
+Presales are live on Base. Stellar presales are part of the network expansion and follow the same product rules below.
 
-<DocStatus />
+A presale offers a defined token allocation at a fixed price. Participants commit quote tokens during the sale, then receive a final allocation under the published distribution and vesting terms.
 
-A presale offers a defined asset allocation at a fixed price. Participants commit XLM or USDC during the sale, then receive a final allocation under the published distribution and vesting terms.
+On Base that quote is USDC. On Stellar it is XLM or USDC.
 
 ## Sale configuration
 
@@ -40,27 +40,23 @@ Accepted funds become project proceeds under the sale's release rules.
 </Step>
 <Step>
 
-Allocated assets become claimable according to the participant schedule. Any unaccepted funds follow the refund process.
+Allocated tokens become claimable according to the participant schedule. Any unaccepted funds follow the refund process.
 
 </Step>
 </Steps>
 
-Before settlement, a displayed allocation may be provisional. A commitment is not an immediately transferable asset balance.
+Before settlement, a displayed allocation may be provisional. A commitment is not an immediately transferable token balance.
 
 ## When demand exceeds the raise
 
-The intended allocation model gives priority to participants with higher reputation. If the sale has more eligible demand than it can accept, the final accepted allocations favor those participants under the launch's published ranking policy.
+The allocation model can give priority to participants with higher reputation. If the sale has more eligible demand than it can accept, the final accepted allocations favor those participants under the launch's published ranking policy.
 
 For example, a sale accepting 100,000 USDC receives 150,000 USDC in eligible commitments. Only 100,000 USDC is accepted. Reputation determines priority for that accepted capacity, and the remaining 50,000 USDC must be refundable. Sending a larger commitment does not itself guarantee a larger final allocation.
 
-The ranking formula, selected score categories, score snapshot time, per-participant limits, tie-breaking rule, and settlement mechanism are **not yet specified in code**. A threshold check alone does not implement ranked allocation.
+Read the live launch for the ranking formula, selected score categories, score snapshot time, per-participant limits, tie-breaking rule, and settlement mechanism. A threshold check alone does not implement ranked allocation.
 
 ## Vesting and claims
 
 Participant vesting is distinct from team vesting. A project might publish a first release followed by a cliff and recurring unlocks, or a fully vested allocation after a specified date. Only the final deployed sale's documented schedule can establish those rights.
 
-The current curve contract implements team vesting only. It cannot be used as a presale contract or as a general participant-vesting contract.
-
-## Before this format is available
-
-Refunds, goal-failure handling, proceeds release, oversubscription ranking, participant claims, and unsold-asset handling need a complete settlement implementation. No live presale or automatic allocation service is supplied by the current repositories.
+The Stellar curve contract implements team vesting only. It cannot be used as a Stellar presale contract. Use the live Base presale for that format today.

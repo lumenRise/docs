@@ -1,11 +1,13 @@
 ---
-title: "Stellar assets and locked supply"
-description: "How issued assets, the Stellar Asset Contract, and launch custody fit together."
+title: "Tokens and locked supply"
+description: "How Base ERC-20s, Stellar assets, and launch custody fit together."
 ---
 
-Launchpad uses Stellar assets. An issued asset is identified by an **asset code and issuer account**, such as a project code paired with its issuer's `G...` address. A code by itself does not identify an asset.
+Launchpad locks launch supply in a dedicated vault. The token type depends on the network.
 
-XLM is Stellar's native asset and has no issuer. The [Stellar Asset Contract](https://developers.stellar.org/docs/tokens/stellar-asset-contract) lets Soroban contracts hold and transfer both native and issued Stellar assets. Its `C...` address is a contract interface to the same underlying asset.
+On **Base**, the launch token is an ERC-20. The factory reads the creator's token balance, deploys a vault, and pulls that balance in. USDC on Base is the quote.
+
+On **Stellar**, the launch token is a Stellar asset, identified by an **asset code and issuer account**, such as a project code paired with its issuer's `G...` address. A code by itself does not identify an asset. XLM is Stellar's native asset and has no issuer. The [Stellar Asset Contract](https://developers.stellar.org/docs/tokens/stellar-asset-contract) lets Soroban contracts hold and transfer both native and issued Stellar assets. Its `C...` address is a contract interface to the same underlying asset.
 
 ## Intended issuance flow
 
@@ -14,22 +16,22 @@ The complete launch flow is designed to:
 <Steps>
 <Step>
 
-Create the issuer and distribution arrangement for the project asset.
+Create the token. On Base, deploy or reuse an ERC-20. On Stellar, create the issuer and distribution arrangement.
 
 </Step>
 <Step>
 
-Issue the configured supply to the distribution account.
+Issue the configured supply to the distribution account or creator wallet.
 
 </Step>
 <Step>
 
-Establish and publish the asset's issuance and administrative controls.
+Establish and publish the token's administrative controls.
 
 </Step>
 <Step>
 
-Deploy or locate its SAC on the selected network.
+On Stellar, deploy or locate its SAC on the selected network. On Base, confirm the ERC-20 address and decimals.
 
 </Step>
 <Step>
@@ -37,7 +39,7 @@ Deploy or locate its SAC on the selected network.
 Transfer the launch supply from the distribution account into the dedicated vault.
 
 :::note[Current factory]
-The current factory begins at this step. It does not create an issuer, issue an asset, or disable future issuance.
+The Stellar factory begins at this step. It does not create an issuer, issue an asset, or disable future issuance. The Base factory likewise expects an existing ERC-20 and an approval for the deposited balance.
 :::
 
 </Step>
@@ -45,20 +47,20 @@ The current factory begins at this step. It does not create an issuer, issue an 
 
 ## What the vault receives
 
-The factory reads the launch owner's full asset balance, creates a new vault, transfers that balance, and verifies that the owner's balance became zero. The vault records the amount deposited as its launch supply.
+The factory reads the launch owner's full token balance, creates a new vault, transfers that balance, and verifies that the owner's balance became zero. The vault records the amount deposited as its launch supply.
 
-The SAC interface has no total-supply getter. This transfer cannot prove that other accounts hold no assets or that the issuer cannot issue more. A fixed-supply claim needs separate evidence about issuance, distribution, and remaining administrative authority.
+That transfer cannot prove that other accounts hold no tokens or that the issuer or admin cannot mint more. A fixed-supply claim needs separate evidence about issuance, distribution, and remaining administrative authority.
 
 ## What is locked
 
-The vault accounts for the pool reserve, sale inventory, and team allocation. These buckets have different permitted uses. Team assets follow vesting; curve inventory is distributed through trades; pool assets are reserved for future settlement.
+The vault accounts for the pool reserve, sale inventory, and team allocation. These buckets have different permitted uses. Team tokens follow vesting; curve inventory is distributed through trades; pool tokens are reserved for future settlement.
 
-A contract lock does not neutralize asset-level issuer powers. Authorization and clawback settings can affect balances held in a vault. Review issuer controls as well as contract code.
+A contract lock does not neutralize token-level admin powers. On Stellar, authorization and clawback settings can affect balances held in a vault. On Base, review mint, pause, and blacklist controls on the ERC-20. Review those controls as well as contract code.
 
-## Trustlines and precision
+## Network setup and precision
 
-Classic accounts need the required trustlines for issued assets they receive. XLM does not need a trustline. These launch contracts do not create trustlines for users.
+On Base, approve the factory (or the sale contract) to spend the launch token, and hold USDC plus ETH for gas.
 
-The current factory accepts only host-verified Stellar Asset Contracts with seven decimals for both the project asset and quote asset. A custom contract implementing a similar token interface is rejected.
+On Stellar, classic accounts need the required trustlines for issued assets they receive. XLM does not need a trustline. These launch contracts do not create trustlines for users. The current Stellar factory accepts only host-verified Stellar Asset Contracts with seven decimals for both the project asset and quote asset. A custom contract implementing a similar token interface is rejected.
 
 [Configure supply allocations](/creators/tokenomics) or [choose the quote asset](/concepts/quote-assets).

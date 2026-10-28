@@ -1,37 +1,45 @@
 ---
 title: "Introduction"
-description: "Asset launches and reusable reputation on Stellar."
+description: "Live token launches on Base, with Stellar support on the way."
 slug: /
 sidebar_label: "Introduction"
 ---
 
 import SupplyFlow from '@site/src/components/SupplyFlow';
 
-Lumen Rise brings asset launches and reusable reputation to Stellar. Projects choose how to raise, how to distribute their asset, and who can participate. Participants build a reputation they can use across launches and other applications.
+LumenRise is live on Base.
 
-:::info[Product and implementation]
-Bonding curves, team vesting, and the administered reputation registry exist in contract source. Auctions, presales, production scoring, API, SDK, and the launch CLI are planned. No deployment of the current source version is verified. [Check implementation status](/getting-started/status) before integrating.
+The launchpad supports bonding curves, presales, and auctions. The Base app is in production, the contracts are audited, and the launchpad has done more than $10k in volume.
+
+We are expanding to Stellar next. Same product, same launch formats, second network.
+
+:::info[Where to launch]
+Base is the live network. Use it for production launches. Stellar is the expansion: factory and reputation contracts are documented here, and that network is still being brought up to the Base feature set.
 :::
 
 ## How Launchpad works
 
-A creator defines the asset, supply allocation, XLM or USDC quote asset, opening date, pricing, and vesting terms. The launch holds the allocated supply in a dedicated Soroban vault. Participation follows the selected format; team assets unlock through a separate vesting schedule.
+A creator picks a network, a launch format, the token, supply split, quote asset, opening time, pricing, and vesting. The factory deploys a dedicated vault and locks the launch supply there. Participants then trade, bid, or join the presale under the published terms.
 
 <SupplyFlow />
 
-The product uses **Stellar assets**, identified by their code and issuer. The Stellar Asset Contract gives the vault access to the same asset on Soroban. It does not create a separate wrapped asset.
+On Base the launch token is an ERC-20 and the quote asset is USDC. On Stellar the launch token is a Stellar asset, reached from contracts through the Stellar Asset Contract, with XLM or USDC as the quote.
 
 ## Three ways to launch
 
 | Format | Pricing and participation | Status |
 | --- | --- | --- |
-| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as assets are bought and sold. Trading opens at the start date and continues until graduation. | <Badge status="experimental">Contract prototype</Badge> |
-| [Auction](/launches/auctions) | Participants submit bids; higher-priced bids receive allocation priority. Bid during the auction window, then settle the result and claim. | <Badge status="planned">Planned</Badge> |
-| [Presale](/launches/presales) | The creator sets a fixed sale price. Commit quote assets, receive a final allocation, and claim under the published vesting terms. | <Badge status="planned">Planned</Badge> |
+| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as tokens are bought and sold. Trading opens at the start date and continues until graduation. | <Badge status="available">Live on Base</Badge> |
+| [Auction](/launches/auctions) | Participants submit bids. Higher-priced bids get allocation priority. Bid during the window, settle, then claim. | <Badge status="available">Live on Base</Badge> |
+| [Presale](/launches/presales) | The creator sets a fixed price. Commit quote tokens, take a final allocation, and claim under the published vesting terms. | <Badge status="available">Live on Base</Badge> |
+
+Stellar launches use the same three formats as that network comes online. The Stellar factory source is farthest along on bonding curves.
 
 ## Reputation that travels
 
-Connect a Stellar account, X, and GitHub to establish three separate signals: **onchain**, **social**, and **GitHub** reputation. Projects can use these signals to define access criteria or prioritize allocations. Other applications can reuse the same reputation through onchain checks, with API and SDK access planned.
+On Stellar, connect a Stellar account, X, and GitHub to build **onchain**, **social**, and **GitHub** reputation. Projects can use those signals for access rules or allocation priority. Other apps can reuse the same registry.
+
+This is part of the Stellar expansion. Base launches can still use the access rules you publish on the launch page.
 
 [Understand reputation](/reputation/overview) or [define custom criteria](/reputation/criteria).
 
@@ -39,17 +47,18 @@ Connect a Stellar account, X, and GitHub to establish three separate signals: **
 
 | I want to… | Start here |
 | --- | --- |
-| Launch an asset | [Create a launch](/creators/create-launch) |
+| Launch a token | [Create a launch](/creators/create-launch) |
 | Buy, bid, or join a presale | [Participant guide](/participants/getting-started) |
-| Build my reputation | [Connect accounts](/reputation/connect-accounts) |
-| Integrate reputation or launch creation | [Developer overview](/developers/overview) |
-| Check contract addresses | [Deployments](/deployments/overview) |
+| Build reputation on Stellar | [Connect accounts](/reputation/connect-accounts) |
+| Integrate the factory or a launch | [Developer overview](/developers/overview) |
+| Copy Base factory addresses | [Base deployments](/deployments/base) |
+| Copy Stellar contract addresses | [Stellar Mainnet](/deployments/mainnet) |
 
-## Build with Lumen Rise
+## Build with LumenRise
 
-Use the contract references to inspect source-level launch and reputation behavior. The shared Rust reputation client exists; a public HTTP API, packaged application SDK, and launch CLI remain planned.
+Start with the live Base factory, then the Stellar contract references if you are integrating that network.
 
 <CardGroup>
-  <DocCard title="Developer overview" to="/developers/overview" icon="code">Find the contracts, integration boundaries, and available tooling.</DocCard>
-  <DocCard title="Deployment directory" to="/deployments/overview" icon="server">Distinguish historical Testnet fixtures from verified releases.</DocCard>
+  <DocCard title="Base factory" to="/deployments/base" icon="server">Factory and quote-asset addresses on Base.</DocCard>
+  <DocCard title="Developer overview" to="/developers/overview" icon="code">Base factory, Stellar contracts, and integration boundaries.</DocCard>
 </CardGroup>

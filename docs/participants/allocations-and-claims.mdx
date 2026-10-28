@@ -1,27 +1,29 @@
 ---
 title: "Allocations and claims"
-description: "Separate purchased assets, provisional allocations, vesting, and refunds."
+description: "Separate purchased tokens, provisional allocations, vesting, and refunds."
 ---
 
-An allocation describes how much of an asset you receive. A claimable balance describes how much you can transfer now. These are different from funds merely committed to a sale.
+An allocation describes how much of a token you receive. A claimable balance describes how much you can transfer now. These are different from funds merely committed to a sale.
 
 ## By launch format
 
 | Format | What you hold after participation | Delivery |
 | --- | --- | --- |
-| Current bonding curve | Purchased asset balance and a recorded sell-back position | Asset transfers during the buy |
-| Planned auction | Bid, then accepted allocation after settlement | Claim or vesting under auction terms |
-| Planned presale | Commitment, then accepted allocation after settlement | Participant vesting under sale terms |
+| Bonding curve | Purchased token balance and a recorded sell-back position | Token transfers during the buy |
+| Auction | Bid, then accepted allocation after settlement | Claim or vesting under auction terms |
+| Presale | Commitment, then accepted allocation after settlement | Participant vesting under sale terms |
 
 The current curve does not create participant claim schedules. Its `claim_team` method is for the launch owner, not buyers.
 
+Auctions and presales are live on Base. On Stellar they are part of the expansion.
+
 ## Presale oversubscription
 
-The intended presale policy favors higher-reputation participants when eligible commitments exceed the accepted raise. Before settlement, any displayed allocation should be treated as provisional.
+The presale policy can favor higher-reputation participants when eligible commitments exceed the accepted raise. Before settlement, any displayed allocation should be treated as provisional.
 
-An unaccepted amount must be distinguished from accepted project proceeds. The planned sale needs an explicit refund path, and participants need to know when and how the unaccepted quote asset becomes available.
+An unaccepted amount must be distinguished from accepted project proceeds. The sale needs an explicit refund path, and participants need to know when and how the unaccepted quote asset becomes available.
 
-There is no current contract implementing this allocation or refund process. No exact ranking formula, tie-breaking rule, or score snapshot is published in the supplied code.
+Read the live Base launch for the ranking formula, tie-breaking rule, and score snapshot. The Stellar curve does not implement this allocation or refund process.
 
 ## Vesting claims
 
@@ -29,8 +31,8 @@ A vested allocation may include an opening release, a cliff, or repeated unlocks
 
 Review the beneficiary address, schedule origin, first release, interval, final release, and previously claimed amount. The team schedule documented in [vesting](/concepts/vesting) must not be assumed to apply to every future participant schedule.
 
-## Asset availability and liquidity
+## Token availability and liquidity
 
-Receiving an asset does not guarantee there is a market to sell it. For the current curve, transfers do not transfer sell-back rights, and graduation stops the vault's trading without creating a secondary market.
+Receiving a token does not guarantee there is a market to sell it. For the current curve, transfers do not transfer sell-back rights, and graduation stops the vault's trading without creating a secondary market.
 
-Use an existing, verified method to claim or sell. Sending assets directly to a contract does not create an allocation, a refund, or a recorded curve position.
+Use an existing, verified method to claim or sell. Sending tokens directly to a contract does not create an allocation, a refund, or a recorded curve position.

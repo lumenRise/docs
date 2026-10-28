@@ -1,41 +1,42 @@
 ---
 title: "Implementation status"
-description: "What exists in source, what is planned, and what has been deployed."
+description: "What is live on Base, what Stellar covers today, and where to find factory addresses."
 ---
 
-This documentation covers the intended Launchpad product and the implementation available in the sibling repositories. The review below is dated **18 October 2026**. Source support is separate from a verified network deployment.
+LumenRise is live on Base. Bonding curves, presales, and auctions all run there. The Base app is audited, production launches are open, and the launchpad has done more than $10k in volume.
+
+Stellar is the expansion network. This documentation still carries the Stellar factory, vault, and reputation details so that integration work can start before that network matches Base.
+
+The review below is dated **28 October 2026**.
 
 ## Feature availability
 
-| Capability | Current evidence |
-| --- | --- |
-| Bonding-curve launch factory and dedicated vaults | Implemented in contract source. |
-| Buy and sell quotes, price movement, and slippage limits | Implemented in contract source. |
-| Scheduled opening without a trading deadline | Implemented in contract source. |
-| Full distribution-account balance deposited into a vault | Implemented in contract source. This does not independently prove total asset supply. |
-| Pool, curve, and team allocation accounting | Implemented in contract source. |
-| Team cliff and stepped vesting | Implemented in contract source. |
-| Creator trading-fee claims | Implemented in contract source. |
-| Graduation threshold and preview | Implemented. Graduation stops curve trading. |
-| Graduation payouts, pool creation, and liquidity migration | Not implemented. Reserves and pool assets remain in the vault. |
-| Reputation scores, custom labels, and purchase gating | Implemented in contract source. Scores are written by the registry admin. |
-| Automatic X, GitHub, and Stellar activity scoring | Planned. No production scoring service is present. |
-| Account linking and reputation display | Prototype interface. Optional connections and scores can be simulated locally. |
-| Public browsing and Blux authentication | Present in the interface prototype. |
-| Integrated asset issuance and launch submission | Planned. The factory accepts existing SAC-backed assets. |
-| Auctions and presales | Planned. No corresponding contracts are present. |
-| Participant vesting and reputation-prioritized presale allocation | Planned. Current vesting is for the curve's team allocation. |
-| Public HTTP API and packaged SDK | Planned. The shared Rust reputation client exists. |
-| Installable launch CLI and natural-language creation | Planned. No package or executable is published by these repositories. |
+| Capability | Base | Stellar |
+| --- | --- | --- |
+| Bonding-curve factory and dedicated vaults | Live | Implemented in contract source. Mainnet factory address published. |
+| Buy and sell quotes, price movement, slippage limits | Live | Implemented in contract source. |
+| Presales | Live | Product format documented. Stellar sale contracts are part of the expansion. |
+| Auctions | Live | Product format documented. Stellar sale contracts are part of the expansion. |
+| Scheduled opening | Live | Implemented in contract source. No trading deadline on the current curve. |
+| Pool, curve, and team allocation accounting | Live | Implemented in contract source. |
+| Team cliff and stepped vesting | Live | Implemented in contract source. |
+| Creator trading-fee claims | Live | Implemented in contract source. |
+| Graduation | Live on Base | Implemented. Graduation stops curve trading. Settlement and pool creation are still source-limited on Stellar. |
+| Reputation scores, labels, and purchase gating | Access rules on the launch | Implemented in contract source. Scores are written by the registry admin. |
+| Automatic X, GitHub, and onchain scoring | Not the Base path | Planned. No production scoring service is present. |
+| Public app and wallet login | Live | Prototype interface with Blux. |
+| Public HTTP API, packaged SDK, launch CLI | Planned across networks | Planned. The shared Rust reputation client exists. |
 
 ## Deployment evidence
 
-The contract repository records an **8 October 2026 Testnet smoke test** of an older contract version. It predates reputation gating and the removal of trading deadlines. Its addresses are historical fixtures, not the current deployment directory.
+| Network | Record |
+| --- | --- |
+| Base | Live production network. Publish the factory address on [Base factory](/deployments/base). |
+| Stellar Mainnet | Reputation registry and launch factory addresses are on [Stellar Mainnet](/deployments/mainnet). |
+| Stellar Testnet | Historical 8 October 2026 fixtures only. See [Stellar Testnet](/deployments/testnet). |
 
-Mainnet reputation registry and launch factory addresses are published on the [Mainnet deployment page](/deployments/mainnet). No current Testnet deployment is verified by the supplied records.
+## How to read the rest of these docs
 
-## Current release limit
+Product guides (formats, creators, participants) describe the live Base launchpad first, then note Stellar where the path differs.
 
-The bonding-curve prototype stops buying and selling at graduation but does not settle the reserve or create a liquidity pool. The contract repository explicitly marks it unsuitable for a real-money launch. There is no independent security audit supplied with this version.
-
-Local tests and an older Testnet report do not establish production availability. The docs build does not execute contract tests or submit network transactions.
+Developer pages under Stellar contracts still describe the Soroban factory, vault, and reputation ABIs. That is intentional. Those pages are the Stellar expansion reference, not a claim that Stellar already matches every Base feature.

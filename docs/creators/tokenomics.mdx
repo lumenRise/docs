@@ -10,14 +10,14 @@ Creators choose the percentage of the launch supply assigned to public participa
 | Bucket | Purpose | Contract rule |
 | --- | --- | --- |
 | Curve | Inventory available for direct purchases | Must be greater than zero |
-| Pool | Asset reserve intended for future liquidity | Must be greater than zero |
-| Team | Assets released under team vesting | May be zero |
+| Pool | Token reserve intended for future liquidity | Must be greater than zero |
+| Team | Tokens released under team vesting | May be zero |
 
 The three percentages must sum to **100%**, represented as 10,000 basis points.
 
-For a 1,000,000-asset launch with 40% sale, 30% pool, and 30% team:
+For a 1,000,000-token launch with 40% sale, 30% pool, and 30% team:
 
-| Allocation | Basis points | Asset amount |
+| Allocation | Basis points | Token amount |
 | --- | --- | --- |
 | Curve sale | 4,000 | 400,000 |
 | Pool reserve | 3,000 | 300,000 |
@@ -28,9 +28,11 @@ Curve and team amounts round down to whole base units. The pool bucket receives 
 
 ## Deposited supply versus issued supply
 
-The factory deposits the owner's **entire balance of this asset**. Its recorded `total_supply` is that deposit. It cannot query the total amount issued across Stellar accounts and cannot enforce that future issuance is disabled.
+The factory deposits the owner's **entire balance of this token**. Its recorded `total_supply` is that deposit. It cannot query the total amount issued across the network and cannot enforce that future minting is disabled.
 
-If the public supply claim is 1,000,000 assets, the issuance and distribution records need to support it. Moving only 700,000 into the vault does not prove the remaining 300,000 does not exist.
+If the public supply claim is 1,000,000 tokens, the issuance and distribution records need to support it. Moving only 700,000 into the vault does not prove the remaining 300,000 does not exist.
+
+On Stellar this also means issuer controls sit outside the vault. On Base, review the ERC-20's mint and admin roles the same way.
 
 ## Price and valuation
 
@@ -42,4 +44,4 @@ For the current curve, virtual base reserves must exceed the sale bucket. The gr
 
 Treasury, ecosystem, advisor, marketing, or community allocations can be described in a project plan. The current curve has only three enforced buckets and one team recipient. Do not label additional profile categories as independently locked unless the corresponding custody and vesting mechanism actually exists.
 
-Auction and presale supply accounting, including unsold assets and participant vesting, remains part of their planned implementations.
+Auction and presale supply accounting, including unsold tokens and participant vesting, follows the live Base sale terms. On Stellar those formats are part of the expansion.
