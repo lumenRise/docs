@@ -3,20 +3,17 @@ title: "Sources and documentation scope"
 description: "Implementation sources, product decisions, and external reference material."
 ---
 
-The product description follows the creator's brief. Contract behavior follows the sibling source repositories reviewed on **18 October 2026**. Comparable launchpad documentation informed the organization, not claims about Launchpad's implementation.
+The product description follows the creator's brief. Base is the live production network. Stellar contract behavior follows the sibling source repositories. Comparable launchpad documentation informed the organization, not claims about Launchpad's implementation.
 
 ## Implementation sources
 
 | Source in the project workspace | Used for |
 | --- | --- |
-| `launchpad-contract/packages/launchpad-types/src/lib.rs` | Parameters, validation, allocations, integer math, and launch errors |
-| `launchpad-contract/contracts/factory/src/lib.rs` | Factory settings, registry selection, vault deployment, and deposit behavior |
-| `launchpad-contract/contracts/bonding-curve/src/lib.rs` | States, quotes, trades, positions, graduation, and claims |
-| `launchpad-contract/packages/reputation-types/src/lib.rs` | Scores, criteria, labels, and the shared client |
-| `launchpad-contract/contracts/reputation/src/lib.rs` | Administration, score replacement, label creation, and events |
-| `launchpad-contract/README.md` | Implementation boundaries and verification context |
-| `launchpad-contract/TESTNET.md` and `target/testnet-smoke.json` | Historical deployment evidence |
-| `interface/PRODUCT.md`, `DESIGN.md`, and `src/App.tsx` | User flows, existing visual identity, authentication, and prototype limitations |
+| `evm-contract/src/Factory.sol` | Base factory settings, pair token, vault deployment, and deposit behavior |
+| `evm-contract/src/BondingCurve.sol` | Base curve vault |
+| `evm-contract/script/Deploy.s.sol` | Base and Base Sepolia deploy path, including native Circle USDC |
+| `stellar-contract` / `launchpad-contract` packages and contracts | Stellar factory, vault, reputation, and historical Testnet evidence |
+| `interface` and `lumenrise-interface` | User flows, visual identity, authentication, and prototype limitations |
 
 These are workspace-relative source references, not public service URLs. Local implementation and network deployment are described separately throughout the docs.
 
@@ -30,14 +27,15 @@ These are workspace-relative source references, not public service URLs. Local i
 
 Launchpad does not inherit those platforms' chains, pricing mechanisms, score scales, verification policies, or settlement behavior.
 
-## Stellar and integration references
+## Chain and integration references
 
+- [Base](https://docs.base.org/): the live LumenRise network.
+- [Circle USDC on Base](https://developers.circle.com/stablecoins/usdc-contract-addresses): `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`.
 - [Stellar Asset Contract](https://developers.stellar.org/docs/tokens/stellar-asset-contract): how the same Stellar asset is used by accounts and contracts.
 - [Stellar RPC API reference](https://developers.stellar.org/docs/data/apis/rpc/api-reference): simulation, transaction results, and event-query methods.
-- [Circle's USDC directory](https://developers.circle.com/stablecoins/usdc-contract-addresses): an external source for network-specific USDC identity.
 
 ## Editorial conventions
 
-“Implemented in source” means a matching path exists in the reviewed code. It does not mean the current version is deployed. “Planned” means a requested product capability without a matching implementation or published service.
+Base is described as live. Stellar is described as the expansion, with factory and reputation source documented so integrators can start. “Implemented in source” means a matching path exists in the reviewed Stellar code. It does not mean that network already matches every Base feature.
 
-Examples are illustrative unless explicitly identified as historical transaction evidence. Proposed API and CLI interfaces are not advertised as callable endpoints or installed tools. Open auction and presale decisions are stated rather than filled in with invented mechanics.
+Examples are illustrative unless explicitly identified as historical transaction evidence. Proposed API and CLI interfaces are not advertised as callable endpoints or installed tools. Open auction and presale decisions on Stellar are stated rather than filled in with invented mechanics.

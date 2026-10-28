@@ -7,7 +7,7 @@ import DocStatus from '@site/src/components/DocStatus';
 
 <DocStatus />
 
-The HTTP API is intended to let applications use Launchpad reputation without implementing direct Soroban reads for every interaction. No production API base URL, OpenAPI specification, endpoint contract, or authentication scheme is supplied in the current repositories.
+The HTTP API is intended to let applications use Launchpad reputation and launch data without implementing direct chain reads for every interaction. No production API base URL, OpenAPI specification, endpoint contract, or authentication scheme is supplied in the current repositories.
 
 ## Intended capabilities
 
@@ -15,15 +15,17 @@ The HTTP API is intended to let applications use Launchpad reputation without im
 | --- | --- |
 | Reputation | Retrieve the separate social, GitHub, and onchain scores for a Stellar account |
 | Criteria | Inspect labels and evaluate access rules |
-| Launches | Read project information, format, asset identity, terms, and deployment references |
+| Launches | Read project information, format, token identity, terms, and deployment references |
 | Preparation | Validate configuration and prepare unsigned actions for user authorization |
-| Allocation | Expose settled auction or presale outcomes when those formats exist |
+| Allocation | Expose settled auction or presale outcomes |
 
 These are product capabilities to implement, not callable routes. An API consumer should not assume paths such as `/scores` or `/launches` exist.
 
+A launch record needs to name its network. Base and Stellar identities are not interchangeable.
+
 ## Identity and numeric representation
 
-A future API needs to distinguish network, registry, participant address, label ID, and asset identity. An asset code without an issuer or a label ID without its registry is ambiguous.
+A future API needs to distinguish network, registry, participant address, label ID, and token identity. A token symbol without its contract or issuer, or a label ID without its registry, is ambiguous.
 
 Monetary base units and large identifiers should be represented without JavaScript number precision loss. Final serialization, pagination, and error formats remain unpublished.
 
@@ -35,6 +37,6 @@ A score response should distinguish missing data, provider failure, stale eviden
 
 ## Direct integration today
 
-Use the [reputation contract](/developers/reputation-contract) through a Soroban client or the local Rust package. For launch state and trading, use the [launch ABI](/developers/launch-contracts).
+On Base, use the [Base factory](/deployments/base) and the live app. On Stellar, use the [reputation contract](/developers/reputation-contract) through a Soroban client or the local Rust package, and the [launch ABI](/developers/launch-contracts) for launch state and trading.
 
 A published API reference should replace this page only when the service has a real base URL, versioned schema, authentication model, limits, and examples verified against its implementation.

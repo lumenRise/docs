@@ -1,21 +1,32 @@
 ---
 title: "Developer overview"
-description: "Integrate launch contracts and reusable reputation."
+description: "Integrate the Base factory and the Stellar launch and reputation contracts."
 ---
 
-Launchpad has two integration surfaces: launching and interacting with Stellar assets, and consuming reputation for your own application.
+Launchpad has two integration surfaces: launching and interacting with tokens, and consuming reputation.
 
-## Available today in source
+Start on **Base**. That is the live factory, the audited production app, and the network with more than $10k in volume. **Stellar** is the expansion: factory, vault, and reputation contracts are documented here so you can integrate that network as it comes up.
+
+## Live on Base
+
+Copy the factory from [Base factory](/deployments/base). Bonding curves, auctions, and presales all run through the live app. The Base factory deploys a dedicated vault per bonding-curve launch and is constructed with Circle USDC as the pair token.
+
+| Task | Reference |
+| --- | --- |
+| Copy the Base factory | [Base factory](/deployments/base) |
+| Understand custody and dependencies | [Architecture](/developers/architecture) |
+| Choose a network and address | [Deployments](/deployments/overview) |
+
+## Stellar contracts in source
 
 The Rust workspace contains a launch factory, bonding-curve vault, reputation registry, and shared type packages. The interface is a separate React application with prototype launch and reputation data.
 
 | Task | Reference |
 | --- | --- |
-| Understand custody and dependencies | [Architecture](/developers/architecture) |
-| Create or trade a curve launch | [Launch contracts](/developers/launch-contracts) |
+| Create or trade a Stellar curve launch | [Launch contracts](/developers/launch-contracts) |
 | Read scores or enforce a label | [Reputation contract](/developers/reputation-contract) |
 | Interpret failures and registry events | [Events and errors](/developers/events-and-errors) |
-| Choose a network and address | [Deployments](/deployments/overview) |
+| Stellar Mainnet addresses | [Stellar Mainnet](/deployments/mainnet) |
 
 The shared Rust `ReputationClient` is implemented. It is not a published JavaScript SDK or an HTTP service.
 
@@ -23,18 +34,20 @@ The shared Rust `ReputationClient` is implemented. It is not a published JavaScr
 
 The [HTTP API](/developers/api) and [SDK](/developers/sdk) are intended to expose reputation, eligibility, launch information, and transaction preparation. Their endpoints, package names, and authentication contracts are not published.
 
-The [CLI and agent guide](/developers/cli) describes configuration-driven and natural-language launch creation. It explicitly separates proposed commands from the existing Stellar CLI.
+The [CLI and agent guide](/developers/cli) describes configuration-driven and natural-language launch creation.
 
 ## Integration principles
 
-Use network-specific asset and contract identities. Read configuration from the selected factory and vault rather than assuming every deployment uses the latest source.
+Use network-specific token and contract identities. A Base `0x` factory is not a Stellar `C...` contract.
 
-Keep amounts as integers in seven-decimal base units. Serialize `u64` values without losing precision. Generate or validate bindings against the actual contract specification.
+Read configuration from the selected factory and vault rather than assuming every deployment uses the latest source.
 
-Simulate Soroban invocations before signing and submitting. Verify final transaction results before reporting a launch, allocation, or claim as completed.
+Keep amounts as integers in the token's base units. Base USDC uses 6 decimals. Stellar assets used by the current factory use 7. Serialize large integers without losing precision.
+
+Simulate invocations before signing and submitting. Verify final transaction results before reporting a launch, allocation, or claim as completed.
 
 ## Reuse reputation independently
 
-A consuming contract can call the registry directly and apply custom criteria. It need not create a Launchpad launch. Decide which registry and admin you trust, what rule means for your product, and how you handle invocation failures or stale evidence.
+A consuming Stellar contract can call the registry directly and apply custom criteria. It need not create a Launchpad launch. Decide which registry and admin you trust, what the rule means for your product, and how you handle invocation failures or stale evidence.
 
-Mainnet reputation registry and launch factory addresses are listed in the [deployment directory](/deployments/overview). Check the deployed contract specification and [implementation status](/getting-started/status) before integrating.
+Check the deployed contract specification and [implementation status](/getting-started/status) before integrating.

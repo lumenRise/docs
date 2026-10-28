@@ -3,7 +3,9 @@ title: "Connect your accounts"
 description: "Link a Stellar identity with public social and developer profiles."
 ---
 
-Your Stellar account is the address used by the reputation registry. X and GitHub provide public activity signals that can be associated with that address through the intended verification flow.
+Reputation account linking is part of the Stellar expansion. Your Stellar account is the address used by the reputation registry. X and GitHub provide public activity signals that can be associated with that address through the intended verification flow.
+
+Base launches do not use this registry. Connect an EVM wallet there instead.
 
 ## Stellar account
 
@@ -31,6 +33,6 @@ Disconnecting an identity in the interface does not automatically erase a score 
 
 ## Current implementation
 
-Blux authentication is integrated into the interface. Some optional provider connections are locally simulated and generate illustrative scores. No production account-linking backend or evidence-verification pipeline is present in the supplied repositories.
+Blux authentication is integrated into the Stellar-facing interface. Some optional provider connections are locally simulated and generate illustrative scores. No production account-linking backend or evidence-verification pipeline is present in the supplied repositories.
 
 Only published registry values can support an onchain check. A locally displayed prototype score is not a signed attestation or an onchain score update.

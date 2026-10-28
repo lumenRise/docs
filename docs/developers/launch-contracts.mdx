@@ -3,7 +3,9 @@ title: "Launch contract reference"
 description: "Factory parameters, curve math, trade methods, and claim behavior."
 ---
 
-The current workspace exposes `LaunchpadFactory` and `BondingCurve`. This reference describes the source ABI, not the older Testnet fixtures.
+This page is the **Stellar** factory and vault ABI. For the live production factory, start at [Base factory](/deployments/base).
+
+The current Stellar workspace exposes `LaunchpadFactory` and `BondingCurve`. This reference describes the source ABI, not the older Testnet fixtures.
 
 ## Factory configuration
 
@@ -15,6 +17,8 @@ The current workspace exposes `LaunchpadFactory` and `BondingCurve`. This refere
   <Parameter name="curve_wasm_hash" type="BytesN<32>" required>Uploaded vault code to deploy.</Parameter>
   <Parameter name="reputation" type="Address" required>Fixed registry; its interface is checked at construction.</Parameter>
 </Parameters>
+
+The Base factory is constructed with `platform`, `platformFeeBps`, and a `pair` token. On Base mainnet that pair is Circle USDC. It does not take a WASM hash or a reputation registry.
 
 ## Launch parameters
 
@@ -52,7 +56,7 @@ Let `Vb` be virtual base reserves, `Vq` virtual quote reserves, and `s` the sold
 F(s) = ceil(Vq × s / (Vb - s))
 
 buy gross(a)  = F(s + a) - F(s)
-sell gross(a) = F(s) - F(s - a)
+sell gross(a)  = F(s) - F(s - a)
 
 current_price = ceil(Vq × Vb × 10^7 / (Vb - s)^2)
 ```
@@ -93,4 +97,4 @@ current_price = ceil(Vq × Vb × 10^7 / (Vb - s)^2)
 
 Methods returning monetary results use `Result<..., Error>`. Monetary amounts are `i128` base units. Timestamps and durations use `u64` seconds. The busy flag protects state during external transfers; it is not a user-controlled pause function.
 
-There is no auction, presale, graduation settlement, pool creation, parameter update, cancellation, or upgrade method in the current ABI.
+There is no auction, presale, graduation settlement, pool creation, parameter update, cancellation, or upgrade method in the current Stellar ABI. Those sale formats are live on Base.

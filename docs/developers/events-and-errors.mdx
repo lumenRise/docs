@@ -5,6 +5,8 @@ description: "Decode contract failures and consume reputation update events."
 
 Decode an error using the selected contract's specification. Numeric codes are local to a contract's error enum and can overlap across contracts.
 
+This table is the Stellar ABI. The live Base factory uses Solidity errors and events from `evm-contract/`.
+
 ## Launch errors
 
 | Code | Variant | Meaning |
@@ -45,8 +47,10 @@ The source defines these with `#[contractevent]`. Use the deployed specification
 
 ## Launch indexing
 
-The current factory and curve do not declare custom application-level creation or trade events. Do not invent event names such as `launch_created` or `presale_allocated` in an indexer.
+The current Stellar factory and curve do not declare custom application-level creation or trade events. Do not invent event names such as `launch_created` or `presale_allocated` in a Stellar indexer.
 
-Use factory enumeration, confirmed invocation results, vault reads, and SAC transfer events as appropriate. SAC transfers alone do not prove that a transfer was a registered purchase: unsolicited direct transfers are possible.
+The Base factory emits `FactoryConfigured` and `LaunchCreated`. Index those from the live factory on chain ID 8453.
 
-For event-query mechanics, see the [Stellar RPC reference](https://developers.stellar.org/docs/data/apis/rpc/api-reference). Store network, contract identity, transaction and ledger references, and an ingestion cursor when building an indexer.
+Use factory enumeration, confirmed invocation results, vault reads, and token transfer events as appropriate. Token transfers alone do not prove that a transfer was a registered purchase: unsolicited direct transfers are possible.
+
+For Stellar event-query mechanics, see the [Stellar RPC reference](https://developers.stellar.org/docs/data/apis/rpc/api-reference). Store network, contract identity, transaction references, and an ingestion cursor when building an indexer.
