@@ -1,25 +1,26 @@
 # Lumen Rise
 
-> Documentation for Stellar asset launches and reusable social, GitHub, and onchain reputation.
+> Documentation for token launches on Base, with Stellar next.
 
-Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. Mainnet reputation registry and launch factory addresses are listed in the deployment directory. Historical Testnet fixtures must not be used as current addresses.
+LumenRise is live on Base with bonding curves, presales, and auctions. The Base app is audited and has done more than $10k in volume. Stellar is the expansion network; its factory, vault, and reputation contracts are documented here. Copy the Base factory from /deployments/base. Stellar Mainnet factory and registry addresses are on /deployments/mainnet. Historical Stellar Testnet fixtures must not be used as current addresses.
 
 ## Documentation
 
 - [Introduction](/)
 - [Fees and proceeds](/concepts/fees)
 - [Launch lifecycle](/concepts/lifecycle)
-- [XLM and USDC](/concepts/quote-assets)
-- [Stellar assets and locked supply](/concepts/stellar-assets)
+- [USDC, ETH gas, and XLM](/concepts/quote-assets)
+- [Tokens and locked supply](/concepts/stellar-assets)
 - [Cliffs, vesting, and claims](/concepts/vesting)
 - [Create a launch](/creators/create-launch)
 - [Set participation rules](/creators/eligibility)
 - [Manage a launch](/creators/manage-launch)
 - [Project profile and team](/creators/project-profile)
 - [Supply and tokenomics](/creators/tokenomics)
-- [Mainnet deployments](/deployments/mainnet)
+- [Base factory](/deployments/base)
+- [Stellar Mainnet](/deployments/mainnet)
 - [Deployment directory](/deployments/overview)
-- [Testnet deployments](/deployments/testnet)
+- [Stellar Testnet](/deployments/testnet)
 - [HTTP API](/developers/api)
 - [Architecture](/developers/architecture)
 - [CLI and agents](/developers/cli)

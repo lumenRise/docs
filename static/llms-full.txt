@@ -1,36 +1,44 @@
 # Lumen Rise documentation
 
-Bonding curves, team vesting, and the administered reputation registry exist in source. Auctions, presales, production scoring, HTTP API, packaged application SDK, and launch CLI are planned. Mainnet reputation registry and launch factory addresses are listed in the deployment directory. Historical Testnet fixtures must not be used as current addresses.
+LumenRise is live on Base with bonding curves, presales, and auctions. The Base app is audited and has done more than $10k in volume. Stellar is the expansion network; its factory, vault, and reputation contracts are documented here. Copy the Base factory from /deployments/base. Stellar Mainnet factory and registry addresses are on /deployments/mainnet. Historical Stellar Testnet fixtures must not be used as current addresses.
 
 # Introduction
 
 Route: /
 
-Lumen Rise brings asset launches and reusable reputation to Stellar. Projects choose how to raise, how to distribute their asset, and who can participate. Participants build a reputation they can use across launches and other applications.
+LumenRise is live on Base.
 
-:::info[Product and implementation]
-Bonding curves, team vesting, and the administered reputation registry exist in contract source. Auctions, presales, production scoring, API, SDK, and the launch CLI are planned. No deployment of the current source version is verified. [Check implementation status](/getting-started/status) before integrating.
+The launchpad supports bonding curves, presales, and auctions. The Base app is in production, the contracts are audited, and the launchpad has done more than $10k in volume.
+
+We are expanding to Stellar next. Same product, same launch formats, second network.
+
+:::info[Where to launch]
+Base is the live network. Use it for production launches. Stellar is the expansion: factory and reputation contracts are documented here, and that network is still being brought up to the Base feature set.
 :::
 
 ## How Launchpad works
 
-A creator defines the asset, supply allocation, XLM or USDC quote asset, opening date, pricing, and vesting terms. The launch holds the allocated supply in a dedicated Soroban vault. Participation follows the selected format; team assets unlock through a separate vesting schedule.
+A creator picks a network, a launch format, the token, supply split, quote asset, opening time, pricing, and vesting. The factory deploys a dedicated vault and locks the launch supply there. Participants then trade, bid, or join the presale under the published terms.
 
-Intended flow: issue a Stellar asset, lock launch supply in a dedicated vault, then open format-specific participation. Team assets follow their own vesting schedule.
+Intended flow: issue an ERC-20 on Base or a Stellar asset, lock launch supply in a dedicated vault, then open a bonding curve, auction, or presale. Team tokens follow their own vesting schedule.
 
-The product uses **Stellar assets**, identified by their code and issuer. The Stellar Asset Contract gives the vault access to the same asset on Soroban. It does not create a separate wrapped asset.
+On Base the launch token is an ERC-20 and the quote asset is USDC. On Stellar the launch token is a Stellar asset, reached from contracts through the Stellar Asset Contract, with XLM or USDC as the quote.
 
 ## Three ways to launch
 
 | Format | Pricing and participation | Status |
 | --- | --- | --- |
-| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as assets are bought and sold. Trading opens at the start date and continues until graduation. | Contract prototype |
-| [Auction](/launches/auctions) | Participants submit bids; higher-priced bids receive allocation priority. Bid during the auction window, then settle the result and claim. | Planned |
-| [Presale](/launches/presales) | The creator sets a fixed sale price. Commit quote assets, receive a final allocation, and claim under the published vesting terms. | Planned |
+| [Bonding curve](/launches/bonding-curves) | A reserve formula changes the price as tokens are bought and sold. Trading opens at the start date and continues until graduation. | Live on Base |
+| [Auction](/launches/auctions) | Participants submit bids. Higher-priced bids get allocation priority. Bid during the window, settle, then claim. | Live on Base |
+| [Presale](/launches/presales) | The creator sets a fixed price. Commit quote tokens, take a final allocation, and claim under the published vesting terms. | Live on Base |
+
+Stellar launches use the same three formats as that network comes online. The Stellar factory source is farthest along on bonding curves.
 
 ## Reputation that travels
 
-Connect a Stellar account, X, and GitHub to establish three separate signals: **onchain**, **social**, and **GitHub** reputation. Projects can use these signals to define access criteria or prioritize allocations. Other applications can reuse the same reputation through onchain checks, with API and SDK access planned.
+On Stellar, connect a Stellar account, X, and GitHub to build **onchain**, **social**, and **GitHub** reputation. Projects can use those signals for access rules or allocation priority. Other apps can reuse the same registry.
+
+This is part of the Stellar expansion. Base launches can still use the access rules you publish on the launch page.
 
 [Understand reputation](/reputation/overview) or [define custom criteria](/reputation/criteria).
 
@@ -38,25 +46,28 @@ Connect a Stellar account, X, and GitHub to establish three separate signals: **
 
 | I want to… | Start here |
 | --- | --- |
-| Launch an asset | [Create a launch](/creators/create-launch) |
+| Launch a token | [Create a launch](/creators/create-launch) |
 | Buy, bid, or join a presale | [Participant guide](/participants/getting-started) |
-| Build my reputation | [Connect accounts](/reputation/connect-accounts) |
-| Integrate reputation or launch creation | [Developer overview](/developers/overview) |
-| Check contract addresses | [Deployments](/deployments/overview) |
+| Build reputation on Stellar | [Connect accounts](/reputation/connect-accounts) |
+| Integrate the factory or a launch | [Developer overview](/developers/overview) |
+| Copy Base factory addresses | [Base deployments](/deployments/base) |
+| Copy Stellar contract addresses | [Stellar Mainnet](/deployments/mainnet) |
 
-## Build with Lumen Rise
+## Build with LumenRise
 
-Use the contract references to inspect source-level launch and reputation behavior. The shared Rust reputation client exists; a public HTTP API, packaged application SDK, and launch CLI remain planned.
+Start with the live Base factory, then the Stellar contract references if you are integrating that network.
 
 
-  - [Developer overview](/developers/overview): Find the contracts, integration boundaries, and available tooling.
-  - [Deployment directory](/deployments/overview): Distinguish historical Testnet fixtures from verified releases.
+  - [Base factory](/deployments/base): Factory and quote-asset addresses on Base.
+  - [Developer overview](/developers/overview): Base factory, Stellar contracts, and integration boundaries.
 
 # Fees and proceeds
 
 Route: /concepts/fees
 
 The current curve separates trading fees from the quote reserve. Amounts are recorded in the launch's quote asset. Network transaction costs are separate.
+
+On Base that quote is USDC, and gas is paid in ETH. On Stellar the quote is XLM or USDC, and network fees are paid in XLM.
 
 ## Creator trading fee
 
@@ -68,7 +79,7 @@ The current curve separates trading fees from the quote reserve. Amounts are rec
 
 For example, a 100 USDC gross buy with a 100 bps fee costs 101 USDC before network fees. A 100 USDC gross sell with the same fee returns 99 USDC.
 
-The owner withdraws accrued fees with `claim_creator_fees(recipient)`. This does not withdraw trading reserves, direct donations, or a graduation payout. Keeping fee withdrawals separate lets trading continue even when the owner's receiving trustline needs attention.
+The owner withdraws accrued fees with the vault's fee-claim method. This does not withdraw trading reserves, direct donations, or a graduation payout. Keeping fee withdrawals separate lets trading continue even when the owner's receiving account needs attention.
 
 ## Graduation accounting
 
@@ -76,36 +87,38 @@ The owner withdraws accrued fees with `claim_creator_fees(recipient)`. This does
 
 The platform fee is capped at 1,000 bps. Creator payout plus platform fee cannot exceed 10,000 bps. The creator cannot override the factory's platform fee for an individual launch.
 
-These amounts are exposed through `graduation_preview()`. **The current contract does not pay them out or create a pool.** A preview is not withdrawable proceeds.
+On Stellar these amounts are exposed through `graduation_preview()`. The current Stellar contract does not pay them out or create a pool. A preview is not withdrawable proceeds. On Base, follow the live launch for settlement.
 
 ## Basis points
 
 `100 bps = 1%` and `10,000 bps = 100%`. Allocation percentages and fee percentages are different parameters and should be reviewed separately.
 
-## Network fees and reserves
+## Network fees
 
-Stellar transactions consume XLM for network fees. Accounts also need sufficient reserves for entries such as trustlines. Resource costs depend on the transaction and network conditions; use simulation rather than a fixed fee promise.
+Base transactions consume ETH for gas. Stellar transactions consume XLM for network fees, and accounts also need sufficient reserves for entries such as trustlines. Resource costs depend on the transaction and network conditions; use simulation rather than a fixed fee promise.
 
-No auction or presale fee schedule is implemented or published by the supplied repositories. A future sale must disclose fees and proceeds-release rules before accepting commitments.
+Auction and presale fee schedules are published on the live Base launch. A Stellar sale must disclose fees and proceeds-release rules before accepting commitments.
 
 # Launch lifecycle
 
 Route: /concepts/lifecycle
 
-A launch has a project profile, a configured asset and supply, a participation phase, and distribution rules. Those product stages do not all map to the same onchain state machine.
+A launch has a project profile, a configured token and supply, a participation phase, and distribution rules. Those product stages do not all map to the same onchain state machine.
+
+Base is the live network for bonding curves, auctions, and presales. Stellar uses the same product flow, with bonding-curve states already in the factory and vault source.
 
 ## Shared product flow
 
 **Configure → issue and deposit → schedule → participate → distribute or settle → claim.**
 
-The creator prepares the profile, allocation, quote asset, prices, dates, and eligibility before signing. The intended issuance flow creates the asset and deposits the supply. Once the format opens, participants trade, bid, or commit. The format's settlement and vesting terms determine what happens next.
+The creator prepares the profile, allocation, quote asset, prices, dates, and eligibility before signing. The intended issuance flow creates the token and deposits the supply. Once the format opens, participants trade, bid, or commit. The format's settlement and vesting terms determine what happens next.
 
 ## Current bonding-curve states
 
 | State | Condition | Trading |
 | --- | --- | --- |
-| `Scheduled` | Ledger timestamp is before `starts_at` | No buys or sells |
-| `Open` | Ledger timestamp is at or after `starts_at`, before graduation | Eligible buys and recorded-position sell-backs |
+| `Scheduled` | Chain time is before `starts_at` | No buys or sells |
+| `Open` | Chain time is at or after `starts_at`, before graduation | Eligible buys and recorded-position sell-backs |
 | `Graduated` | A successful buy reaches or exceeds the net reserve target | Buys and sells permanently stop |
 
 There is no `ends_at` field and no `Failed` state in the current curve. A launch that has not graduated remains open, even if its target takes years to reach. A start time in the past opens the curve immediately on creation.
@@ -114,7 +127,7 @@ There is no `ends_at` field and no `Failed` state in the current curve. A launch
 
 Graduation is triggered inside the buy that reaches the target. No keeper or separate finalization call is needed to change that state. The whole purchase is accepted, subject to the buyer's payment limit, so the reserve can exceed the target.
 
-In the prototype, graduation stops trading without releasing the quote reserve or creating a pool. `graduation_preview` is accounting only. Future settlement must also reconcile the final curve price with pool funding and allocation.
+On Base, follow the live launch for how graduation settles. On the Stellar prototype, graduation stops trading without releasing the quote reserve or creating a pool. `graduation_preview` is accounting only. Future settlement must also reconcile the final curve price with pool funding and allocation.
 
 ## Vesting runs on its own clock
 
@@ -122,75 +135,83 @@ Team vesting uses the configured launch start as its reference. It does not wait
 
 ## Auction and presale phases
 
-Auctions need bidding, close, settlement, and claim phases. Presales need commitments, allocation, proceeds/refund settlement, and participant claims. These are planned product stages, not existing contract enum values.
+Auctions need bidding, close, settlement, and claim phases. Presales need commitments, allocation, proceeds/refund settlement, and participant claims. Those stages are live on Base. On Stellar they are part of the expansion, not existing contract enum values.
 
 See [auctions](/launches/auctions), [presales](/launches/presales), and [vesting](/concepts/vesting) for their different timing rules.
 
-# XLM and USDC
+# USDC, ETH gas, and XLM
 
 Route: /concepts/quote-assets
 
-The quote asset is what participants pay and what the launch collects. The product's quote choices are **XLM** and **USDC on Stellar**. The project asset is the separate asset being sold.
+The quote asset is what participants pay and what the launch collects. The project token is the separate token being sold.
 
-| | XLM | USDC |
-| --- | --- | --- |
-| Asset type | Stellar native asset | Issued Stellar asset |
-| Price expression | XLM per project asset | USDC per project asset |
-| Participant setup | XLM balance | USDC balance and a valid trustline |
-| Transaction fees | Paid in XLM | Still paid in XLM |
-| Identity check | Network and native SAC | Network, issuer, and USDC SAC |
+On **Base**, every launch quotes in **USDC**. Participants also need ETH for gas. On **Stellar**, the product quote choices are **XLM** and **USDC on Stellar**.
+
+| | Base USDC | Stellar XLM | Stellar USDC |
+| --- | --- | --- | --- |
+| Asset type | Native Circle USDC on Base | Stellar native asset | Issued Stellar asset |
+| Price expression | USDC per launch token | XLM per project asset | USDC per project asset |
+| Participant setup | USDC balance plus ETH for gas | XLM balance | USDC balance and a valid trustline |
+| Transaction fees | Paid in ETH | Paid in XLM | Still paid in XLM |
+| Identity check | Chain ID 8453 and USDC address | Network and native SAC | Network, issuer, and USDC SAC |
 
 ## What the choice changes
 
-Prices, commitments, trading fees, the curve's graduation target, and eventual proceeds are denominated in the selected quote asset. A target of 50,000 XLM is not a target of 50,000 USDC.
+Prices, commitments, trading fees, the curve's graduation target, and eventual proceeds are denominated in the selected quote asset. A target of 50,000 USDC on Base is not a target of 50,000 XLM on Stellar.
 
-A launch uses one quote asset. The current contracts do not perform currency conversion or accept arbitrary payment assets for a single launch.
+A launch uses one quote asset. The contracts do not perform currency conversion or accept arbitrary payment tokens for a single launch.
 
 ## Network-specific identity
 
-Use the deployed SAC for the selected network. Testnet balances and contract addresses are separate from Mainnet. An arbitrary asset named `USDC` is not sufficient proof of the issuer.
+Use the deployed token for the selected network.
 
-The [Circle contract directory](https://developers.circle.com/stablecoins/usdc-contract-addresses) is an external source for USDC identity. Confirm the network and issuer before configuration; the supplied project records do not publish an approved current USDC address list.
+On Base, native Circle USDC is [`0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`](https://basescan.org/token/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913). The Base factory is constructed with that pair and rejects a different quote.
+
+On Stellar, Testnet balances and contract addresses are separate from Mainnet. An arbitrary asset named `USDC` is not sufficient proof of the issuer. The [Circle contract directory](https://developers.circle.com/stablecoins/usdc-contract-addresses) is an external source for USDC identity.
 
 ## Contract behavior
 
-The current factory accepts a `pair` SAC address and validates its executable and decimals. It does **not** enforce an XLM/USDC allowlist. The two-choice product interface therefore needs its own reviewed network configuration.
+The Base factory stores one pair token at construction.
 
-Use seven-decimal integer amounts in contract calls. One whole unit is `10_000_000` base units. Use decimal-string parsing or integer arithmetic rather than JavaScript floating-point multiplication.
+The Stellar factory accepts a `pair` SAC address and validates its executable and decimals. It does **not** enforce an XLM/USDC allowlist. The two-choice product interface therefore needs its own reviewed network configuration.
+
+Keep amounts as integers in the token's base units. Base USDC uses 6 decimals. Stellar assets used by the current factory use 7 decimals. Use decimal-string parsing or integer arithmetic rather than JavaScript floating-point multiplication.
 
 ## Price is format-specific
 
 On a curve, the initial price comes from the virtual-reserve ratio and changes with trades. In an auction, bids determine the result under the settlement rules. In a presale, the creator's fixed price determines how accepted quote funds convert into allocation.
 
-# Stellar assets and locked supply
+# Tokens and locked supply
 
 Route: /concepts/stellar-assets
 
-Launchpad uses Stellar assets. An issued asset is identified by an **asset code and issuer account**, such as a project code paired with its issuer's `G...` address. A code by itself does not identify an asset.
+Launchpad locks launch supply in a dedicated vault. The token type depends on the network.
 
-XLM is Stellar's native asset and has no issuer. The [Stellar Asset Contract](https://developers.stellar.org/docs/tokens/stellar-asset-contract) lets Soroban contracts hold and transfer both native and issued Stellar assets. Its `C...` address is a contract interface to the same underlying asset.
+On **Base**, the launch token is an ERC-20. The factory reads the creator's token balance, deploys a vault, and pulls that balance in. USDC on Base is the quote.
+
+On **Stellar**, the launch token is a Stellar asset, identified by an **asset code and issuer account**, such as a project code paired with its issuer's `G...` address. A code by itself does not identify an asset. XLM is Stellar's native asset and has no issuer. The [Stellar Asset Contract](https://developers.stellar.org/docs/tokens/stellar-asset-contract) lets Soroban contracts hold and transfer both native and issued Stellar assets. Its `C...` address is a contract interface to the same underlying asset.
 
 ## Intended issuance flow
 
 The complete launch flow is designed to:
 
 
-1. Create the issuer and distribution arrangement for the project asset.
+1. Create the token. On Base, deploy or reuse an ERC-20. On Stellar, create the issuer and distribution arrangement.
 
 
-2. Issue the configured supply to the distribution account.
+2. Issue the configured supply to the distribution account or creator wallet.
 
 
-3. Establish and publish the asset's issuance and administrative controls.
+3. Establish and publish the token's administrative controls.
 
 
-4. Deploy or locate its SAC on the selected network.
+4. On Stellar, deploy or locate its SAC on the selected network. On Base, confirm the ERC-20 address and decimals.
 
 
 5. Transfer the launch supply from the distribution account into the dedicated vault.
 
 :::note[Current factory]
-The current factory begins at this step. It does not create an issuer, issue an asset, or disable future issuance.
+The Stellar factory begins at this step. It does not create an issuer, issue an asset, or disable future issuance. The Base factory likewise expects an existing ERC-20 and an approval for the deposited balance.
 :::
 
 
@@ -198,21 +219,21 @@ The current factory begins at this step. It does not create an issuer, issue an 
 
 ## What the vault receives
 
-The factory reads the launch owner's full asset balance, creates a new vault, transfers that balance, and verifies that the owner's balance became zero. The vault records the amount deposited as its launch supply.
+The factory reads the launch owner's full token balance, creates a new vault, transfers that balance, and verifies that the owner's balance became zero. The vault records the amount deposited as its launch supply.
 
-The SAC interface has no total-supply getter. This transfer cannot prove that other accounts hold no assets or that the issuer cannot issue more. A fixed-supply claim needs separate evidence about issuance, distribution, and remaining administrative authority.
+That transfer cannot prove that other accounts hold no tokens or that the issuer or admin cannot mint more. A fixed-supply claim needs separate evidence about issuance, distribution, and remaining administrative authority.
 
 ## What is locked
 
-The vault accounts for the pool reserve, sale inventory, and team allocation. These buckets have different permitted uses. Team assets follow vesting; curve inventory is distributed through trades; pool assets are reserved for future settlement.
+The vault accounts for the pool reserve, sale inventory, and team allocation. These buckets have different permitted uses. Team tokens follow vesting; curve inventory is distributed through trades; pool tokens are reserved for future settlement.
 
-A contract lock does not neutralize asset-level issuer powers. Authorization and clawback settings can affect balances held in a vault. Review issuer controls as well as contract code.
+A contract lock does not neutralize token-level admin powers. On Stellar, authorization and clawback settings can affect balances held in a vault. On Base, review mint, pause, and blacklist controls on the ERC-20. Review those controls as well as contract code.
 
-## Trustlines and precision
+## Network setup and precision
 
-Classic accounts need the required trustlines for issued assets they receive. XLM does not need a trustline. These launch contracts do not create trustlines for users.
+On Base, approve the factory (or the sale contract) to spend the launch token, and hold USDC plus ETH for gas.
 
-The current factory accepts only host-verified Stellar Asset Contracts with seven decimals for both the project asset and quote asset. A custom contract implementing a similar token interface is rejected.
+On Stellar, classic accounts need the required trustlines for issued assets they receive. XLM does not need a trustline. These launch contracts do not create trustlines for users. The current Stellar factory accepts only host-verified Stellar Asset Contracts with seven decimals for both the project asset and quote asset. A custom contract implementing a similar token interface is rejected.
 
 [Configure supply allocations](/creators/tokenomics) or [choose the quote asset](/concepts/quote-assets).
 
@@ -220,7 +241,7 @@ The current factory accepts only host-verified Stellar Asset Contracts with seve
 
 Route: /concepts/vesting
 
-Vesting makes an allocation claimable over time. A **cliff** delays the start of release. A **claim** transfers assets that have already unlocked; time passing does not automatically send them to an account.
+Vesting makes an allocation claimable over time. A **cliff** delays the start of release. A **claim** transfers tokens that have already unlocked; time passing does not automatically send them to an account.
 
 ## Team vesting in the current curve
 
@@ -238,7 +259,7 @@ With a nonzero duration, nothing is claimable at or before the cliff boundary. A
 
 ## Worked example
 
-A launch allocates 300,000 assets to the team, with a 30-day cliff and 300-day duration using 30-day steps.
+A launch allocates 300,000 tokens to the team, with a 30-day cliff and 300-day duration using 30-day steps.
 
 | Time from launch start | Total vested |
 | --- | --- |
@@ -252,9 +273,9 @@ The cliff is followed by the vesting duration. This example takes 330 days from 
 
 ## Claiming
 
-`claimable_team()` returns unlocked assets minus assets already claimed. `claim_team()` requires the launch owner's authorization and transfers the claim to that owner. The current contract has one team bucket and one owner recipient; it does not split vesting among multiple team members.
+The vault reports unlocked team tokens minus tokens already claimed. The owner authorizes the claim and receives the unlocked amount. The current contract has one team bucket and one owner recipient; it does not split vesting among multiple team members.
 
-A failed asset transfer rolls the transaction back. A missing, frozen, or full recipient trustline must be resolved before an issued-asset claim can succeed.
+A failed token transfer rolls the transaction back. On Stellar, a missing, frozen, or full recipient trustline must be resolved before an issued-asset claim can succeed. On Base, the owner needs to be able to receive the ERC-20.
 
 ## Immediate release
 
@@ -262,27 +283,29 @@ Setting both cliff and duration to zero makes the whole team allocation immediat
 
 ## Participant vesting
 
-Current curve buyers receive their purchased asset during the buy. They do not receive a participant vesting entitlement.
+Current curve buyers receive their purchased token during the buy. They do not receive a participant vesting entitlement.
 
-Auctions and presales are intended to support their own published participant schedules. Those schedules must be kept separate from the current team-vesting implementation and are not implemented in the supplied contracts.
+Auctions and presales support their own published participant schedules on Base. Those schedules must be kept separate from the current team-vesting implementation. On Stellar they are part of the expansion.
 
 # Create a launch
 
 Route: /creators/create-launch
 
-The intended creation flow turns a complete project configuration into a scheduled Stellar asset launch. Prepare the economic terms before authorizing any asset issuance or transfer.
+The creation flow turns a complete project configuration into a scheduled launch. Prepare the economic terms before authorizing any token issuance or transfer.
+
+Base is the live network. Bonding curves, presales, and auctions all run there. Stellar is the expansion; its factory currently exposes bonding-curve creation.
 
 ## Prepare your project
 
-Choose the project name, asset code, supply, description, logo, website, team members, and relevant links. Explain the product, the use of raised funds, and the purpose of the asset. See [project profiles](/creators/project-profile).
+Choose the project name, token symbol, supply, description, logo, website, team members, and relevant links. Explain the product, the use of raised funds, and the purpose of the token. See [project profiles](/creators/project-profile).
 
-Use a distinct distribution account to hold the supply intended for the vault. The current factory's `owner` is the distribution account and the recipient for team claims.
+Use a distinct distribution wallet to hold the supply intended for the vault. The current factory's `owner` is the distribution account and the recipient for team claims.
 
 ## Select the format
 
 Choose a [bonding curve](/launches/bonding-curves), [auction](/launches/auctions), or [presale](/launches/presales). Format-specific pricing and settlement fields should only appear for the selected format.
 
-Auctions and presales are planned. The current factory exposes only `create_bonding_curve`.
+On Base, all three formats are live. On Stellar, the factory exposes `create_bonding_curve`.
 
 ## Set supply percentages
 
@@ -290,15 +313,15 @@ Define what percentage belongs to the sale, future liquidity, and team. The curr
 
 Other tokenomics categories can be explained in the project profile, but the current vault does not create extra treasury, campaign, or advisor buckets.
 
-## Choose XLM or USDC
+## Choose the quote asset
 
-Pick the quote asset and verify its network-specific identity. Every price, contribution, target, and quote-denominated fee for this launch uses that asset.
+On Base, the quote is USDC. On Stellar, pick XLM or USDC and verify its network-specific identity. Every price, contribution, target, and quote-denominated fee for this launch uses that asset.
 
 ## Set prices and dates
 
 For a curve, choose the initial price, reserve shape, graduation target, creator fee, and intended creator payout share. The initial price and target must correspond to a valid reserve configuration; they are not unconstrained independent numbers.
 
-For an auction, the planned configuration includes the bidding window and price constraints. For a presale, it includes the fixed price, funding goal, commitment window, and allocation policy.
+For an auction, the configuration includes the bidding window and price constraints. For a presale, it includes the fixed price, funding goal, commitment window, and allocation policy.
 
 Use UTC timestamps when reviewing final terms. Current curve trading opens at `starts_at` and has no end date.
 
@@ -306,29 +329,35 @@ Use UTC timestamps when reviewing final terms. Current curve trading opens at `s
 
 Choose the team's cliff, duration, and release interval. Review the actual first release and final release dates. With both durations set to zero, the team allocation is immediately claimable.
 
-Choose open participation or an existing [reputation label](/reputation/criteria). A nonzero label must exist in the factory's registry. Planned presales also need participant vesting and an oversubscription policy.
+Choose open participation or, on Stellar, an existing [reputation label](/reputation/criteria). A nonzero label must exist in the factory's registry. Presales also need participant vesting and an oversubscription policy.
 
 ## Review and launch
 
-The review should identify the asset code and issuer, selected network, full supply plan, vault deposit, allocation percentages, quote asset, prices, fees, dates, vesting, and access rules. It should also distinguish onchain terms from profile information.
+The review should identify the token, selected network, full supply plan, vault deposit, allocation percentages, quote asset, prices, fees, dates, vesting, and access rules. It should also distinguish onchain terms from profile information.
 
-The intended **Launch** action coordinates asset creation and vault deployment. The current implementation requires an already-issued asset and a direct factory invocation; the interface does not yet provide the complete transaction flow.
+The **Launch** action coordinates token setup and vault deployment. Confirm you are signing on Base for a production launch, and copy the factory from [Base factory](/deployments/base).
 
-After creation, verify the returned vault, its recorded configuration, and its deposit. The current contracts do not expose a launch-parameter editor or cancellation method. Do not assume a mistaken start date, price, or vesting schedule can be changed later.
+The Stellar path still requires an already-issued asset and a direct factory invocation.
+
+After creation, verify the returned vault, its recorded configuration, and its deposit. The current Stellar contracts do not expose a launch-parameter editor or cancellation method. Do not assume a mistaken start date, price, or vesting schedule can be changed later.
 
 # Set participation rules
 
 Route: /creators/eligibility
 
-A launch can accept any eligible buyer who signs and pays, or require the buyer to pass a reputation label from the factory's registry.
+A launch can accept any eligible buyer who signs and pays, or require extra access rules.
+
+On Base, publish those rules on the launch page. On Stellar, a launch can require the buyer to pass a reputation label from the factory's registry.
 
 ## Open participation
 
-Set `reputation_label` to `0`. This disables the curve's reputation check. Time, balance, trustline, inventory, and slippage rules still apply.
+On Stellar, set `reputation_label` to `0`. This disables the curve's reputation check. Time, balance, trustline, inventory, and slippage rules still apply.
 
 Label `0` is a reserved sentinel. Real labels begin at `1`.
 
 ## Gate by reputation
+
+This path is part of the Stellar expansion.
 
 Choose an existing label or create one with the desired thresholds. Inspect its registry, ID, creator, and criteria before attaching it to a launch. Names can repeat; the ID is the actual reference.
 
@@ -344,55 +373,57 @@ Every configured threshold uses strict **greater than** comparison. A social sco
 
 ## What “verified only” means
 
-The product intends to let creators select verified participants. The current registry has scores and thresholds, but no dedicated identity-verification or KYC flag. A positive-score threshold proves only that a registered score passes the rule.
+The product intends to let creators select verified participants. The current Stellar registry has scores and thresholds, but no dedicated identity-verification or KYC flag. A positive-score threshold proves only that a registered score passes the rule.
 
 An actual verified-only policy needs a defined verification process and an enforceable representation. Do not equate an X or GitHub connection, a score, or a public wallet address with legal identity verification.
 
 ## When checks happen
 
-A gated curve evaluates current scores on **every buy**. The label is immutable, but score updates can change whether the buyer passes. The creator does not need to pass the label to create the launch.
+A gated Stellar curve evaluates current scores on **every buy**. The label is immutable, but score updates can change whether the buyer passes. The creator does not need to pass the label to create the launch.
 
 Quotes do not enforce eligibility. Use `is_eligible(address)` for a preliminary check, then simulate the signed purchase. That preliminary result is not a reservation.
 
 ## Exit rights
 
-Reputation gates purchases. It does not gate an existing buyer's sell-back before graduation, creator fee claims, or team claims. It also does not restrict ordinary later transfers of the asset.
+Reputation gates purchases. It does not gate an existing buyer's sell-back before graduation, creator fee claims, or team claims. It also does not restrict ordinary later transfers of the token.
 
-Presale ranking is a separate planned use of reputation. A threshold label answers a boolean access question; it does not sort participants or allocate oversubscribed commitments.
+Presale ranking is a separate use of reputation, live on Base where the sale publishes it. A threshold label answers a boolean access question; it does not sort participants or allocate oversubscribed commitments.
 
 # Manage a launch
 
 Route: /creators/manage-launch
 
-After creation, the vault's recorded configuration is the source for onchain terms. The current contracts expose read methods and claims, rather than a general launch-management editor.
+After creation, the vault's recorded configuration is the source for onchain terms. The contracts expose read methods and claims, rather than a general launch-management editor.
+
+On Base, start from the live launch page and the [Base factory](/deployments/base). The method names below are the Stellar vault ABI.
 
 ## Verify the launch
 
-Record the factory, vault address, network, creation transaction, asset identity, and quote asset. Read `get_config()` to check allocation buckets, start time, fee settings, virtual reserves, target, team vesting, and reputation label.
+Record the factory, vault address, network, creation transaction, token identity, and quote asset. Read `get_config()` to check allocation buckets, start time, fee settings, virtual reserves, target, team vesting, and reputation label.
 
-Use `get_state()` for sold inventory, recorded quote reserves, accrued creator fees, claimed team assets, buyer count, and graduation state. `status()` provides the scheduled/open/graduated interpretation.
+Use `get_state()` for sold inventory, recorded quote reserves, accrued creator fees, claimed team tokens, buyer count, and graduation state. `status()` provides the scheduled/open/graduated interpretation.
 
 The factory enumerates registered launches with `launch_count()` and `launch_at(index)`. Current registered indexes begin at **1**.
 
 ## Withdraw trading fees
 
-Read `get_state().creator_fees`. The owner can call `claim_creator_fees(recipient)` for a receiving address with the required quote-asset trustline. A failed transfer preserves the fee balance through transaction rollback.
+Read `get_state().creator_fees`. The owner can call `claim_creator_fees(recipient)` for a receiving address that can hold the quote token. A failed transfer preserves the fee balance through transaction rollback.
 
 Trading-fee claims do not change the recorded curve reserve and do not collect future graduation proceeds.
 
-## Claim team assets
+## Claim team tokens
 
-Read `claimable_team()` before calling `claim_team()`. The owner authorizes the claim and receives the unlocked asset. Review [vesting](/concepts/vesting) for the exact release schedule and zero-duration behavior.
+Read `claimable_team()` before calling `claim_team()`. The owner authorizes the claim and receives the unlocked token. Review [vesting](/concepts/vesting) for the exact release schedule and zero-duration behavior.
 
 ## Follow graduation
 
-Check the net reserve against the target. Creator fees and direct donations do not count. Once graduated, the current prototype permanently stops buys and sells while pool assets, unsold curve inventory, and the graduation reserve remain in the vault.
+Check the net reserve against the target. Creator fees and direct donations do not count. Once graduated, the current Stellar prototype permanently stops buys and sells while pool tokens, unsold curve inventory, and the graduation reserve remain in the vault.
 
-`graduation_preview()` shows intended accounting. There is no implemented settlement action to execute from the interface or CLI.
+`graduation_preview()` shows intended accounting. On Base, follow the live launch for settlement.
 
 ## Configuration changes
 
-There is no current method to update launch parameters, change its attached label, cancel the launch, or upgrade an existing vault. Creating a new factory with a rebuilt vault hash does not change existing vaults.
+There is no current Stellar method to update launch parameters, change its attached label, cancel the launch, or upgrade an existing vault. Creating a new factory with a rebuilt vault hash does not change existing vaults.
 
 A future project-profile editor would change profile content, not automatically change signed contract terms.
 
@@ -400,13 +431,13 @@ A future project-profile editor would change profile content, not automatically 
 
 Soroban data has a time-to-live. Relevant writes renew active launch storage and positions, but long-idle entries may need restoration. An unavailable entry should not be interpreted as an empty balance or a completed claim.
 
-No recovery method exists for unsolicited assets sent directly to a predicted vault address. Direct transfers do not create purchases or claim entitlements.
+No recovery method exists for unsolicited tokens sent directly to a predicted vault address. Direct transfers do not create purchases or claim entitlements.
 
 # Project profile and team
 
 Route: /creators/project-profile
 
-A project profile explains who is launching, what the asset is for, and how the raise will be used. The profile and the launch terms should tell the same story.
+A project profile explains who is launching, what the token is for, and how the raise will be used. The profile and the launch terms should tell the same story.
 
 ## Project information
 
@@ -416,25 +447,27 @@ Avoid presenting a future milestone as a completed result. Link to working produ
 
 ## Team
 
-Describe each public team member's name or handle, role, relevant experience, and official profile links. Explain who controls the issuer, distribution account, project proceeds, and team allocation.
+Describe each public team member's name or handle, role, relevant experience, and official profile links. Explain who controls the token admin, distribution wallet, project proceeds, and team allocation.
 
 The current curve sends team claims to a single owner address. A list of team members on a profile does not create separate onchain vesting recipients.
 
-## Asset and tokenomics
+## Token and tokenomics
 
-Show the asset code, issuer, SAC address, supply, allocation table, quote asset, and vesting terms. Explain any supply held outside the vault and any remaining issuer powers.
+Show the token identity, supply, allocation table, quote asset, and vesting terms. On Base that identity is the ERC-20 address. On Stellar it is the asset code, issuer, and SAC address.
+
+Explain any supply held outside the vault and any remaining admin powers.
 
 The [tokenomics guide](/creators/tokenomics) explains how to keep the supply allocation internally consistent. A tokenomics narrative does not create additional contract-enforced allocation buckets.
 
 ## Launch terms
 
-Publish the selected format, pricing mechanism, opening date, fees, reputation requirements, and claim schedule. Auctions and presales also need their close and settlement terms.
+Publish the selected format, pricing mechanism, opening date, fees, access rules, and claim schedule. Auctions and presales also need their close and settlement terms.
 
-Participants should be able to distinguish a submitted commitment, an accepted allocation, a claimable amount, and an asset already received.
+Participants should be able to distinguish a submitted commitment, an accepted allocation, a claimable amount, and a token already received.
 
 ## Stored metadata today
 
-The current contract stores only these display fields:
+The current Stellar contract stores only these display fields:
 
 | Field | Limit |
 | --- | --- |
@@ -445,7 +478,7 @@ The current contract stores only these display fields:
 
 Byte limits are not character counts for all languages. Stellar asset-code validity is also determined during asset issuance; the contract's string-length check does not issue an asset.
 
-Rich descriptions, team biographies, documents, and extended tokenomics belong to the planned project-profile data layer. No production storage API or profile-editing contract is supplied. The current `logo` field stores a string; it does not upload or pin media.
+Rich descriptions, team biographies, documents, and extended tokenomics belong to the project-profile data layer. The current `logo` field stores a string; it does not upload or pin media.
 
 # Supply and tokenomics
 
@@ -458,14 +491,14 @@ Creators choose the percentage of the launch supply assigned to public participa
 | Bucket | Purpose | Contract rule |
 | --- | --- | --- |
 | Curve | Inventory available for direct purchases | Must be greater than zero |
-| Pool | Asset reserve intended for future liquidity | Must be greater than zero |
-| Team | Assets released under team vesting | May be zero |
+| Pool | Token reserve intended for future liquidity | Must be greater than zero |
+| Team | Tokens released under team vesting | May be zero |
 
 The three percentages must sum to **100%**, represented as 10,000 basis points.
 
-For a 1,000,000-asset launch with 40% sale, 30% pool, and 30% team:
+For a 1,000,000-token launch with 40% sale, 30% pool, and 30% team:
 
-| Allocation | Basis points | Asset amount |
+| Allocation | Basis points | Token amount |
 | --- | --- | --- |
 | Curve sale | 4,000 | 400,000 |
 | Pool reserve | 3,000 | 300,000 |
@@ -476,9 +509,11 @@ Curve and team amounts round down to whole base units. The pool bucket receives 
 
 ## Deposited supply versus issued supply
 
-The factory deposits the owner's **entire balance of this asset**. Its recorded `total_supply` is that deposit. It cannot query the total amount issued across Stellar accounts and cannot enforce that future issuance is disabled.
+The factory deposits the owner's **entire balance of this token**. Its recorded `total_supply` is that deposit. It cannot query the total amount issued across the network and cannot enforce that future minting is disabled.
 
-If the public supply claim is 1,000,000 assets, the issuance and distribution records need to support it. Moving only 700,000 into the vault does not prove the remaining 300,000 does not exist.
+If the public supply claim is 1,000,000 tokens, the issuance and distribution records need to support it. Moving only 700,000 into the vault does not prove the remaining 300,000 does not exist.
+
+On Stellar this also means issuer controls sit outside the vault. On Base, review the ERC-20's mint and admin roles the same way.
 
 ## Price and valuation
 
@@ -490,15 +525,76 @@ For the current curve, virtual base reserves must exceed the sale bucket. The gr
 
 Treasury, ecosystem, advisor, marketing, or community allocations can be described in a project plan. The current curve has only three enforced buckets and one team recipient. Do not label additional profile categories as independently locked unless the corresponding custody and vesting mechanism actually exists.
 
-Auction and presale supply accounting, including unsold assets and participant vesting, remains part of their planned implementations.
+Auction and presale supply accounting, including unsold tokens and participant vesting, follows the live Base sale terms. On Stellar those formats are part of the expansion.
 
-# Mainnet deployments
+# Base factory
+
+Route: /deployments/base
+
+Base is the live LumenRise network. Put the deployed factory address in the table below. Use these values in the app, scripts, and any integration that talks to Base.
+
+Network: **Base**. Chain ID: **8453**. Explorer: [Basescan](https://basescan.org).
+
+## Contract directory
+
+| Component | Base address |
+| --- | --- |
+| Launch factory | Paste the deployed factory address here |
+| Quote asset (USDC) | [`0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`](https://basescan.org/token/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
+| Individual launch vaults | Created by the factory per launch |
+| Auction contracts | Published with the live Base app |
+| Presale contracts | Published with the live Base app |
+
+The factory deploys a dedicated vault for each bonding-curve launch. Auction and presale launches on Base use the launchpad's live sale contracts. Do not paste a Stellar `C...` address into a Base client.
+
+When the factory address is public, add it to the table and link it to Basescan:
+
+`https://basescan.org/address/<factory>`
+
+## Factory settings
+
+The Base factory is constructed with a platform recipient, a platform fee in basis points, and a quote token. On Base mainnet that quote token is native Circle USDC (`0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`). Every bonding-curve launch created through this factory uses that same pair.
+
+| Setting | Live value |
+| --- | --- |
+| Platform recipient | Paste the platform address here |
+| Platform fee (bps) | Paste the live fee here |
+| Pair token | USDC on Base |
+
+Fill the empty cells when you publish the deployment. The deploy script defaults the platform fee to 100 bps (1%) and caps it at 1,000 bps.
+
+## What to record with a new factory
+
+Keep the factory address together with:
+
+- Chain ID `8453`
+- Deployer and platform addresses
+- Platform fee in basis points
+- Pair token address (USDC)
+- Deployment transaction hash
+- Verified source on Basescan
+
+A new factory does not upgrade vaults created by an older factory. Existing launches stay on the factory that deployed them.
+
+## Base Sepolia
+
+Base Sepolia (chain ID `84532`) is for rehearsal. That path deploys a fresh TestUSDC rather than Circle USDC. Do not treat Sepolia addresses as the production factory.
+
+## Related records
+
+- [Deployment directory](/deployments/overview)
+- [Stellar Mainnet](/deployments/mainnet)
+- [Launch contract reference](/developers/launch-contracts) for the Stellar factory ABI
+
+# Stellar Mainnet
 
 Route: /deployments/mainnet
 
-The reputation registry and launch factory are deployed on Stellar Mainnet.
+The reputation registry and launch factory are deployed on Stellar Mainnet. This is the Stellar expansion record, not the live Base production factory.
 
 Network passphrase: `Public Global Stellar Network ; September 2015`.
+
+For the live launchpad, use [Base factory](/deployments/base).
 
 ## Contract directory
 
@@ -508,18 +604,16 @@ Network passphrase: `Public Global Stellar Network ; September 2015`.
 | Launch factory | `CDGRLH3NCIKOTRFW3NJCWAGFYTQALAR7G6KCEZD7X23665WU2XAECLA6` |
 | Bonding-curve release hash | Not published |
 | Official launch vaults | Not published |
-| Auction contracts | Not implemented |
-| Presale contracts | Not implemented |
+| Auction contracts | Part of the Stellar expansion |
+| Presale contracts | Part of the Stellar expansion |
 
 No production API origin, SDK release, or installable launch CLI is published in the supplied repositories.
 
-## Current release blocker
+## Current Stellar release notes
 
-The curve can reach graduation and permanently stop trading, but it does not release graduation proceeds or create a liquidity pool. The repository explicitly states that the prototype is not ready for a real-money launch. An independent security audit is not supplied.
+The Stellar curve can reach graduation and stop trading. Graduation proceeds and liquidity-pool creation on that network still need a published settlement path. Check the deployed configuration and contract specification before integrating.
 
-## Release records
-
-The vault code hash, deployment transactions, release revision, and factory configuration are not yet listed here. Check the deployed configuration and contract specification before integrating.
+The vault code hash, deployment transactions, release revision, and factory configuration are not yet listed here.
 
 Issued-asset entries should include code, issuer, and SAC address. Links must point to the public network rather than Testnet. Historical deployments should remain clearly separated from the current supported release.
 
@@ -527,66 +621,85 @@ Issued-asset entries should include code, issuer, and SAC address. Links must po
 
 Route: /deployments/overview
 
-Use this directory to select a network and verify a contract version. An address is meaningful only together with its network and deployed code.
+Use this directory to pick a network and copy the right factory. An address is only useful together with its chain.
 
 ## Networks
 
 | Network | Current record | Details |
 | --- | --- | --- |
-| Testnet | Historical 8 October 2026 fixtures; no verified deployment of the current source version | [Testnet deployments](/deployments/testnet) |
-| Mainnet | Reputation registry and launch factory addresses published | [Mainnet deployments](/deployments/mainnet) |
+| Base | Live production launchpad. Factory address lives on its own page so you can drop it in. | [Base factory](/deployments/base) |
+| Stellar Mainnet | Reputation registry and launch factory addresses published | [Stellar Mainnet](/deployments/mainnet) |
+| Stellar Testnet | Historical 8 October 2026 fixtures; not a current-source deployment | [Stellar Testnet](/deployments/testnet) |
 
-The historical Testnet report predates reputation gates and the current no-deadline curve lifecycle. It cannot be used as evidence that those features are live.
+Base is where the app runs today: bonding curves, presales, auctions, audited contracts, and more than $10k in volume. Stellar is the expansion network.
 
 ## Components to record
 
 | Component | Current release record |
 | --- | --- |
-| Reputation registry | [Mainnet address published](/deployments/mainnet) |
-| Launch factory and platform settings | [Mainnet factory address published](/deployments/mainnet); platform settings not listed |
-| Bonding-curve code hash | Historical Testnet hash only |
-| Individual launch vaults | Historical Testnet examples only |
-| Auction and presale contracts | Not implemented |
+| Base launch factory | [Address page ready](/deployments/base) |
+| Base quote asset | USDC on Base: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+| Stellar reputation registry | [Mainnet address published](/deployments/mainnet) |
+| Stellar launch factory | [Mainnet factory address published](/deployments/mainnet) |
+| Stellar bonding-curve code hash | Historical Testnet hash only |
+| Individual launch vaults | Created per launch. Historical Stellar Testnet examples only |
+| Auction and presale contracts | Live on Base. Stellar sale contracts are part of the expansion |
 | Production API, SDK, and launch CLI | Not published in the supplied repositories |
 
-## Network passphrases
+## Network identifiers
 
 
 
-### Testnet
+### Base
 
 
-```text title="Testnet network passphrase"
-Test SDF Network ; September 2015
+```text title="Base"
+Chain ID: 8453
+Explorer: https://basescan.org
+Native gas token: ETH
+Quote asset: USDC (0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913)
 ```
 
 
 
-### Mainnet
+### Stellar Mainnet
 
 
-```text title="Mainnet network passphrase"
+```text title="Stellar Mainnet network passphrase"
 Public Global Stellar Network ; September 2015
 ```
 
 
 
+### Stellar Testnet
 
-Mainnet is also called Stellar's public network. Testnet assets and funds have no Mainnet equivalence. Testnet resets can remove old contracts and data.
+
+```text title="Stellar Testnet network passphrase"
+Test SDF Network ; September 2015
+```
+
+
+
+
+A Base `0x` factory is not a Stellar `C...` contract. Do not mix the two in a client.
+
+Stellar Testnet assets and funds have no Mainnet equivalence. Testnet resets can remove old contracts and data. Base Sepolia is a separate rehearsal chain and is not the production factory.
 
 ## Verify a deployment
 
-A deployment record should include the network, deployment time, source revision or release artifact, WASM hash, transaction hash, registry, factory settings, asset identities, and relevant smoke-test evidence.
+A deployment record should include the network, chain ID or passphrase, deployment time, source revision, factory settings, quote asset, and a confirmed transaction.
 
-Read the factory's stored registry and vault hash. Do not assume a known factory has been updated just because the local source changed. Existing vaults are not upgraded by a new factory deployment.
+Read the factory's stored settings before you integrate. Do not assume a known factory has been updated just because local source changed. Existing vaults are not upgraded by a new factory deployment.
 
 A published address alone does not establish that settlement, liquidity, or claim behavior is complete. Review [implementation status](/getting-started/status) alongside the release record.
 
-# Testnet deployments
+# Stellar Testnet
 
 Route: /deployments/testnet
 
 **Current-source deployment: not verified.** The supplied repository records a successful smoke test on **8 October 2026 at 08:49 UTC**, using an earlier version with a deadline/failure lifecycle and without reputation gating.
+
+These addresses are Stellar Testnet fixtures. They are not the [Base factory](/deployments/base).
 
 The recorded run used fresh in-memory keys, Friendbot funds, and 18 confirmed transactions across ledgers 5,085,124 to 5,085,161. These are disposable fixtures. Their current availability has not been rechecked, and Testnet resets can remove them.
 
@@ -622,9 +735,9 @@ The report verified XLM trades, slippage rejection, fee claims, team claims, and
 
 ## Current-version verification
 
-The contract repository's `scripts/test.sh` builds the three WASMs and runs its local checks. Its opt-in `scripts/testnet-smoke.mjs` now includes reputation and no-deadline checks, but the supplied recorded result is still the older run.
+The Stellar contract repository's `scripts/test.sh` builds the three WASMs and runs its local checks. Its opt-in `scripts/testnet-smoke.mjs` now includes reputation and no-deadline checks, but the supplied recorded result is still the older run.
 
-A current release needs a fresh registry, a factory pinned to that registry and the rebuilt vault hash, confirmed smoke-test transactions, and a published record of the new addresses and artifacts. Do not reuse the old addresses as current configuration.
+A current Stellar release needs a fresh registry, a factory pinned to that registry and the rebuilt vault hash, confirmed smoke-test transactions, and a published record of the new addresses and artifacts. Do not reuse the old addresses as current configuration.
 
 This documentation task did not deploy contracts or execute the network smoke test. The original record is `launchpad-contract/TESTNET.md` and `target/testnet-smoke.json` in the sibling contract repository.
 
@@ -634,7 +747,7 @@ Route: /developers/api
 
 **Planned. Not implemented in the current contracts or published as a service.**
 
-The HTTP API is intended to let applications use Launchpad reputation without implementing direct Soroban reads for every interaction. No production API base URL, OpenAPI specification, endpoint contract, or authentication scheme is supplied in the current repositories.
+The HTTP API is intended to let applications use Launchpad reputation and launch data without implementing direct chain reads for every interaction. No production API base URL, OpenAPI specification, endpoint contract, or authentication scheme is supplied in the current repositories.
 
 ## Intended capabilities
 
@@ -642,15 +755,17 @@ The HTTP API is intended to let applications use Launchpad reputation without im
 | --- | --- |
 | Reputation | Retrieve the separate social, GitHub, and onchain scores for a Stellar account |
 | Criteria | Inspect labels and evaluate access rules |
-| Launches | Read project information, format, asset identity, terms, and deployment references |
+| Launches | Read project information, format, token identity, terms, and deployment references |
 | Preparation | Validate configuration and prepare unsigned actions for user authorization |
-| Allocation | Expose settled auction or presale outcomes when those formats exist |
+| Allocation | Expose settled auction or presale outcomes |
 
 These are product capabilities to implement, not callable routes. An API consumer should not assume paths such as `/scores` or `/launches` exist.
 
+A launch record needs to name its network. Base and Stellar identities are not interchangeable.
+
 ## Identity and numeric representation
 
-A future API needs to distinguish network, registry, participant address, label ID, and asset identity. An asset code without an issuer or a label ID without its registry is ambiguous.
+A future API needs to distinguish network, registry, participant address, label ID, and token identity. A token symbol without its contract or issuer, or a label ID without its registry, is ambiguous.
 
 Monetary base units and large identifiers should be represented without JavaScript number precision loss. Final serialization, pagination, and error formats remain unpublished.
 
@@ -662,7 +777,7 @@ A score response should distinguish missing data, provider failure, stale eviden
 
 ## Direct integration today
 
-Use the [reputation contract](/developers/reputation-contract) through a Soroban client or the local Rust package. For launch state and trading, use the [launch ABI](/developers/launch-contracts).
+On Base, use the [Base factory](/deployments/base) and the live app. On Stellar, use the [reputation contract](/developers/reputation-contract) through a Soroban client or the local Rust package, and the [launch ABI](/developers/launch-contracts) for launch state and trading.
 
 A published API reference should replace this page only when the service has a real base URL, versioned schema, authentication model, limits, and examples verified against its implementation.
 
@@ -672,51 +787,59 @@ Route: /developers/architecture
 
 The contract architecture keeps launch custody separate from the shared reputation registry. The factory deploys a dedicated vault for each curve launch.
 
+Base is the live production stack. The workspace diagram below is the Stellar contract layout; the EVM factory in `evm-contract/` is the Base counterpart.
+
 ## Components
 
-The contract workspace separates deployed contracts from shared types:
+The Stellar contract workspace separates deployed contracts from shared types:
 
-Contract workspace: contracts/factory, contracts/bonding-curve, contracts/reputation, packages/launchpad-types, and packages/reputation-types.
+Contract workspace: evm-contract Factory and BondingCurve on Base; stellar-contract factory, bonding-curve, reputation, and shared type packages.
 
 | Component | Responsibility |
 | --- | --- |
-| Interface | Public discovery, authentication, and prototype project and identity flows |
-| Asset issuer and distribution account | Issue the Stellar asset and hold the supply before deposit |
-| Stellar Asset Contracts | Provide Soroban access to the project and quote assets |
+| Interface | Public discovery, authentication, and launch flows. Live on Base. |
+| Token issuer / admin | Issue the ERC-20 or Stellar asset and hold the supply before deposit |
+| Token interface | ERC-20 on Base; Stellar Asset Contracts on Stellar |
 | Launch factory | Validate parameters, deploy a vault, transfer the owner's balance, and register the launch |
-| Bonding-curve vault | Hold allocated assets, price trades, track positions, enforce purchase criteria, and process team and fee claims |
-| Reputation registry | Store administered scores and public immutable labels; evaluate criteria |
+| Bonding-curve vault | Hold allocated tokens, price trades, track positions, and process team and fee claims |
+| Reputation registry | Stellar only. Store administered scores and public immutable labels; evaluate criteria |
 | Planned backend | Identity linking, evidence collection, score calculation, and project-profile services |
 | Planned API, SDK, and CLI | Application integrations and launch orchestration |
 
 ## Creation boundary
 
-The owner authorizes `create_bonding_curve(params)`. The factory verifies both SACs, reads the owner's asset balance, validates the allocation and curve, checks a nonzero reputation label, and deploys a vault with its stored WASM hash.
+The owner authorizes bonding-curve creation. The factory verifies both tokens, reads the owner's token balance, validates the allocation and curve, and deploys a vault.
 
-The newly created vault receives the owner's entire asset balance. The factory checks both the zero owner balance and the exact vault balance increase. A failed invocation rolls back the deployment and transfer effects.
+On Stellar it also checks a nonzero reputation label and deploys with its stored WASM hash.
+
+The newly created vault receives the owner's entire token balance. The factory checks both the zero owner balance and the exact vault balance increase. A failed invocation rolls back the deployment and transfer effects.
 
 Existing unsolicited balances at a predictable vault address do not increase the recorded launch supply. They have no implemented recovery path.
 
 ## Trading boundary
 
-Buyers pay the quote SAC and receive the project asset SAC through the vault. The vault records net reserve, creator fees, and address-specific sell-back positions. Its checks and transfers occur in one transaction.
+Buyers pay the quote token and receive the project token through the vault. The vault records net reserve, creator fees, and address-specific sell-back positions. Its checks and transfers occur in one transaction.
 
-A quote reads curve state but does not prove eligibility. A gated buy calls the registry selected by the factory. A sell does not call the registry.
+A quote reads curve state but does not prove eligibility. On Stellar, a gated buy calls the registry selected by the factory. A sell does not call the registry.
 
 ## Reputation trust boundary
 
-A factory pins one reputation registry address. Launch creators cannot replace it per launch. Registry administrators can change scores and rotate the admin. Public label creators define immutable thresholds.
+A Stellar factory pins one reputation registry address. Launch creators cannot replace it per launch. Registry administrators can change scores and rotate the admin. Public label creators define immutable thresholds.
 
 The registry's authorization protects score writes. It does not establish that the offchain evidence or scoring model is correct.
 
+This registry is not part of the live Base factory.
+
 ## Upgrades and storage
 
-The factory stores a vault WASM hash at construction. Rebuilding local code does not change that hash, and the current contracts have no upgrade method. A new factory or vault version requires a separate deployment and record.
+The Stellar factory stores a vault WASM hash at construction. Rebuilding local code does not change that hash, and the current contracts have no upgrade method. A new factory or vault version requires a separate deployment and record.
+
+The Base factory is the same in spirit: a new factory does not upgrade vaults created by an older one. Record the live address on [Base factory](/deployments/base).
 
 **Storage lifetimes and archived data**
 
 
-Relevant operations extend storage lifetimes. Long inactivity can still require restoration of archived data. Integrations must distinguish an invocation failure from an absent score or zero position.
+On Stellar, relevant operations extend storage lifetimes. Long inactivity can still require restoration of archived data. Integrations must distinguish an invocation failure from an absent score or zero position.
 
 # CLI and agents
 
@@ -733,33 +856,33 @@ The planned interface includes both a natural-language prompt and a structured c
 ```bash title="Proposed commands · not runnable"
 # Proposed: describe the launch and inspect a plan.
 launchpad create \
-  --prompt "Create a bonding curve for ORBIT with 1 million assets, 40% sale, 30% liquidity, 30% team, USDC quotes, initial price 0.10 USDC, a 30-day team cliff and 300-day vesting" \
-  --network testnet \
+  --prompt "Create a bonding curve for ORBIT with 1 million tokens, 40% sale, 30% liquidity, 30% team, USDC quotes, initial price 0.10 USDC, a 30-day team cliff and 300-day vesting" \
+  --network base \
   --dry-run
 
 # Proposed: create from an explicitly reviewed file.
-launchpad create --config ./launch.json --network testnet
+launchpad create --config ./launch.json --network base
 ```
 
 There is no installation command yet. Do not install an unrelated package merely because it uses the name `launchpad`.
 
 ## From a prompt to an executable plan
 
-The intended CLI translates the request into a structured configuration and validates it before signing. It must surface missing decisions rather than invent a supply, issuer, fee, vesting rule, or payout address.
+The intended CLI translates the request into a structured configuration and validates it before signing. It must surface missing decisions rather than invent a supply, issuer, fee, vesting rule, or payout address. It must also name the network. Base and Stellar are not interchangeable.
 
-A dry run should identify the project and asset, issuance controls, distribution account, allocations, quote asset identity, format parameters, dates, vesting, reputation label, and the intended sequence of transactions.
+A dry run should identify the project and token, issuance controls, distribution account, allocations, quote asset identity, format parameters, dates, vesting, reputation label, and the intended sequence of transactions.
 
-For a curve, a requested initial price must be reconciled with reserve shape, inventory, and the target. For auctions and presales, creation depends on contracts and settlement rules that are still planned.
+For a curve, a requested initial price must be reconciled with reserve shape, inventory, and the target. For auctions and presales, follow the live Base sale contracts. Stellar sale contracts are part of the expansion.
 
 ## Agent-friendly behavior
 
-The intended automation interface needs explicit network and signer selection, machine-readable plans and results, a validation-only path, and final transaction receipts. Retrying after an uncertain submission must first reconcile the previous transaction; a repeated command must not accidentally issue the asset or purchase twice.
+The intended automation interface needs explicit network and signer selection, machine-readable plans and results, a validation-only path, and final transaction receipts. Retrying after an uncertain submission must first reconcile the previous transaction; a repeated command must not accidentally issue the token or purchase twice.
 
-Natural language is an input method. It does not bypass review of asset issuance, transfers, fees, or wallet authorization. The exact flags, config schema, package name, and output format remain open.
+Natural language is an input method. It does not bypass review of token issuance, transfers, fees, or wallet authorization. The exact flags, config schema, package name, and output format remain open.
 
 ## Available tooling today
 
-The contract repository includes `scripts/deploy.example.sh` for deploying the registry and factory with the Stellar CLI, plus `scripts/testnet-smoke.mjs` for an opt-in Testnet check. These deploy or test infrastructure; they are not the planned creator CLI.
+The Stellar contract repository includes `scripts/deploy.example.sh` for deploying the registry and factory with the Stellar CLI, plus `scripts/testnet-smoke.mjs` for an opt-in Testnet check. The EVM repository includes `deploy.sh` for Base and Base Sepolia. These deploy or test infrastructure; they are not the planned creator CLI.
 
 The documentation itself exposes [llms.txt](/llms.txt) and [plain-text documentation](/llms-full.txt) so agents can read the current product and implementation boundaries.
 
@@ -768,6 +891,8 @@ The documentation itself exposes [llms.txt](/llms.txt) and [plain-text documenta
 Route: /developers/events-and-errors
 
 Decode an error using the selected contract's specification. Numeric codes are local to a contract's error enum and can overlap across contracts.
+
+This table is the Stellar ABI. The live Base factory uses Solidity errors and events from `evm-contract/`.
 
 ## Launch errors
 
@@ -809,17 +934,21 @@ The source defines these with `#[contractevent]`. Use the deployed specification
 
 ## Launch indexing
 
-The current factory and curve do not declare custom application-level creation or trade events. Do not invent event names such as `launch_created` or `presale_allocated` in an indexer.
+The current Stellar factory and curve do not declare custom application-level creation or trade events. Do not invent event names such as `launch_created` or `presale_allocated` in a Stellar indexer.
 
-Use factory enumeration, confirmed invocation results, vault reads, and SAC transfer events as appropriate. SAC transfers alone do not prove that a transfer was a registered purchase: unsolicited direct transfers are possible.
+The Base factory emits `FactoryConfigured` and `LaunchCreated`. Index those from the live factory on chain ID 8453.
 
-For event-query mechanics, see the [Stellar RPC reference](https://developers.stellar.org/docs/data/apis/rpc/api-reference). Store network, contract identity, transaction and ledger references, and an ingestion cursor when building an indexer.
+Use factory enumeration, confirmed invocation results, vault reads, and token transfer events as appropriate. Token transfers alone do not prove that a transfer was a registered purchase: unsolicited direct transfers are possible.
+
+For Stellar event-query mechanics, see the [Stellar RPC reference](https://developers.stellar.org/docs/data/apis/rpc/api-reference). Store network, contract identity, transaction references, and an ingestion cursor when building an indexer.
 
 # Launch contract reference
 
 Route: /developers/launch-contracts
 
-The current workspace exposes `LaunchpadFactory` and `BondingCurve`. This reference describes the source ABI, not the older Testnet fixtures.
+This page is the **Stellar** factory and vault ABI. For the live production factory, start at [Base factory](/deployments/base).
+
+The current Stellar workspace exposes `LaunchpadFactory` and `BondingCurve`. This reference describes the source ABI, not the older Testnet fixtures.
 
 ## Factory configuration
 
@@ -835,6 +964,8 @@ The current workspace exposes `LaunchpadFactory` and `BondingCurve`. This refere
 
 - `reputation` (`Address`, required): Fixed registry; its interface is checked at construction.
 
+
+The Base factory is constructed with `platform`, `platformFeeBps`, and a `pair` token. On Base mainnet that pair is Circle USDC. It does not take a WASM hash or a reputation registry.
 
 ## Launch parameters
 
@@ -872,7 +1003,7 @@ Let `Vb` be virtual base reserves, `Vq` virtual quote reserves, and `s` the sold
 F(s) = ceil(Vq × s / (Vb - s))
 
 buy gross(a)  = F(s + a) - F(s)
-sell gross(a) = F(s) - F(s - a)
+sell gross(a)  = F(s) - F(s - a)
 
 current_price = ceil(Vq × Vb × 10^7 / (Vb - s)^2)
 ```
@@ -913,25 +1044,36 @@ current_price = ceil(Vq × Vb × 10^7 / (Vb - s)^2)
 
 Methods returning monetary results use `Result<..., Error>`. Monetary amounts are `i128` base units. Timestamps and durations use `u64` seconds. The busy flag protects state during external transfers; it is not a user-controlled pause function.
 
-There is no auction, presale, graduation settlement, pool creation, parameter update, cancellation, or upgrade method in the current ABI.
+There is no auction, presale, graduation settlement, pool creation, parameter update, cancellation, or upgrade method in the current Stellar ABI. Those sale formats are live on Base.
 
 # Developer overview
 
 Route: /developers/overview
 
-Launchpad has two integration surfaces: launching and interacting with Stellar assets, and consuming reputation for your own application.
+Launchpad has two integration surfaces: launching and interacting with tokens, and consuming reputation.
 
-## Available today in source
+Start on **Base**. That is the live factory, the audited production app, and the network with more than $10k in volume. **Stellar** is the expansion: factory, vault, and reputation contracts are documented here so you can integrate that network as it comes up.
+
+## Live on Base
+
+Copy the factory from [Base factory](/deployments/base). Bonding curves, auctions, and presales all run through the live app. The Base factory deploys a dedicated vault per bonding-curve launch and is constructed with Circle USDC as the pair token.
+
+| Task | Reference |
+| --- | --- |
+| Copy the Base factory | [Base factory](/deployments/base) |
+| Understand custody and dependencies | [Architecture](/developers/architecture) |
+| Choose a network and address | [Deployments](/deployments/overview) |
+
+## Stellar contracts in source
 
 The Rust workspace contains a launch factory, bonding-curve vault, reputation registry, and shared type packages. The interface is a separate React application with prototype launch and reputation data.
 
 | Task | Reference |
 | --- | --- |
-| Understand custody and dependencies | [Architecture](/developers/architecture) |
-| Create or trade a curve launch | [Launch contracts](/developers/launch-contracts) |
+| Create or trade a Stellar curve launch | [Launch contracts](/developers/launch-contracts) |
 | Read scores or enforce a label | [Reputation contract](/developers/reputation-contract) |
 | Interpret failures and registry events | [Events and errors](/developers/events-and-errors) |
-| Choose a network and address | [Deployments](/deployments/overview) |
+| Stellar Mainnet addresses | [Stellar Mainnet](/deployments/mainnet) |
 
 The shared Rust `ReputationClient` is implemented. It is not a published JavaScript SDK or an HTTP service.
 
@@ -939,27 +1081,31 @@ The shared Rust `ReputationClient` is implemented. It is not a published JavaScr
 
 The [HTTP API](/developers/api) and [SDK](/developers/sdk) are intended to expose reputation, eligibility, launch information, and transaction preparation. Their endpoints, package names, and authentication contracts are not published.
 
-The [CLI and agent guide](/developers/cli) describes configuration-driven and natural-language launch creation. It explicitly separates proposed commands from the existing Stellar CLI.
+The [CLI and agent guide](/developers/cli) describes configuration-driven and natural-language launch creation.
 
 ## Integration principles
 
-Use network-specific asset and contract identities. Read configuration from the selected factory and vault rather than assuming every deployment uses the latest source.
+Use network-specific token and contract identities. A Base `0x` factory is not a Stellar `C...` contract.
 
-Keep amounts as integers in seven-decimal base units. Serialize `u64` values without losing precision. Generate or validate bindings against the actual contract specification.
+Read configuration from the selected factory and vault rather than assuming every deployment uses the latest source.
 
-Simulate Soroban invocations before signing and submitting. Verify final transaction results before reporting a launch, allocation, or claim as completed.
+Keep amounts as integers in the token's base units. Base USDC uses 6 decimals. Stellar assets used by the current factory use 7. Serialize large integers without losing precision.
+
+Simulate invocations before signing and submitting. Verify final transaction results before reporting a launch, allocation, or claim as completed.
 
 ## Reuse reputation independently
 
-A consuming contract can call the registry directly and apply custom criteria. It need not create a Launchpad launch. Decide which registry and admin you trust, what rule means for your product, and how you handle invocation failures or stale evidence.
+A consuming Stellar contract can call the registry directly and apply custom criteria. It need not create a Launchpad launch. Decide which registry and admin you trust, what the rule means for your product, and how you handle invocation failures or stale evidence.
 
-Mainnet reputation registry and launch factory addresses are listed in the [deployment directory](/deployments/overview). Check the deployed contract specification and [implementation status](/getting-started/status) before integrating.
+Check the deployed contract specification and [implementation status](/getting-started/status) before integrating.
 
 # Reputation contract reference
 
 Route: /developers/reputation-contract
 
-The registry stores `Scores`, immutable `Label` records, and an admin address. Shared definitions and the generated Rust client live in `packages/reputation-types`.
+The Stellar registry stores `Scores`, immutable `Label` records, and an admin address. Shared definitions and the generated Rust client live in `packages/reputation-types`.
+
+This contract is part of the Stellar expansion. It is not the live Base factory.
 
 ## Types
 
@@ -1050,25 +1196,27 @@ The product SDK is intended to make reputation and launch integration straightfo
 
 The planned SDK should support network configuration, score reads, criteria checks, label inspection, launch-state queries, and unsigned transaction preparation. Launch-creation helpers should convert human-readable percentages and amounts into validated contract values.
 
-The SDK should expose each reputation category separately and distinguish access eligibility from ranked presale allocation. It should not hide missing scores or silently substitute another registry.
+The SDK should expose each reputation category separately and distinguish access eligibility from ranked presale allocation. It should not hide missing scores or silently substitute another registry. It should also refuse to mix a Base factory address with a Stellar contract ID.
 
 ## Transaction boundary
 
 A helper that builds or simulates an invocation has not executed it. Application integrations still need wallet authorization, signing, submission, and final-result verification.
 
-Use exact decimal parsing for seven-decimal amounts. Preserve `u64` identifiers and timestamps without lossy conversion. Decode errors against the selected contract specification.
+Use exact decimal parsing for token amounts. Base USDC uses 6 decimals. Stellar assets used by the current factory use 7. Preserve `u64` identifiers and timestamps without lossy conversion. Decode errors against the selected contract specification.
 
 ## Available Rust client
 
 `packages/reputation-types` defines `Scores`, `Criteria`, `Label`, and `ReputationClient`. It is a local unpublished Rust package for Soroban contracts.
 
-The [reputation contract reference](/developers/reputation-contract) includes its dependency configuration, methods, and a cross-contract example. This is the current supported source-level reuse path.
+The [reputation contract reference](/developers/reputation-contract) includes its dependency configuration, methods, and a cross-contract example. This is the current supported source-level reuse path on Stellar.
 
 ## Application integration today
 
-The Stellar SDK can prepare direct invocations against the actual deployed contract specification. The launch factory expects nested `LaunchParams`; it does not accept a free-form project object, an asset-creation request, or a presale configuration.
+On Base, talk to the live factory from [Base factory](/deployments/base).
 
-Regenerate bindings when the ABI changes. The current version has `reputation_label: u64`, no `ends_at`, and no `Failed` curve state. Historical deployed fixtures may expose a different specification.
+On Stellar, the Stellar SDK can prepare direct invocations against the actual deployed contract specification. The launch factory expects nested `LaunchParams`; it does not accept a free-form project object, an asset-creation request, or a presale configuration.
+
+Regenerate bindings when the ABI changes. The current Stellar version has `reputation_label: u64`, no `ends_at`, and no `Failed` curve state. Historical deployed fixtures may expose a different specification.
 
 Installation commands and method examples for the product SDK should be added only after its package name, version, export surface, and network configuration are published.
 
@@ -1076,61 +1224,63 @@ Installation commands and method examples for the product SDK should be added on
 
 Route: /getting-started/quickstart
 
-Start with the role that matches what you want to do. You can read project and launch information before connecting an account.
+Start with the role that matches what you want to do. You can read project and launch information before connecting a wallet.
 
-## Launch an asset
+Base is the live network. Stellar is the expansion.
+
+## Launch a token
 
 
 ### 1. Choose a launch format
 
 
-[Compare the three formats](/launches/overview). Decide whether you need continuous price discovery, competitive bids, or a fixed-price raise.
+[Compare the three formats](/launches/overview). Decide whether you need continuous price discovery, competitive bids, or a fixed-price raise. Bonding curves, presales, and auctions all run on Base.
 
 
-### 2. Prepare the asset and project
+### 2. Prepare the token and project
 
 
-Prepare your [project profile](/creators/project-profile), asset details, and [supply allocation](/creators/tokenomics).
+Prepare your [project profile](/creators/project-profile), token details, and [supply allocation](/creators/tokenomics). On Base that token is an ERC-20. On Stellar it is a Stellar asset.
 
 
 ### 3. Define the economic terms
 
 
-Choose XLM or USDC, the opening date, pricing, and team cliff and vesting schedule.
+On Base, quote in USDC. On Stellar, choose XLM or USDC. Set the opening date, pricing, and team cliff and vesting schedule.
 
 
 ### 4. Set participation rules
 
 
-Decide whether participation is open or subject to [reputation criteria](/creators/eligibility).
+Decide whether participation is open or subject to the launch's access rules. On Stellar you can attach [reputation criteria](/creators/eligibility).
 
 
 ### 5. Review and authorize
 
 
-Review the complete configuration and authorize launch creation. The intended flow issues the asset and moves the launch supply into its vault.
+Review the complete configuration and authorize launch creation. The factory deploys the vault and moves the launch supply into it.
 
 
 
 
-The current factory starts with an **existing Stellar asset**. Integrated asset issuance and the complete launch-creation interface are still planned.
+Confirm you are on Base before signing a production launch. Copy the factory address from [Base factory](/deployments/base).
 
 ## Participate in a launch
 
 
-1. Inspect the project, asset issuer, format, price rules, allocation policy, and claim schedule.
+1. Inspect the project, token, format, price rules, allocation policy, and claim schedule.
 
 
-2. Check the [network and deployment record](/deployments/overview).
+2. Check the [network and factory record](/deployments/overview). Production volume is on Base.
 
 
-3. Connect your Stellar account through the interface. Add optional identity connections if the launch requires reputation.
+3. Connect the wallet for that network. Base uses an EVM wallet. Stellar uses a Stellar account through the interface.
 
 
-4. Fund the quote asset and prepare the required trustlines.
+4. Fund the quote asset. On Base that is USDC, plus ETH for gas. On Stellar, hold XLM or USDC and the required trustlines.
 
 
-5. When the launch opens, buy from the curve, place a bid, or commit to the presale, depending on the available format.
+5. When the launch opens, buy from the curve, place a bid, or commit to the presale.
 
 
 6. Follow the [allocation and claim guide](/participants/allocations-and-claims).
@@ -1138,66 +1288,69 @@ The current factory starts with an **existing Stellar asset**. Integrated asset 
 
 
 
-A start date opens participation. It does not mean every asset is immediately transferable or that secondary-market liquidity exists.
+A start date opens participation. It does not mean every token is immediately transferable, or that a secondary market already exists.
 
 ## Build an integration
 
-Read the [architecture](/developers/architecture), then use the [contract references](/developers/launch-contracts) or [reputation client](/developers/reputation-contract). The API, SDK, and natural-language CLI pages describe planned interfaces and their current availability.
+Read the [architecture](/developers/architecture), then the [Base factory](/deployments/base) addresses or the [Stellar launch contracts](/developers/launch-contracts). The API, SDK, and CLI pages describe planned interfaces.
 
-Use [implementation status](/getting-started/status) to distinguish source support from a deployed service.
+Use [implementation status](/getting-started/status) to see what is live on Base versus what is documented for Stellar.
 
 # Implementation status
 
 Route: /getting-started/status
 
-This documentation covers the intended Launchpad product and the implementation available in the sibling repositories. The review below is dated **18 October 2026**. Source support is separate from a verified network deployment.
+LumenRise is live on Base. Bonding curves, presales, and auctions all run there. The Base app is audited, production launches are open, and the launchpad has done more than $10k in volume.
+
+Stellar is the expansion network. This documentation still carries the Stellar factory, vault, and reputation details so that integration work can start before that network matches Base.
+
+The review below is dated **28 October 2026**.
 
 ## Feature availability
 
-| Capability | Current evidence |
-| --- | --- |
-| Bonding-curve launch factory and dedicated vaults | Implemented in contract source. |
-| Buy and sell quotes, price movement, and slippage limits | Implemented in contract source. |
-| Scheduled opening without a trading deadline | Implemented in contract source. |
-| Full distribution-account balance deposited into a vault | Implemented in contract source. This does not independently prove total asset supply. |
-| Pool, curve, and team allocation accounting | Implemented in contract source. |
-| Team cliff and stepped vesting | Implemented in contract source. |
-| Creator trading-fee claims | Implemented in contract source. |
-| Graduation threshold and preview | Implemented. Graduation stops curve trading. |
-| Graduation payouts, pool creation, and liquidity migration | Not implemented. Reserves and pool assets remain in the vault. |
-| Reputation scores, custom labels, and purchase gating | Implemented in contract source. Scores are written by the registry admin. |
-| Automatic X, GitHub, and Stellar activity scoring | Planned. No production scoring service is present. |
-| Account linking and reputation display | Prototype interface. Optional connections and scores can be simulated locally. |
-| Public browsing and Blux authentication | Present in the interface prototype. |
-| Integrated asset issuance and launch submission | Planned. The factory accepts existing SAC-backed assets. |
-| Auctions and presales | Planned. No corresponding contracts are present. |
-| Participant vesting and reputation-prioritized presale allocation | Planned. Current vesting is for the curve's team allocation. |
-| Public HTTP API and packaged SDK | Planned. The shared Rust reputation client exists. |
-| Installable launch CLI and natural-language creation | Planned. No package or executable is published by these repositories. |
+| Capability | Base | Stellar |
+| --- | --- | --- |
+| Bonding-curve factory and dedicated vaults | Live | Implemented in contract source. Mainnet factory address published. |
+| Buy and sell quotes, price movement, slippage limits | Live | Implemented in contract source. |
+| Presales | Live | Product format documented. Stellar sale contracts are part of the expansion. |
+| Auctions | Live | Product format documented. Stellar sale contracts are part of the expansion. |
+| Scheduled opening | Live | Implemented in contract source. No trading deadline on the current curve. |
+| Pool, curve, and team allocation accounting | Live | Implemented in contract source. |
+| Team cliff and stepped vesting | Live | Implemented in contract source. |
+| Creator trading-fee claims | Live | Implemented in contract source. |
+| Graduation | Live on Base | Implemented. Graduation stops curve trading. Settlement and pool creation are still source-limited on Stellar. |
+| Reputation scores, labels, and purchase gating | Access rules on the launch | Implemented in contract source. Scores are written by the registry admin. |
+| Automatic X, GitHub, and onchain scoring | Not the Base path | Planned. No production scoring service is present. |
+| Public app and wallet login | Live | Prototype interface with Blux. |
+| Public HTTP API, packaged SDK, launch CLI | Planned across networks | Planned. The shared Rust reputation client exists. |
 
 ## Deployment evidence
 
-The contract repository records an **8 October 2026 Testnet smoke test** of an older contract version. It predates reputation gating and the removal of trading deadlines. Its addresses are historical fixtures, not the current deployment directory.
+| Network | Record |
+| --- | --- |
+| Base | Live production network. Publish the factory address on [Base factory](/deployments/base). |
+| Stellar Mainnet | Reputation registry and launch factory addresses are on [Stellar Mainnet](/deployments/mainnet). |
+| Stellar Testnet | Historical 8 October 2026 fixtures only. See [Stellar Testnet](/deployments/testnet). |
 
-Mainnet reputation registry and launch factory addresses are published on the [Mainnet deployment page](/deployments/mainnet). No current Testnet deployment is verified by the supplied records.
+## How to read the rest of these docs
 
-## Current release limit
+Product guides (formats, creators, participants) describe the live Base launchpad first, then note Stellar where the path differs.
 
-The bonding-curve prototype stops buying and selling at graduation but does not settle the reserve or create a liquidity pool. The contract repository explicitly marks it unsuitable for a real-money launch. There is no independent security audit supplied with this version.
-
-Local tests and an older Testnet report do not establish production availability. The docs build does not execute contract tests or submit network transactions.
+Developer pages under Stellar contracts still describe the Soroban factory, vault, and reputation ABIs. That is intentional. Those pages are the Stellar expansion reference, not a claim that Stellar already matches every Base feature.
 
 # Auctions
 
 Route: /launches/auctions
 
-**Planned. Not implemented in the current contracts or published as a service.**
+Auctions are live on Base. Stellar auctions are part of the network expansion and follow the same product rules below.
 
-An auction lets participants state the price they are willing to pay for the launch asset. Higher-priced bids receive priority when demand exceeds the available allocation.
+An auction lets participants state the price they are willing to pay for the launch token. Higher-priced bids receive priority when demand exceeds the available allocation.
 
 ## What the creator defines
 
-The launch publishes the auction allocation, quote asset, opening and closing times, minimum price if used, eligibility criteria, and the asset distribution schedule. It must also publish the bid payment rule and the treatment of partial fills, tied bids, cancellations, and unallocated funds.
+The launch publishes the auction allocation, quote asset, opening and closing times, minimum price if used, eligibility criteria, and the token distribution schedule. It must also publish the bid payment rule and the treatment of partial fills, tied bids, cancellations, and unallocated funds.
+
+On Base the quote is USDC. On Stellar it is XLM or USDC.
 
 An auction starting price is a bid constraint or reference price. It is not the bonding curve's virtual-reserve ratio.
 
@@ -1216,7 +1369,7 @@ An auction starting price is a bid constraint or reference price. It is not the 
 4. Winners pay according to the published payment rule and receive a claim or vesting entitlement.
 
 
-5. Unaccepted quote assets are returned or made claimable under the published refund rules.
+5. Unaccepted quote tokens are returned or made claimable under the published refund rules.
 
 
 
@@ -1225,29 +1378,29 @@ Bidding does not guarantee a fill. The final accepted quantity can be smaller th
 
 ## Example: priority by bid price
 
-Suppose 100,000 assets are available:
+Suppose 100,000 tokens are available:
 
-| Participant | Bid price in USDC | Requested assets | Illustrative allocation |
+| Participant | Bid price in USDC | Requested tokens | Illustrative allocation |
 | --- | --- | --- | --- |
 | Alice | 0.15 | 60,000 | 60,000 |
 | Ben | 0.12 | 60,000 | 40,000 |
 | Cora | 0.10 | 20,000 | 0 |
 
-This example illustrates price priority and a partial fill at the cutoff. It does not select a settlement price. Whether winners pay their own bid or a shared clearing price is a separate product decision.
+This example illustrates price priority and a partial fill at the cutoff. It does not select a settlement price. Whether winners pay their own bid or a shared clearing price is stated on the live launch.
 
-## Decisions still to be finalized
+## Settlement details
 
-The supplied repositories do not specify whether bids are public or sealed, whether payment is pay-as-bid or uniform-price, how equal bids are handled, or whether participants can replace or withdraw bids. These details must be settled and documented before an auction can launch.
+The live Base auction publishes whether bids are public or sealed, whether payment is pay-as-bid or uniform-price, how equal bids are handled, and whether participants can replace or withdraw bids. Read those terms on the launch page before bidding.
 
-The interface contains illustrative auction listings, including a Dutch-auction label. That mock label does not define an implemented auction mechanism. This documentation follows the requested higher-bid-priority design.
-
-Reputation can define access criteria. Any additional effect on auction ranking must be explicitly published; it should not be assumed from the presale policy.
+Reputation can define access criteria. Any extra effect on auction ranking must be published on that launch; it should not be assumed from the presale policy.
 
 # Bonding curves
 
 Route: /launches/bonding-curves
 
-A bonding curve quotes the launch asset against a chosen quote asset. Buying increases the amount sold and raises the marginal price. Selling a recorded position back reduces the amount sold and lowers it.
+A bonding curve quotes the launch token against a chosen quote asset. Buying increases the amount sold and raises the marginal price. Selling a recorded position back reduces the amount sold and lowers it.
+
+This format is live on Base. The Stellar factory deploys the same kind of dedicated vault for each curve launch.
 
 ## From opening to graduation
 
@@ -1255,85 +1408,90 @@ The vault is `Scheduled` before `starts_at`. At that timestamp it becomes `Open`
 
 At graduation, both curve buys and sells stop permanently. Creator fee claims and team vesting claims remain separate operations.
 
-:::info[Graduation in the prototype]
-Pool creation and graduation payouts are not implemented. Reaching the target locks trading; it does not move the reserve into a market. See [lifecycle](/concepts/lifecycle).
+:::info[Graduation]
+On Base, follow the live launch page for how graduation settles. On the current Stellar prototype, pool creation and graduation payouts are not implemented. Reaching the target locks trading; it does not move the reserve into a market. See [lifecycle](/concepts/lifecycle).
 :::
 
 ## Initial price and curve shape
 
-The creator sets synthetic asset and quote reserves. Their ratio establishes the initial marginal price. Their size relative to the sale allocation determines how sharply the price moves.
+The creator sets synthetic token and quote reserves. Their ratio establishes the initial marginal price. Their size relative to the sale allocation determines how sharply the price moves.
 
-These reserves are pricing parameters. They do not represent quote assets deposited by the creator.
+These reserves are pricing parameters. They do not represent quote tokens deposited by the creator.
 
-For example, with **600 assets** in the sale allocation and virtual reserves of **1,800 assets and 1,800 quote units**:
+For example, with **600 tokens** in the sale allocation and virtual reserves of **1,800 tokens and 1,800 quote units**:
 
 | Point | Marginal price | Cumulative quote reserve, before fees |
 | --- | --- | --- |
-| Before purchases | 1 quote unit per asset | 0 |
-| After 300 assets sold | 1.44 quote units per asset | 360 quote units |
-| After 600 assets sold | 2.25 quote units per asset | 900 quote units |
+| Before purchases | 1 quote unit per token | 0 |
+| After 300 tokens sold | 1.44 quote units per token | 360 quote units |
+| After 600 tokens sold | 2.25 quote units per token | 900 quote units |
 
 These are illustrative parameters. Marginal price is the price of the next small increment, not the average price for a large purchase. Use the contract quote for the full amount.
 
 ## Buying
 
-A buy specifies an exact asset amount and `max_payment`, the maximum quote payment including the creator fee. The transaction transfers the quote payment into the vault and the purchased asset directly to the buyer.
+A buy specifies an exact token amount and a payment cap, the maximum quote payment including the creator fee. The transaction transfers the quote payment into the vault and the purchased token directly to the buyer.
 
-Every gated buy checks the buyer's current reputation. A quote does not reserve a price, inventory, or eligibility.
+A quote does not reserve a price, inventory, or eligibility. On Stellar, a gated buy also checks the buyer's current reputation.
 
 ## Selling back
 
-The vault records how much each address purchased directly. That address can sell back up to its recorded position while trading remains open, provided it still holds the assets.
+The vault records how much each address purchased directly. That address can sell back up to its recorded position while trading remains open, provided it still holds the tokens.
 
-Transferring assets does **not** transfer the sell-back position. Team assets and assets received from another holder do not create a curve sell-back right. A sell-back uses the current curve price and normal fees; it does not refund the original payment.
+Transferring tokens does **not** transfer the sell-back position. Team tokens and tokens received from another holder do not create a curve sell-back right. A sell-back uses the current curve price and normal fees; it does not refund the original payment.
 
 ## Graduation accounting
 
-The target counts the vault's recorded net quote reserve. Creator trading fees and direct donations do not count. A purchase fills in full and can overshoot the target. A creator's future payout share and platform fee are shown by `graduation_preview`, but that method performs no transfers.
+The target counts the vault's recorded net quote reserve. Creator trading fees and direct donations do not count. A purchase fills in full and can overshoot the target.
 
-For the formula, methods, and parameter limits, see [launch contracts](/developers/launch-contracts).
+For the Stellar formula, methods, and parameter limits, see [launch contracts](/developers/launch-contracts). For the live Base factory address, see [Base factory](/deployments/base).
 
 # Choose a launch format
 
 Route: /launches/overview
 
-All three formats start with the same project information, Stellar asset identity, supply plan, quote asset, and participation rules. The format determines how a participant gets a price and an allocation.
+The launchpad supports three formats: bonding curves, presales, and auctions. All three are live on Base. Stellar uses the same formats as that network comes online.
+
+All three start with the same project information, token identity, supply plan, quote asset, and participation rules. The format determines how a participant gets a price and an allocation.
 
 | | Bonding curve | Auction | Presale |
 | --- | --- | --- | --- |
 | Pricing | Changes with the curve's sold supply | Determined through bids | Fixed by the creator |
-| Participant action | Buy or sell against the curve | Submit a price and quantity | Commit XLM or USDC |
+| Participant action | Buy or sell against the curve | Submit a price and quantity | Commit quote tokens |
 | Allocation | Executed purchases | Higher-priced bids have priority | Fixed-price allocation, with reputation priority when oversubscribed |
 | Opening | At the configured start time | At the auction start | At the presale start |
 | Ending | Graduation target reached | Auction close and settlement | Sale close or its published completion rule |
-| Participant receipt | Asset transferred during purchase | After settlement, under sale terms | After allocation, under participant vesting terms |
-| Source support | Contract prototype | Planned | Planned |
+| Participant receipt | Token transferred during purchase | After settlement, under sale terms | After allocation, under participant vesting terms |
+| Base | Live | Live | Live |
+| Stellar | Factory and vault in source; Mainnet factory published | Expansion | Expansion |
 
 ## Bonding curve
 
-Choose a [bonding curve](/launches/bonding-curves) when you want the price to respond to purchases and sell-backs from the opening date. The current curve is formula-driven and has no expiry deadline.
+Choose a [bonding curve](/launches/bonding-curves) when you want the price to respond to purchases and sell-backs from the opening date. The curve is formula-driven and has no expiry deadline.
 
 ## Auction
 
-Choose an [auction](/launches/auctions) when buyers should express the price they are willing to pay. Higher-priced bids receive priority for a finite asset allocation. The payment rule, closing time, and settlement process must be defined before bidding opens.
+Choose an [auction](/launches/auctions) when buyers should express the price they are willing to pay. Higher-priced bids receive priority for a finite token allocation. The payment rule, closing time, and settlement process must be defined before bidding opens.
 
 ## Presale
 
-Choose a [presale](/launches/presales) when you want a known price, a funding goal, and a scheduled distribution. When demand exceeds the available raise, reputation is intended to prioritize final allocations. Unaccepted commitments must remain refundable under the published settlement rules.
+Choose a [presale](/launches/presales) when you want a known price, a funding goal, and a scheduled distribution. When demand exceeds the available raise, reputation can prioritize final allocations. Unaccepted commitments stay refundable under the published settlement rules.
 
 ## Shared configuration
 
-Creators choose allocation percentages, XLM or USDC, start time, pricing parameters, team vesting, project description, team information, tokenomics, and reputation rules. Format-specific terms belong on the launch page before anyone participates.
+Creators choose allocation percentages, the quote asset, start time, pricing parameters, team vesting, project description, team information, tokenomics, and access rules. On Base the quote is USDC. On Stellar it is XLM or USDC.
 
-A bonding curve is not an auction, and the current prototype does not implement the auction or presale paths. See [implementation status](/getting-started/status).
+Format-specific terms belong on the launch page before anyone participates. A bonding curve is not an auction. See [implementation status](/getting-started/status).
 
 # Presales
 
 Route: /launches/presales
 
-**Planned. Not implemented in the current contracts or published as a service.**
+Presales are live on Base. Stellar presales are part of the network expansion and follow the same product rules below.
 
-A presale offers a defined asset allocation at a fixed price. Participants commit XLM or USDC during the sale, then receive a final allocation under the published distribution and vesting terms.
+A presale offers a defined token allocation at a fixed price. Participants commit quote tokens during the sale, then receive a final allocation under the published distribution and vesting terms.
+
+On Base that quote is USDC. On Stellar it is XLM or USDC.
 
 ## Sale configuration
 
@@ -1356,54 +1514,52 @@ A funding goal and an accepted-capital cap are different terms. Reaching a goal 
 4. Accepted funds become project proceeds under the sale's release rules.
 
 
-5. Allocated assets become claimable according to the participant schedule. Any unaccepted funds follow the refund process.
+5. Allocated tokens become claimable according to the participant schedule. Any unaccepted funds follow the refund process.
 
 
 
 
-Before settlement, a displayed allocation may be provisional. A commitment is not an immediately transferable asset balance.
+Before settlement, a displayed allocation may be provisional. A commitment is not an immediately transferable token balance.
 
 ## When demand exceeds the raise
 
-The intended allocation model gives priority to participants with higher reputation. If the sale has more eligible demand than it can accept, the final accepted allocations favor those participants under the launch's published ranking policy.
+The allocation model can give priority to participants with higher reputation. If the sale has more eligible demand than it can accept, the final accepted allocations favor those participants under the launch's published ranking policy.
 
 For example, a sale accepting 100,000 USDC receives 150,000 USDC in eligible commitments. Only 100,000 USDC is accepted. Reputation determines priority for that accepted capacity, and the remaining 50,000 USDC must be refundable. Sending a larger commitment does not itself guarantee a larger final allocation.
 
-The ranking formula, selected score categories, score snapshot time, per-participant limits, tie-breaking rule, and settlement mechanism are **not yet specified in code**. A threshold check alone does not implement ranked allocation.
+Read the live launch for the ranking formula, selected score categories, score snapshot time, per-participant limits, tie-breaking rule, and settlement mechanism. A threshold check alone does not implement ranked allocation.
 
 ## Vesting and claims
 
 Participant vesting is distinct from team vesting. A project might publish a first release followed by a cliff and recurring unlocks, or a fully vested allocation after a specified date. Only the final deployed sale's documented schedule can establish those rights.
 
-The current curve contract implements team vesting only. It cannot be used as a presale contract or as a general participant-vesting contract.
-
-## Before this format is available
-
-Refunds, goal-failure handling, proceeds release, oversubscription ranking, participant claims, and unsold-asset handling need a complete settlement implementation. No live presale or automatic allocation service is supplied by the current repositories.
+The Stellar curve contract implements team vesting only. It cannot be used as a Stellar presale contract. Use the live Base presale for that format today.
 
 # Allocations and claims
 
 Route: /participants/allocations-and-claims
 
-An allocation describes how much of an asset you receive. A claimable balance describes how much you can transfer now. These are different from funds merely committed to a sale.
+An allocation describes how much of a token you receive. A claimable balance describes how much you can transfer now. These are different from funds merely committed to a sale.
 
 ## By launch format
 
 | Format | What you hold after participation | Delivery |
 | --- | --- | --- |
-| Current bonding curve | Purchased asset balance and a recorded sell-back position | Asset transfers during the buy |
-| Planned auction | Bid, then accepted allocation after settlement | Claim or vesting under auction terms |
-| Planned presale | Commitment, then accepted allocation after settlement | Participant vesting under sale terms |
+| Bonding curve | Purchased token balance and a recorded sell-back position | Token transfers during the buy |
+| Auction | Bid, then accepted allocation after settlement | Claim or vesting under auction terms |
+| Presale | Commitment, then accepted allocation after settlement | Participant vesting under sale terms |
 
 The current curve does not create participant claim schedules. Its `claim_team` method is for the launch owner, not buyers.
 
+Auctions and presales are live on Base. On Stellar they are part of the expansion.
+
 ## Presale oversubscription
 
-The intended presale policy favors higher-reputation participants when eligible commitments exceed the accepted raise. Before settlement, any displayed allocation should be treated as provisional.
+The presale policy can favor higher-reputation participants when eligible commitments exceed the accepted raise. Before settlement, any displayed allocation should be treated as provisional.
 
-An unaccepted amount must be distinguished from accepted project proceeds. The planned sale needs an explicit refund path, and participants need to know when and how the unaccepted quote asset becomes available.
+An unaccepted amount must be distinguished from accepted project proceeds. The sale needs an explicit refund path, and participants need to know when and how the unaccepted quote asset becomes available.
 
-There is no current contract implementing this allocation or refund process. No exact ranking formula, tie-breaking rule, or score snapshot is published in the supplied code.
+Read the live Base launch for the ranking formula, tie-breaking rule, and score snapshot. The Stellar curve does not implement this allocation or refund process.
 
 ## Vesting claims
 
@@ -1411,45 +1567,51 @@ A vested allocation may include an opening release, a cliff, or repeated unlocks
 
 Review the beneficiary address, schedule origin, first release, interval, final release, and previously claimed amount. The team schedule documented in [vesting](/concepts/vesting) must not be assumed to apply to every future participant schedule.
 
-## Asset availability and liquidity
+## Token availability and liquidity
 
-Receiving an asset does not guarantee there is a market to sell it. For the current curve, transfers do not transfer sell-back rights, and graduation stops the vault's trading without creating a secondary market.
+Receiving a token does not guarantee there is a market to sell it. For the current curve, transfers do not transfer sell-back rights, and graduation stops the vault's trading without creating a secondary market.
 
-Use an existing, verified method to claim or sell. Sending assets directly to a contract does not create an allocation, a refund, or a recorded curve position.
+Use an existing, verified method to claim or sell. Sending tokens directly to a contract does not create an allocation, a refund, or a recorded curve position.
 
 # Join a launch
 
 Route: /participants/getting-started
 
-You can browse the interface without logging in. Participation requires an authenticated Stellar account and the authorization needed to move its assets.
+You can browse the interface without logging in. Participation requires a connected wallet and the authorization needed to move its tokens.
+
+Base is the live network. Connect an EVM wallet, hold USDC, and keep ETH for gas. Stellar participation uses a Stellar account and is part of the expansion.
 
 ## Read the launch terms
 
-Check the project, team, asset code and issuer, network, format, quote asset, pricing, allocation, fees, dates, and claim schedule. Look for the distinction between immediate delivery and a vesting entitlement.
+Check the project, team, token, network, format, quote asset, pricing, allocation, fees, dates, and claim schedule. Look for the distinction between immediate delivery and a vesting entitlement.
 
-Use [deployments](/deployments/overview) to check the deployment record. Prototype listings and illustrative balances are not proof of a live sale.
+Use [deployments](/deployments/overview) to check the factory record. Production volume is on Base.
 
 ## Connect your account
 
-The interface uses Blux for authentication and a Stellar account. The account can be created or connected through the supported login flow. Its `G...` address identifies the participant for positions and reputation.
+On Base, connect the EVM wallet that will sign buys, bids, or commitments. Its `0x` address identifies the participant for positions.
 
-Optional X and GitHub connections support the intended reputation flow. The current interface can simulate these connections and scores; those preview numbers are not onchain eligibility evidence.
+On Stellar, the interface uses Blux for authentication and a Stellar account. Its `G...` address identifies the participant for positions and reputation.
+
+Optional X and GitHub connections support the intended Stellar reputation flow. Locally simulated scores are not onchain eligibility evidence.
 
 ## Meet the entry criteria
 
-Open launches do not require a reputation label. Gated launches require the selected rule to pass for your address at the point of purchase.
+Open launches do not require a reputation label. Gated Stellar launches require the selected rule to pass for your address at the point of purchase.
 
 Read the criteria rather than judging eligibility by a profile badge. A high social score cannot satisfy a rule requiring both GitHub and onchain thresholds unless those also pass.
 
-## Prepare funds and trustlines
+## Prepare funds
 
-Have enough of the launch's quote asset to cover the amount and any creator trading fee, plus XLM for network costs. For issued assets, make sure the required receiving trustlines exist and have sufficient capacity.
+Have enough of the launch's quote asset to cover the amount and any creator trading fee, plus gas.
 
-The current contracts do not set up trustlines for you. Never send funds directly to a vault as a substitute for a purchase or contribution method.
+On Base that is USDC plus ETH. On Stellar, hold XLM or USDC and make sure the required receiving trustlines exist.
+
+The contracts do not set up trustlines or token approvals for you. Never send funds directly to a vault as a substitute for a purchase or contribution method.
 
 ## Participate when it opens
 
-For a bonding curve, request a fresh quote and authorize the buy with a payment limit. For a planned auction, submit a bid during its window. For a planned presale, commit under its terms and wait for final allocation.
+For a bonding curve, request a fresh quote and authorize the buy with a payment limit. For an auction, submit a bid during its window. For a presale, commit under its terms and wait for final allocation.
 
 See [trading and bidding](/participants/trading-and-bidding) and [allocations and claims](/participants/allocations-and-claims).
 
@@ -1457,11 +1619,13 @@ See [trading and bidding](/participants/trading-and-bidding) and [allocations an
 
 Route: /participants/trading-and-bidding
 
-The launch format determines whether your action buys an asset immediately or creates a bid or commitment for later settlement.
+The launch format determines whether your action buys a token immediately or creates a bid or commitment for later settlement.
+
+Bonding curves, auctions, and presales are all live on Base. The field names below match the Stellar vault ABI.
 
 ## Buy from a curve
 
-A curve buy requests an exact asset amount. The current contract returns:
+A curve buy requests an exact token amount. The current contract returns:
 
 | Quote field | Meaning |
 | --- | --- |
@@ -1469,25 +1633,25 @@ A curve buy requests an exact asset amount. The current contract returns:
 | `creator_fee` | Additional fee on the buy |
 | `user_amount` | Total quote amount you pay |
 
-Set `max_payment` to the maximum total quote amount you authorize. If the current cost exceeds it, the transaction fails instead of accepting a worse price. A successful buy transfers the asset directly to your account.
+Set `max_payment` to the maximum total quote amount you authorize. If the current cost exceeds it, the transaction fails instead of accepting a worse price. A successful buy transfers the token directly to your account.
 
 A quote is a snapshot. Another trade can change the price before yours executes. Review and simulate close to signing.
 
 ## Sell a curve position
 
-You need both the asset balance and a recorded sell-back position for the same address. Request `quote_sell(amount)` and set `min_receipt` to the smallest net quote receipt you accept.
+You need both the token balance and a recorded sell-back position for the same address. Request `quote_sell(amount)` and set `min_receipt` to the smallest net quote receipt you accept.
 
 A successful sell reduces your position and returns the current curve proceeds after fees. It can return more or less than your original payment. Sell-back is unavailable before opening or after graduation.
 
 ## Place an auction bid
 
-The planned auction flow uses a bid price and quantity. Higher-priced bids have allocation priority. A bid is not an immediate fill, and its payment and cancellation rules must be stated in the auction terms.
+The auction flow uses a bid price and quantity. Higher-priced bids have allocation priority. A bid is not an immediate fill, and its payment and cancellation rules must be stated in the auction terms.
 
-Price priority, clearing price, and reputation eligibility are separate concepts. See [auctions](/launches/auctions) for the unresolved settlement choices.
+Price priority, clearing price, and reputation eligibility are separate concepts. See [auctions](/launches/auctions).
 
 ## Commit to a presale
 
-The planned presale flow accepts quote-asset commitments at a fixed price. If demand exceeds the available allocation, reputation is intended to prioritize accepted participation. Final allocation can be smaller than a provisional estimate.
+The presale flow accepts quote-asset commitments at a fixed price. If demand exceeds the available allocation, reputation can prioritize accepted participation. Final allocation can be smaller than a provisional estimate.
 
 Read the published closing, score-snapshot, refund, and participant-vesting rules before committing.
 
@@ -1501,45 +1665,53 @@ If submission status is uncertain, inspect the existing transaction hash before 
 
 Route: /reference/faq
 
-## Does Launchpad create an asset or a custom contract token?
+## Is LumenRise live?
 
-The intended product creates an issued Stellar asset. A SAC gives Soroban access to that same asset. The current factory accepts an existing SAC-backed asset; integrated issuance is planned.
+Yes. The launchpad is live on Base. Bonding curves, presales, and auctions all run there. The Base app is audited and has done more than $10k in volume. Stellar is the expansion network.
+
+## Where is the Base factory address?
+
+On the [Base factory](/deployments/base) page. Drop the deployed address into the table there. Do not use a Stellar `C...` contract as a Base factory.
+
+## Does Launchpad create a token?
+
+The product launches an existing token into a vault. On Base that token is an ERC-20. On Stellar it is an issued Stellar asset, with a SAC giving Soroban access to the same asset. Integrated issuance is still a product flow, not something the current Stellar factory does by itself.
 
 ## Can I choose my supply allocation and quote asset?
 
-Yes, the product is designed around creator-selected allocations and XLM or USDC quotes. The current curve enforces pool, curve, and team shares totaling 100%. Its `pair` argument accepts a valid SAC rather than enforcing an XLM/USDC allowlist.
+Yes. Allocations are creator-selected. On Base the quote is USDC. On Stellar the product quotes are XLM or USDC. The current Stellar curve enforces pool, curve, and team shares totaling 100%. Its `pair` argument accepts a valid SAC rather than enforcing an XLM/USDC allowlist. The Base factory is constructed with Circle USDC as the pair.
 
 ## Does moving the balance into a vault prove a fixed supply?
 
-No. The factory moves the owner's full balance. It cannot query total issued supply across the network or prevent later issuance. Issuance controls need separate verification.
+No. The factory moves the owner's full balance. It cannot query total issued supply across the network or prevent later minting. Issuance controls need separate verification.
 
 ## Can people trade as soon as a launch starts?
 
-Current curve trading opens at `starts_at`. Auction opening enables bids; presale opening enables commitments under their future rules. A vesting schedule or unsettled allocation can delay when a participant actually receives assets.
+Current curve trading opens at `starts_at`. Auction opening enables bids; presale opening enables commitments. A vesting schedule or unsettled allocation can delay when a participant actually receives tokens.
 
 ## Do curve launches expire if they miss a goal?
 
-No. The current curve stays open until graduation and has no deadline or failed state. The older Testnet report describes an earlier version.
+No. The current curve stays open until graduation and has no deadline or failed state. The older Stellar Testnet report describes an earlier version.
 
 ## What happens at graduation?
 
-A qualifying buy marks the curve graduated and stops all further curve trades. The current prototype does not distribute the graduation reserve or create a pool. See [lifecycle](/concepts/lifecycle).
+A qualifying buy marks the curve graduated and stops all further curve trades. On Base, follow the live launch for settlement. On the current Stellar prototype the vault does not distribute the graduation reserve or create a pool. See [lifecycle](/concepts/lifecycle).
 
-## Can I sell assets I received from someone else back to the curve?
+## Can I sell tokens I received from someone else back to the curve?
 
-Only if your address also has enough recorded direct-buy position and still holds the assets. Ordinary transfers do not transfer sell-back rights.
+Only if your address also has enough recorded direct-buy position and still holds the tokens. Ordinary transfers do not transfer sell-back rights.
 
 ## Is reputation one number?
 
-The registry stores three numbers: social, GitHub, and onchain. It can also compare their unweighted sum to a threshold. The product's final scoring scale and calculation weights are not published.
+The Stellar registry stores three numbers: social, GitHub, and onchain. It can also compare their unweighted sum to a threshold. The product's final scoring scale and calculation weights are not published. Reputation is part of the Stellar expansion.
 
 ## Does connecting an account prove I am verified?
 
-It can establish control of the relevant account through a real verification flow. It does not by itself establish legal identity or a KYC status. Current optional interface connections and scores can be simulated.
+It can establish control of the relevant account through a real verification flow. It does not by itself establish legal identity or a KYC status.
 
 ## Can anyone create their own criteria?
 
-Anyone can create an immutable threshold label with their signature. Labels start at 1 and are local to their registry. A curve's label value of 0 means no reputation gate.
+On Stellar, anyone can create an immutable threshold label with their signature. Labels start at 1 and are local to their registry. A curve's label value of 0 means no reputation gate.
 
 ## Can another application use these scores?
 
@@ -1547,15 +1719,17 @@ Yes, a Soroban contract can use the shared `ReputationClient` or direct registry
 
 ## Do higher scores guarantee a presale allocation?
 
-No guarantee can be made from the current implementation. The product intends to prioritize higher-reputation participants when demand exceeds the accepted raise, but the ranking and settlement contracts are not built.
+No. The product can prioritize higher-reputation participants when demand exceeds the accepted raise. The ranking and settlement rules are those published on the live launch.
 
-## Are auctions, presales, and the CLI available?
+## Are auctions and presales available?
 
-They are planned. Their pages describe the intended behavior and open decisions. No published CLI installer, API endpoint, SDK package, auction contract, or presale contract is supplied.
+Yes, on Base. They are part of the Stellar expansion.
 
 ## Where are the current contract addresses?
 
-See [deployments](/deployments/overview) for the Mainnet reputation registry and launch factory addresses. Testnet entries are historical fixtures.
+- Base factory: [Base deployments](/deployments/base)
+- Stellar Mainnet factory and registry: [Stellar Mainnet](/deployments/mainnet)
+- Stellar Testnet: historical fixtures only, [Stellar Testnet](/deployments/testnet)
 
 # Glossary
 
@@ -1565,33 +1739,35 @@ Route: /reference/glossary
 | --- | --- |
 | Allocation | An amount assigned to a participant or supply bucket. It may be provisional until settlement. |
 | Asset code | The short code of an issued Stellar asset. It identifies the asset only together with its issuer. |
-| Auction | A sale where bids express willingness to pay and determine allocation priority under published rules. |
+| Auction | A sale where bids express willingness to pay and determine allocation priority under published rules. Live on Base. |
+| Base | The live LumenRise network. Chain ID 8453. Factory address lives on the Base deployments page. |
 | Basis point, bps | One hundredth of a percent. 10,000 bps equals 100%. |
-| Bonding curve | A formula that prices trades using the launch's sold supply and reserve parameters. |
-| Claim | A transaction transferring assets that have become available under a schedule or entitlement. |
+| Bonding curve | A formula that prices trades using the launch's sold supply and reserve parameters. Live on Base. |
+| Claim | A transaction transferring tokens that have become available under a schedule or entitlement. |
 | Cliff | A delay before vesting begins. |
-| Commitment | Quote assets submitted for a future allocation process. It is not necessarily an accepted allocation. |
+| Commitment | Quote tokens submitted for a future allocation process. It is not necessarily an accepted allocation. |
 | Criteria | Threshold conditions evaluated against reputation scores. |
-| Distribution account | The account holding the intended launch supply before vault deposit. |
+| Distribution account | The wallet holding the intended launch supply before vault deposit. |
+| Factory | The contract that validates a launch, deploys a vault, and records it. |
 | Graduation | The current curve's terminal trading state after reaching its net reserve target. |
 | Issuer | The Stellar account that issues an asset. Its controls matter independently of vault custody. |
-| Label | An immutable named set of reputation criteria with a registry-local ID. |
-| Mainnet | Stellar's public network, separate from Testnet. |
-| Marginal price | The price of the next small increment of an asset, rather than a large trade's average price. |
+| Label | An immutable named set of reputation criteria with a registry-local ID. Stellar expansion. |
+| Mainnet | On these pages, Stellar's public network unless labeled Base. |
+| Marginal price | The price of the next small increment of a token, rather than a large trade's average price. |
 | Onchain score | A numeric reputation category intended to reflect Stellar account activity. |
 | Oversubscription | Eligible demand above the amount a sale will accept or allocate. |
-| Presale | A fixed-price raise that assigns assets under its allocation and distribution terms. |
-| Quote asset | The asset used for payment and pricing, intended to be XLM or USDC. Called `pair` in the ABI. |
-| Registry | The contract storing reputation scores, labels, and administration. |
+| Presale | A fixed-price raise that assigns tokens under its allocation and distribution terms. Live on Base. |
+| Quote asset | The asset used for payment and pricing. USDC on Base. XLM or USDC on Stellar. Called `pair` in the ABI. |
+| Registry | The Stellar contract storing reputation scores, labels, and administration. |
 | SAC | Stellar Asset Contract, the built-in Soroban interface to a native or issued Stellar asset. |
 | Sell-back position | The amount an address bought directly and may still sell to the current curve before graduation. |
 | Settlement | Final calculation and transfer or entitlement recording for accepted bids, commitments, proceeds, or refunds. |
 | Slippage limit | A maximum buy payment or minimum sell receipt that bounds an authorized trade. |
-| Stroop or base unit | For the seven-decimal assets used here, one ten-millionth of a whole unit. |
-| Testnet | Stellar's testing network, with disposable funds and possible resets. |
+| Stroop or base unit | For the seven-decimal Stellar assets used here, one ten-millionth of a whole unit. Base USDC uses 6 decimals. |
+| Testnet | Stellar's testing network, with disposable funds and possible resets. Distinct from Base Sepolia. |
 | Trustline | An account's ledger relationship allowing it to hold a particular issued Stellar asset. |
 | TTL | Time-to-live for Soroban contract data. Long-idle data can require restoration. |
-| Vault | A dedicated launch contract holding asset allocations and quote reserves. |
+| Vault | A dedicated launch contract holding token allocations and quote reserves. |
 | Vesting | Scheduled release of an allocation over time. |
 | Virtual reserves | Synthetic amounts used in the curve's pricing formula, separate from actual held funds. |
 
@@ -1599,20 +1775,17 @@ Route: /reference/glossary
 
 Route: /reference/sources
 
-The product description follows the creator's brief. Contract behavior follows the sibling source repositories reviewed on **18 October 2026**. Comparable launchpad documentation informed the organization, not claims about Launchpad's implementation.
+The product description follows the creator's brief. Base is the live production network. Stellar contract behavior follows the sibling source repositories. Comparable launchpad documentation informed the organization, not claims about Launchpad's implementation.
 
 ## Implementation sources
 
 | Source in the project workspace | Used for |
 | --- | --- |
-| `launchpad-contract/packages/launchpad-types/src/lib.rs` | Parameters, validation, allocations, integer math, and launch errors |
-| `launchpad-contract/contracts/factory/src/lib.rs` | Factory settings, registry selection, vault deployment, and deposit behavior |
-| `launchpad-contract/contracts/bonding-curve/src/lib.rs` | States, quotes, trades, positions, graduation, and claims |
-| `launchpad-contract/packages/reputation-types/src/lib.rs` | Scores, criteria, labels, and the shared client |
-| `launchpad-contract/contracts/reputation/src/lib.rs` | Administration, score replacement, label creation, and events |
-| `launchpad-contract/README.md` | Implementation boundaries and verification context |
-| `launchpad-contract/TESTNET.md` and `target/testnet-smoke.json` | Historical deployment evidence |
-| `interface/PRODUCT.md`, `DESIGN.md`, and `src/App.tsx` | User flows, existing visual identity, authentication, and prototype limitations |
+| `evm-contract/src/Factory.sol` | Base factory settings, pair token, vault deployment, and deposit behavior |
+| `evm-contract/src/BondingCurve.sol` | Base curve vault |
+| `evm-contract/script/Deploy.s.sol` | Base and Base Sepolia deploy path, including native Circle USDC |
+| `stellar-contract` / `launchpad-contract` packages and contracts | Stellar factory, vault, reputation, and historical Testnet evidence |
+| `interface` and `lumenrise-interface` | User flows, visual identity, authentication, and prototype limitations |
 
 These are workspace-relative source references, not public service URLs. Local implementation and network deployment are described separately throughout the docs.
 
@@ -1626,23 +1799,26 @@ These are workspace-relative source references, not public service URLs. Local i
 
 Launchpad does not inherit those platforms' chains, pricing mechanisms, score scales, verification policies, or settlement behavior.
 
-## Stellar and integration references
+## Chain and integration references
 
+- [Base](https://docs.base.org/): the live LumenRise network.
+- [Circle USDC on Base](https://developers.circle.com/stablecoins/usdc-contract-addresses): `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`.
 - [Stellar Asset Contract](https://developers.stellar.org/docs/tokens/stellar-asset-contract): how the same Stellar asset is used by accounts and contracts.
 - [Stellar RPC API reference](https://developers.stellar.org/docs/data/apis/rpc/api-reference): simulation, transaction results, and event-query methods.
-- [Circle's USDC directory](https://developers.circle.com/stablecoins/usdc-contract-addresses): an external source for network-specific USDC identity.
 
 ## Editorial conventions
 
-“Implemented in source” means a matching path exists in the reviewed code. It does not mean the current version is deployed. “Planned” means a requested product capability without a matching implementation or published service.
+Base is described as live. Stellar is described as the expansion, with factory and reputation source documented so integrators can start. “Implemented in source” means a matching path exists in the reviewed Stellar code. It does not mean that network already matches every Base feature.
 
-Examples are illustrative unless explicitly identified as historical transaction evidence. Proposed API and CLI interfaces are not advertised as callable endpoints or installed tools. Open auction and presale decisions are stated rather than filled in with invented mechanics.
+Examples are illustrative unless explicitly identified as historical transaction evidence. Proposed API and CLI interfaces are not advertised as callable endpoints or installed tools. Open auction and presale decisions on Stellar are stated rather than filled in with invented mechanics.
 
 # Connect your accounts
 
 Route: /reputation/connect-accounts
 
-Your Stellar account is the address used by the reputation registry. X and GitHub provide public activity signals that can be associated with that address through the intended verification flow.
+Reputation account linking is part of the Stellar expansion. Your Stellar account is the address used by the reputation registry. X and GitHub provide public activity signals that can be associated with that address through the intended verification flow.
+
+Base launches do not use this registry. Connect an EVM wallet there instead.
 
 ## Stellar account
 
@@ -1670,7 +1846,7 @@ Disconnecting an identity in the interface does not automatically erase a score 
 
 ## Current implementation
 
-Blux authentication is integrated into the interface. Some optional provider connections are locally simulated and generate illustrative scores. No production account-linking backend or evidence-verification pipeline is present in the supplied repositories.
+Blux authentication is integrated into the Stellar-facing interface. Some optional provider connections are locally simulated and generate illustrative scores. No production account-linking backend or evidence-verification pipeline is present in the supplied repositories.
 
 Only published registry values can support an onchain check. A locally displayed prototype score is not a signed attestation or an onchain score update.
 
@@ -1679,6 +1855,8 @@ Only published registry values can support an onchain check. A locally displayed
 Route: /reputation/criteria
 
 A criterion compares scores to thresholds. A label gives a reusable, immutable set of criteria an ID within a reputation registry.
+
+This is the Stellar expansion path. Base launches publish access rules on the launch page instead.
 
 ## Available criteria
 
@@ -1721,7 +1899,9 @@ A label describes access thresholds. It does not certify legal identity, bind pr
 
 Route: /reputation/overview
 
-Reputation gives a participant a record of contribution and activity that can be used beyond a single launch. Launchpad separates that record into **social**, **GitHub**, and **onchain** scores.
+Reputation is part of the Stellar expansion. It gives a participant a record of contribution and activity that can be used beyond a single launch. Launchpad separates that record into **social**, **GitHub**, and **onchain** scores.
+
+Base launches can still publish their own access rules. The onchain registry described here is a Stellar contract.
 
 ## Three signals
 
@@ -1741,7 +1921,7 @@ The onchain registry already stores scores and supports reusable checks. It does
 
 ## How projects use reputation
 
-A creator can require social or developer thresholds, combine onchain activity with another category, or choose open participation. Planned presales will also use reputation to prioritize allocations when demand exceeds the accepted raise.
+A creator can require social or developer thresholds, combine onchain activity with another category, or choose open participation. Presales can also use reputation to prioritize allocations when demand exceeds the accepted raise.
 
 Access criteria and allocation ranking are different uses. Passing an access rule does not guarantee an allocation or determine its size.
 
@@ -1757,7 +1937,7 @@ Continue with [account connections](/reputation/connect-accounts), [score calcul
 
 Route: /reputation/scoring
 
-The product intends to evaluate activity, contribution, and ecosystem relationships. The current registry stores the resulting numbers; the production calculation service and exact scoring model are not implemented in these repositories.
+Reputation scoring is part of the Stellar expansion. The product intends to evaluate activity, contribution, and ecosystem relationships. The current registry stores the resulting numbers; the production calculation service and exact scoring model are not implemented in these repositories.
 
 ## Social reputation
 
@@ -1775,7 +1955,7 @@ The repositories do not define a scoring formula for commits, pull requests, rev
 
 The intended onchain analysis uses activity associated with the connected Stellar account. No production indexer, transaction classifier, anti-sybil model, or published scoring weights are present here.
 
-An account balance or asset holding alone is not a published reputation rule.
+An account balance or token holding alone is not a published reputation rule.
 
 ## Stored values
 
