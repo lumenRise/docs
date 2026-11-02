@@ -91,6 +91,50 @@ test('terminal, images, and tables preserve their content and HTML roles', () =>
 function walk(path) {
   return readdirSync(path, {withFileTypes: true}).flatMap(entry => entry.isDirectory() ? walk(join(path, entry.name)) : entry.name.endsWith('.mdx') ? [join(path, entry.name)] : []);
 }
+
+test('every documentation page has unique SEO tags and a working social preview image', () => {
+  const attributes = (tag) => Object.fromEntries(
+    [...tag.matchAll(/([\w:-]+)=(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)]
+      .map(([, key, quoted, singleQuoted, unquoted]) => [key, quoted ?? singleQuoted ?? unquoted]),
+  );
+  for (const path of walk(join(root, 'docs'))) {
+    const source = readFileSync(path, 'utf8');
+    const id = path.slice(join(root, 'docs').length + 1).replaceAll('\\', '/').replace(/\.mdx$/, '');
+    const route = id === 'intro' ? '/' : `/${id}`;
+    const html = readFileSync(join(root, 'build', ...(id === 'intro' ? [] : [id]), 'index.html'), 'utf8');
+    const head = html.match(/<head>[\s\S]*?<\/head>/)[0];
+    const tags = [...head.matchAll(/<meta\b[^>]*>/g)].map(([tag]) => attributes(tag));
+    const meta = (key) => {
+      const matches = tags.filter(tag => (tag.name ?? tag.property) === key);
+      assert.equal(matches.length, 1, `${route}: exactly one ${key}`);
+      return matches[0].content;
+    };
+    const title = `${source.match(/^title: "(.+)"/m)[1]} | LumenRise Docs`;
+    const description = source.match(/^description: "(.+)"/m)[1];
+    assert.equal(head.match(/<title[^>]*>([^<]*)<\/title>/)[1], title);
+    assert.equal(meta('og:title'), title);
+    assert.equal(meta('description'), description);
+    assert.equal(meta('og:description'), description);
+    assert.equal(meta('og:type'), 'website');
+    assert.equal(meta('og:site_name'), 'LumenRise Docs');
+    assert.equal(meta('twitter:card'), 'summary_large_image');
+    const canonicals = [...head.matchAll(/<link\b[^>]*>/g)].map(([tag]) => attributes(tag)).filter(tag => tag.rel === 'canonical');
+    assert.equal(canonicals.length, 1);
+    const canonical = new URL(canonicals[0].href);
+    assert.equal(canonical.pathname.replace(/\/$/, '') || '/', route);
+    assert.equal(meta('og:url'), canonical.href);
+    const image = new URL(meta('og:image'));
+    assert.equal(image.origin, canonical.origin);
+    assert.equal(image.pathname, '/branding/docs-social-card.png');
+    assert.equal(meta('twitter:image'), image.href);
+    assert.ok(meta('og:image:alt'));
+    assert.equal(meta('twitter:image:alt'), meta('og:image:alt'));
+  }
+  const png = readFileSync(join(root, 'build/branding/docs-social-card.png'));
+  assert.equal(png.subarray(1, 4).toString(), 'PNG');
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 630);
+});
 test('all 39 original routes exist in the production build and contain no raw admonitions', () => {
   const pages = walk(join(root, 'docs'));
   assert.equal(pages.length, 39);
@@ -113,14 +157,14 @@ test('plain-text export has portable routes and no rich-component markup', () =>
   assert.match(text, /^5\. Transfer the launch supply from the distribution account into the dedicated vault\./m);
   assert.match(text, /^### 1\. Choose a launch format$/m);
 });
-test('compact sidebar gives each heading an icon and starts collapsed on the introduction', () => {
+test('sidebar lists every section heading and link on the introduction', () => {
   const html = readFileSync(join(root, 'build/index.html'), 'utf8');
   const nav = html.match(/<nav aria-label="?Documentation"?[\s\S]*?<\/nav>/)?.[0];
   assert.ok(nav, 'Documentation navigation exists');
-  assert.equal((nav.match(/class="?sectionIcon_/g) ?? []).length, 9);
-  assert.match(nav, /class="?pageIcon_[^>]*><svg/);
-  assert.equal((nav.match(/aria-expanded="?false"?/g) ?? []).length, 9);
-  assert.doesNotMatch(nav, /aria-expanded="?true"?/);
+  assert.equal((nav.match(/class="?groupTitle_/g) ?? []).length, 9);
+  assert.equal((nav.match(/class="?menu__link\b/g) ?? []).length, 39);
+  assert.equal((nav.match(/aria-expanded=/g) ?? []).length, 9);
+  assert.match(nav, /aria-controls="?sidebar-section-1-items"?/);
   assert.match(nav, /aria-current="?page"?[^>]*href="?\/"?>/);
   assert.doesNotMatch(html, /<h2>Get Started<\/h2>|<span>Documentation<\/span>/);
   const aside = html.match(/<aside\b[\s\S]*?<\/aside>/)?.[0];
@@ -130,13 +174,13 @@ test('compact sidebar gives each heading an icon and starts collapsed on the int
   assert.ok(panel >= 0 && logo > panel && logo < aside.indexOf('<nav'), 'Logo appears inside the panel above navigation');
   assert.doesNotMatch(aside.slice(aside.indexOf('</nav>')), /<img\b/);
 });
-test('compact sidebar opens the current section and retains native child links', () => {
+test('sidebar labels each section list and marks the current page', () => {
   const html = readFileSync(join(root, 'build/developers/architecture/index.html'), 'utf8');
   const nav = html.match(/<nav aria-label="?Documentation"?[\s\S]*?<\/nav>/)?.[0];
   assert.ok(nav, 'Documentation navigation exists');
-  assert.equal((nav.match(/aria-expanded="?true"?/g) ?? []).length, 1);
-  assert.match(nav, /aria-expanded="?true"? aria-controls="?sidebar-section-7-items"?/);
-  assert.doesNotMatch(nav, /class="?[^">]*\bcurrent_/);
+  assert.match(nav, /id="?sidebar-section-7"?[^>]*aria-expanded="?true"?[^>]*><span>Developers</);
+  assert.match(nav, /aria-labelledby="?sidebar-section-7"?/);
+  assert.equal((nav.match(/aria-current="?page"?/g) ?? []).length, 1);
   assert.match(nav, /aria-current="?page"?[^>]*href="?\/developers\/architecture"?/);
   assert.match(nav, /href="?\/getting-started\/quickstart"?/);
 });

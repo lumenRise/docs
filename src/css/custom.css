@@ -176,21 +176,6 @@ a {text-underline-offset: 3px;}
 mark {background: var(--lr-lime); color: #161816; padding: 0 .12em; border-radius: 2px;}
 .main-wrapper {min-width: 0;}
 
-/* Sidebar links: native Docusaurus items rendered under static section headers. */
-.menu {font-size: 13px;}
-.menu__list {margin: 0;}
-.menu__list-item {margin: 0;}
-.menu__list-item + .menu__list-item {margin-top: 0;}
-.menu__link {position: relative; padding: 5px 10px 5px 38px; line-height: 1.45; font-weight: 450; color: var(--lr-muted-foreground); border-radius: 7px; transition: background-color var(--lr-duration), color var(--lr-duration);}
-.menu__link:hover {color: var(--lr-foreground); background: var(--lr-muted);}
-.menu__list-item:not(:has(.menu__list)) > .menu__link::before {content: ''; position: absolute; left: 18px; top: 0; bottom: 0; width: 1px; background: var(--lr-divider); transition: background-color var(--lr-duration);}
-.menu__link--active:not(.menu__link--sublist) {font-weight: 550; color: var(--lr-accent-ink); background: var(--lr-accent-soft);}
-.menu__link--active:not(.menu__link--sublist)::before {background: var(--lr-link) !important;}
-.menu__link--active:not(.menu__link--sublist):hover {background: var(--lr-accent-soft);}
-.theme-doc-sidebar-item-link-level-1 > .menu__link {padding-left: 8px; font-weight: 550; color: var(--lr-foreground);}
-.theme-doc-sidebar-item-link-level-1 > .menu__link::before {display: none;}
-.theme-doc-sidebar-item-link-level-1 > .menu__link--active {color: var(--lr-accent-ink);}
-
 /* Search keeps the existing local index and shortcut. */
 .navbar__search {width: 100%; margin: 0;}
 .navbar__search[class*='searchBarContainer'] {width: 100%; max-width: 100%; margin-left: 0;}
@@ -364,7 +349,6 @@ a.breadcrumbs__link:hover {color: var(--lr-foreground); background: transparent;
 @media (max-width: 996px) {
   html {scroll-padding-top: 80px;}
   .theme-doc-markdown h1 {font-size: 28px;}
-  .menu__link {min-height: 36px; display: flex; align-items: center;}
   .navbar__search-input {height: 42px;}
   .navbar__search [class*='dropdownMenu'] {max-height: 60dvh; overflow-y: auto;}
 }
