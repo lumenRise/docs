@@ -44,6 +44,8 @@ SITE_URL=https://your-actual-docs-domain npm run build
 
 This example value must be replaced. Without `SITE_URL`, the site uses localhost and disables sitemap generation. No production domain, app URL, repository URL, or hosting target has been invented. Publish the resulting `build/` directory through the chosen static host; this task does not deploy it.
 
+Page titles use the `LumenRise Docs` suffix. Each document's front matter supplies its search and Open Graph description. Social previews use the supplied forest artwork in `static/branding/docs-social-card.png` (1200 × 630). Canonical URLs, Open Graph URLs, and social image URLs use `SITE_URL`, so rebuild after changing the public origin. `npm test` verifies the rendered metadata for all 39 documents and the preview image dimensions.
+
 ## Content structure
 
 - `docs/getting-started`: orientation and implementation status.
@@ -55,11 +57,11 @@ This example value must be replaced. Without `SITE_URL`, the site uses localhost
 - `docs/deployments`: Base factory directory, Stellar Mainnet addresses, and historical Stellar Testnet evidence.
 - `docs/reference`: FAQ, glossary, and research sources.
 
-`sidebars.ts` defines the reading order. The root route opens the introduction directly. A single categorized sidebar contains the existing local search and theme control. Mobile uses a native modal navigation drawer. There is no global navbar, footer, or right-hand table of contents.
+`sidebars.ts` defines the reading order. The root route opens the introduction directly. Sidebar section buttons expand and collapse their child links, with indentation and a guide line to show the hierarchy. The current page's section opens automatically on navigation. A single categorized sidebar contains the existing local search and theme control. Mobile uses a native modal navigation drawer. There is no global navbar, footer, or right-hand table of contents.
 
 ## Documentation design system
 
-Shared tokens and Markdown styles live in `src/css/custom.css`. Rich components use `src/components/Docs/styles.module.css`. Inter and JetBrains Mono are self-hosted variable fonts with SIL Open Font Licenses in `static/fonts`; the existing LumenRise logo artwork is unchanged.
+Shared tokens and Markdown styles live in `src/css/custom.css`. Rich components use `src/components/Docs/styles.module.css`. Inter and JetBrains Mono are self-hosted variable fonts with SIL Open Font Licenses in `static/fonts`. The light and dark LumenRise lockups in `static/branding` are used throughout navigation and social previews; the favicon is derived from the light lockup's symbol.
 
 The MDX mapping in `src/theme/MDXComponents/index.tsx` registers these components globally, without per-page imports:
 

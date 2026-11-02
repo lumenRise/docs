@@ -34,9 +34,9 @@ const lumenriseDark: PrismTheme = {
 };
 
 const config: Config = {
-  title: 'LumenRise',
+  title: 'LumenRise Docs',
   tagline: 'Token launches on Base, with Stellar next.',
-  favicon: 'branding/lumenrise-symbol-for-light-background.svg',
+  favicon: 'branding/favicon.png',
   // Set SITE_URL to the public documentation origin before publishing.
   url: process.env.SITE_URL || 'http://localhost:3000',
   baseUrl: '/',
@@ -84,15 +84,22 @@ const config: Config = {
     searchBarPosition: 'left',
   }]],
   themeConfig: {
-    metadata: [{name: 'description', content: 'LumenRise is live on Base with bonding curves, presales, and auctions. Stellar support is next.'}],
-    colorMode: {defaultMode: 'light', disableSwitch: false, respectPrefersColorScheme: true},
+    image: 'branding/docs-social-card.png',
+    metadata: [
+      {name: 'description', content: 'LumenRise documentation for creators, participants, and developers. Explore token launches on Base, launch formats, vesting, and Stellar integrations.'},
+      {property: 'og:type', content: 'website'},
+      {property: 'og:site_name', content: 'LumenRise Docs'},
+      {property: 'og:image:alt', content: 'LumenRise Docs: Build on LumenRise. Guides and contract reference for launching tokens with LumenRise.'},
+      {name: 'twitter:image:alt', content: 'LumenRise Docs: Build on LumenRise. Guides and contract reference for launching tokens with LumenRise.'},
+    ],
+    colorMode: {defaultMode: 'dark', disableSwitch: false, respectPrefersColorScheme: false},
     navbar: {
       logo: {
         alt: 'LumenRise',
-        src: 'branding/lumenrise-logo-horizontal-for-light-background.svg',
-        srcDark: 'branding/lumenrise-logo-horizontal-for-dark-background.svg',
-        width: 106,
-        height: 22,
+        src: 'branding/lumenrise-lockup-horizontal-light.svg',
+        srcDark: 'branding/lumenrise-lockup-horizontal-dark.svg',
+        width: 135,
+        height: 30,
       },
       items: [
       ],
